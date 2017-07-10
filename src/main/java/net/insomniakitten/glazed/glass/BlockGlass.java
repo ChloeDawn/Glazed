@@ -97,6 +97,11 @@ public class BlockGlass extends Block {
     }
 
     @Override
+    public int damageDropped(IBlockState state) {
+        return getMetaFromState(state);
+    }
+
+    @Override
     public int getLightValue(IBlockState state) {
         return getType(state).getLightLevel();
     }
@@ -138,8 +143,8 @@ public class BlockGlass extends Block {
     @Override
     public void getDrops(NonNullList<ItemStack> drops, IBlockAccess world, BlockPos pos, IBlockState state, int fortune) {
         if (!getType(state).equals(GlassType.REINFORCED))
-            drops.clear();
-        super.getDrops(drops, world, pos, state, fortune);
+            return;
+        super.getDrops(drops,world,pos,state,fortune);
     }
 
     @Override
