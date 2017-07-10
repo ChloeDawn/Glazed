@@ -91,7 +91,6 @@ public class BlockGlass extends Block {
 
     @Override
     public void getSubBlocks(CreativeTabs tab, NonNullList<ItemStack> items) {
-        if (!tab.equals(this.getCreativeTabToDisplayOn())) return;
         for (int i = 0; i < GlassType.values().length; ++i) {
             items.add(new ItemStack(this, 1, i));
         }
