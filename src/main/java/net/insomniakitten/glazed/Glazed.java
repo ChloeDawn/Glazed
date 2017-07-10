@@ -77,7 +77,7 @@ public class Glazed {
 
         @SubscribeEvent
         public static void onItemRegistry(RegistryEvent.Register<Item> event) {
-            event.getRegistry().register(new ItemBlockGlass(BGLASS));
+            event.getRegistry().register(IGLASS);
         }
 
     }
