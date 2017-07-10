@@ -1,0 +1,15 @@
+# Gradle
+!gradle-wrapper.jar
+.gradle/
+build/
+compiled/
+
+# IntelliJ
+*.jar
+*.iml
+.idea/
+out/
+run/
+
+# Assets
+docs/

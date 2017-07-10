@@ -1,0 +1,16 @@
+{
+  "forge_marker": 1,
+  "defaults": { "model": "cube_all" },
+  "variants": {
+    "type": {
+      "frosted": { "textures": { "all": "blocks/glass" } },
+      "radiant": { "textures": { "all": "blocks/glass" } },
+      "iridescent": { "textures": { "all": "blocks/glass" } },
+      "energetic": { "textures": { "all": "blocks/glass" } },
+      "shadowed": { "textures": { "all": "blocks/glass" } },
+      "voided": { "textures": { "all": "blocks/glass" } },
+      "reinforced": { "textures": { "all": "blocks/glass" } },
+      "auroric": { "textures": { "all": "blocks/glass" } }
+    }
+  }
+}

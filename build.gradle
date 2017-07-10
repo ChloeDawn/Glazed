@@ -1,0 +1,66 @@
+buildscript {
+    repositories {
+        jcenter()
+        maven {
+            name = "forge"
+            url = "https://files.minecraftforge.net/maven"
+        }
+    }
+    dependencies {
+        classpath "net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT"
+    }
+}
+
+apply plugin: 'net.minecraftforge.gradle.forge'
+
+version = "${mc_version}-${mod_version}"
+def version_alt = "${mod_version}"
+
+if (mod_build != "") {
+    version = "${mc_version}-${mod_version}-${mod_build}"
+    version_alt = "${mod_version}-${mod_build}"
+}
+
+group = "net.insomniakitten.glazed"
+archivesBaseName = "glazed"
+
+sourceCompatibility = compat_version
+targetCompatibility = compat_version
+
+libsDirName = build_dir
+distsDirName = build_dir
+
+compileJava {
+    sourceCompatibility = compat_version
+    targetCompatibility = compat_version
+}
+
+minecraft {
+    version = "${mc_version}-${forge_version}"
+    mappings = mcp_mappings
+    runDir = "run"
+
+    replace '%mod_version%', mod_version
+    replace '%mc_version%', mc_version
+}
+
+repositories {
+    maven { url = "http://maven.tterrag.com/" }
+}
+
+dependencies {
+    compile "team.chisel.ctm:CTM:MC${mc_version}-${ctm_version}"
+    runtime "team.chisel.ctm:CTM:MC${mc_version}-${ctm_version}"
+}
+
+processResources {
+    from(sourceSets.main.resources.srcDirs) {
+        include 'mcmod.info', 'pack.mcmeta'
+        expand  'build_version': "${version_alt}",
+                'mcf_version': "${mc_version}-${forge_version}"
+    }
+
+    from(sourceSets.main.resources.srcDirs) {
+        exclude 'mcmod.info', 'pack.mcmeta'
+    }
+}
