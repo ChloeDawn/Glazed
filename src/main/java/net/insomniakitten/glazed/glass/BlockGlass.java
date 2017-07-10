@@ -164,6 +164,16 @@ public class BlockGlass extends Block {
     }
 
     @Override
+    public int getStrongPower(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side) {
+        return getType(state).equals(GlassType.ENERGETIC) ? 15 : 0;
+    }
+
+    @Override
+    public int getWeakPower(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side) {
+        return getType(state).equals(GlassType.ENERGETIC) ? 15 : 0;
+    }
+
+    @Override
     public BlockStateContainer createBlockState() {
         return new BlockStateContainer(this, GLASS_TYPE);
     }
