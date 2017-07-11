@@ -32,27 +32,27 @@ public enum GlassType implements IStringSerializable {
     REINFORCED(2.0f, 3000.0f, 0, SoundType.METAL, false),
     AURORIC(0.3f, 10.0f, 8, SoundType.GLASS, false);
 
-    private final float HARDNESS;
-    private final float RESISTANCE;
-    private final int LIGHT_LEVEL;
-    private final SoundType SOUND;
-    private final boolean IS_OPAQUE;
+    private final float hardness;
+    private final float resistance;
+    private final int lightLevel;
+    private final SoundType soundType;
+    private final boolean isOpaque;
 
-    GlassType(float hardness, float resistance, int lightLevel, SoundType sound, boolean isOpaque) {
-        HARDNESS = hardness;
-        RESISTANCE = resistance;
-        LIGHT_LEVEL = lightLevel;
-        SOUND = sound;
-        IS_OPAQUE = isOpaque;
+    GlassType(float hardness, float resistance, int lightLevel, SoundType soundType, boolean isOpaque) {
+        this.hardness = hardness;
+        this.resistance = resistance;
+        this.lightLevel = lightLevel;
+        this.soundType = soundType;
+        this.isOpaque = isOpaque;
     }
 
     public String getName() { return name().toLowerCase(Locale.ENGLISH); }
     public int getMetadata() { return ordinal(); }
 
-    public float getHardness() { return HARDNESS; }
-    public float getResistance() { return RESISTANCE; }
-    public int getLightLevel() { return LIGHT_LEVEL; }
-    public SoundType getSound() { return SOUND; }
-    public boolean isOpaque() { return IS_OPAQUE; }
+    public float getHardness() { return hardness; }
+    public float getResistance() { return resistance; }
+    public int getLightLevel() { return lightLevel; }
+    public SoundType getSound() { return soundType; }
+    public boolean isOpaque() { return isOpaque; }
 
 }
