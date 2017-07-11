@@ -13,3 +13,7 @@ run/
 
 # Assets
 docs/
+/bin/
+
+*.launch
+.settings/org.eclipse.jdt.core.prefs
