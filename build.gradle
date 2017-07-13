@@ -42,15 +42,25 @@ minecraft {
 
     replace '%mod_version%', mod_version
     replace '%mc_version%', mc_version
+
+    useDepAts = true
 }
 
 repositories {
-    maven { url = "http://maven.tterrag.com/" }
+    maven { name = "ctm"
+            url = "http://maven.tterrag.com/" }
+    maven { name = "hwyla"
+            url "http://tehnut.info/maven" }
+    maven { name "jei"
+            url = "http://dvs1.progwml6.com/files/maven" }
 }
 
 dependencies {
-    compile "team.chisel.ctm:CTM:MC${mc_version}-${ctm_version}"
+    compile "team.chisel.ctm:CTM:MC${mc_version}-${ctm_version}:api"
     runtime "team.chisel.ctm:CTM:MC${mc_version}-${ctm_version}"
+    deobfCompile "mcp.mobius.waila:Hwyla:${hwyla_version}_${mc_version}"
+    deobfCompile "mezz.jei:jei_${mc_version}:${jei_version}:api"
+    runtime "mezz.jei:jei_${mc_version}:${jei_version}"
 }
 
 processResources {

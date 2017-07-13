@@ -1,0 +1,16 @@
+{
+  "forge_marker": 1,
+  "defaults": {},
+  "variants": {
+    "type": {
+      "slag": {
+        "model": "glazed:cube_multiface",
+        "textures": { "all": "glazed:blocks/material/slag" }
+      },
+      "crystal": {
+        "model": "glazed:crystal/crystal.obj",
+        "transform": "forge:default-block"
+      }
+    }
+  }
+}

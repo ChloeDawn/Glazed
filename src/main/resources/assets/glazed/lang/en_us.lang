@@ -1,10 +1,33 @@
 itemGroup.glazed=Glazed
 
-tile.glazed.glass.frosted.name=Frosted Glass
+tile.glazed.glass.gaia.name=Gaia Glass
 tile.glazed.glass.radiant.name=Radiant Glass
 tile.glazed.glass.iridescent.name=Iridescent Glass
 tile.glazed.glass.energetic.name=Energetic Glass
 tile.glazed.glass.shadowed.name=Shadowed Glass
-tile.glazed.glass.voided.name=Voided Glass
+tile.glazed.glass.voidic.name=Voidic Glass
+tile.glazed.glass.quilted.name=Quilted Glass
 tile.glazed.glass.reinforced.name=Reinforced Glass
 tile.glazed.glass.auroric.name=Auroric Glass
+
+tile.glazed.glass.gaia.tooltip=Blessed by nature
+tile.glazed.glass.radiant.tooltip=Glowing with warmth
+tile.glazed.glass.iridescent.tooltip=Packed with rainbows
+tile.glazed.glass.energetic.tooltip=Surging with power
+tile.glazed.glass.shadowed.tooltip=Darker than the night
+tile.glazed.glass.voidic.tooltip=Infused with emptiness
+tile.glazed.glass.quilted.tooltip=Peacefully silent
+tile.glazed.glass.reinforced.tooltip=Stronger than diamond
+tile.glazed.glass.auroric.tooltip=Supremely mystical
+
+tile.glazed.kiln.name=Glass Kiln
+tile.glazed.kiln.tooltip0=Used for processing sand into glass.
+tile.glazed.kiln.tooltip1=Catalysts control the type of glass that is made.
+
+waila.glazed.kiln.input=Input
+waila.glazed.kiln.catalyst=Catalyst
+waila.glazed.kiln.fuel=Fuel
+waila.glazed.kiln.output=Output
+
+tile.glazed.material.slag.name=Obsidian Slag
+tile.glazed.material.crystal.name=Void Crystal

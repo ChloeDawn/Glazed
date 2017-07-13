@@ -2,7 +2,7 @@
   {
     "modid": "glazed",
     "name": "Glazed",
-    "description": "",
+    "description": "A functional glass aesthetic.",
     "version": "${build_version}",
     "mcversion": "${mcf_version}",
     "url": "",

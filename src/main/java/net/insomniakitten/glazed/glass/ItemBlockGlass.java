@@ -16,11 +16,23 @@ package net.insomniakitten.glazed.glass;
  *   limitations under the License.
  */
 
+import net.insomniakitten.glazed.Glazed;
+import net.insomniakitten.glazed.Glazed.Objects;
 import net.minecraft.block.Block;
+import net.minecraft.client.resources.I18n;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
+import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 
 public class ItemBlockGlass extends ItemBlock {
 
@@ -31,16 +43,33 @@ public class ItemBlockGlass extends ItemBlock {
         setHasSubtypes(true);
     }
 
-    @Override @Nonnull
+    @Override @Nonnull @SideOnly(Side.CLIENT)
     public String getUnlocalizedName(ItemStack stack) {
         int meta = stack.getMetadata() % GlassType.values().length;
         String type = GlassType.values()[meta].getName();
         return this.getBlock().getUnlocalizedName() + "." + type;
     }
 
-    @Override
-    public int getMetadata(int damage) {
-        return damage;
+    @Override @Nonnull @SideOnly(Side.CLIENT)
+    public String getItemStackDisplayName(@Nonnull ItemStack stack) {
+        int meta = stack.getMetadata() % GlassType.values().length;
+        String type = GlassType.values()[meta].getName();
+        Set<Pair<UUID, String>> keys = Objects.SPECIALS.keySet();
+        Pair match = Pair.of(Glazed.proxy.getUUID(), type);
+        if (keys.contains(match))
+            return Objects.SPECIALS.get(match);
+        else return super.getItemStackDisplayName(stack);
     }
+
+    @Override @SideOnly(Side.CLIENT)
+    public void addInformation(@Nonnull ItemStack stack, @Nullable World worldIn,
+                               @Nonnull List<String> tooltip, @Nonnull ITooltipFlag flag) {
+        String key = stack.getUnlocalizedName() + ".tooltip";
+        if (I18n.hasKey(key)) tooltip.add(I18n.format(key));
+    }
+
+
+
+    @Override public int getMetadata(int damage) { return damage; }
 
 }

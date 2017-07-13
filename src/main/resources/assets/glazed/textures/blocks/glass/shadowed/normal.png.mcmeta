@@ -1,0 +1,8 @@
+{
+    "ctm": {
+        "ctm_version": 1,
+		"type": "CTM",
+        "layer":"TRANSLUCENT",
+		"textures": [ "glazed:blocks/glass/shadowed/normal_ctm" ]
+    }
+}

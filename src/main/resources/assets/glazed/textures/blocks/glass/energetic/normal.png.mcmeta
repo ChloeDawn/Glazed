@@ -1,0 +1,13 @@
+{
+	"animation": {
+		"frametime": 12,
+		"interpolate": true
+	},
+    "ctm": {
+        "ctm_version": 1,
+		"type": "CTM",
+        "layer":"TRANSLUCENT",
+		"textures": [ "glazed:blocks/glass/energetic/normal_ctm" ],
+        "extra": { "light": 10 }
+    }
+}
