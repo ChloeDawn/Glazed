@@ -16,6 +16,7 @@ package net.insomniakitten.glazed.kiln;
  *   limitations under the License.
  */
 
+import com.google.common.collect.ImmutableList;
 import net.insomniakitten.glazed.kiln.TileKiln.Slots;
 import net.minecraft.item.ItemStack;
 
@@ -82,6 +83,10 @@ public class RecipeHandlerKiln {
             return true;
         }
         return false;
+    }
+
+    public static ImmutableList<KilnRecipe> getRecipes() {
+        return ImmutableList.copyOf(KILN_RECIPES);
     }
 
     public static class KilnRecipe {

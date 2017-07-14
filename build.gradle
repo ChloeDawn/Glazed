@@ -42,8 +42,6 @@ minecraft {
 
     replace '%mod_version%', mod_version
     replace '%mc_version%', mc_version
-
-    useDepAts = true
 }
 
 repositories {

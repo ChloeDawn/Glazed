@@ -16,14 +16,28 @@ package net.insomniakitten.glazed.compat.jei.recipe;
  *   limitations under the License.
  */
 
+import com.google.common.collect.Lists;
 import mezz.jei.api.ingredients.IIngredients;
-import mezz.jei.api.recipe.BlankRecipeWrapper;
+import mezz.jei.api.recipe.IRecipeWrapper;
+import net.insomniakitten.glazed.compat.jei.JEICompatPlugin;
+import net.insomniakitten.glazed.kiln.RecipeHandlerKiln;
+import net.minecraft.item.ItemStack;
 
-public class KilnJEIRecipe extends BlankRecipeWrapper {
+import javax.annotation.Nonnull;
+import java.util.List;
 
-    @Override
-    public void getIngredients(IIngredients ingredients) {
+public class KilnJEIRecipe implements IRecipeWrapper {
 
+    private final RecipeHandlerKiln.KilnRecipe recipe;
+
+    public KilnJEIRecipe(RecipeHandlerKiln.KilnRecipe recipe) {
+        this.recipe = recipe;
     }
 
+    @Override
+    public void getIngredients(@Nonnull IIngredients ingredients) {
+        List<List<ItemStack>> inputs = JEICompatPlugin.helpers.getStackHelper().expandRecipeItemStackInputs(Lists.newArrayList(recipe.getInput(), recipe.getCatalyst()));
+        ingredients.setInputLists(ItemStack.class, inputs);
+        ingredients.setOutput(ItemStack.class, recipe.getOutput());
+    }
 }
