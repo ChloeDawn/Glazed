@@ -107,23 +107,29 @@ public class TileKiln extends TileEntity implements ITickable {
     @Override
     public void update() {
         if (!Slots.getSlot(this, Slots.INPUT).isEmpty()) {
-            ItemStack input = Slots.getSlot(this, Slots.INPUT);
-            ItemStack catalyst = Slots.getSlot(this, Slots.CATALYST);
-            if (RecipeHandlerKiln.getRecipe(input, catalyst) != null) {
-                // do the smelting thing
+
+            ItemStack   input = Slots.getSlot(this, Slots.INPUT),
+                        catalyst = Slots.getSlot(this, Slots.CATALYST),
+                        output = Slots.getSlot(this, Slots.OUTPUT);
+
+            if (RecipesKiln.getRecipe(input, catalyst) != null) {
+                isActive = RecipesKiln.trySmelt(this, input, catalyst);
             }
+
+            if (!RecipesKiln.getOutput(input, catalyst).isItemEqual(output)
+                    || output.getCount() == output.getMaxStackSize())
+                isActive = false;
+
+            this.markDirty();
         }
     }
 
     public enum Slots {
 
-        INPUT(34, 17),
-        CATALYST(56, 17),
-        FUEL(45, 53),
-        OUTPUT(116, 35);
+        INPUT(34, 17), CATALYST(56, 17),
+        FUEL(45, 53), OUTPUT(116, 35);
 
-        private final int x;
-        private final int y;
+        private final int x, y;
 
         Slots(int x, int y) {
             this.x = x;
@@ -133,16 +139,16 @@ public class TileKiln extends TileEntity implements ITickable {
         public int getX() { return x; }
         public int getY() { return y; }
 
-        public String getName() {
-            return name().toLowerCase(Locale.ENGLISH);
-        }
+        public String getName() { return name().toLowerCase(Locale.ENGLISH); }
 
         public static ItemStack getSlot(TileKiln tile, Slots slot){
-            return tile.ITEMS.getStackInSlot(slot.ordinal());
+            return tile.ITEMS.getStackInSlot(
+                    slot.ordinal());
         }
 
         public static void setSlot(TileKiln tile, Slots slot, ItemStack stack) {
-            tile.ITEMS.setStackInSlot(slot.ordinal(), stack);
+            tile.ITEMS.setStackInSlot(
+                    slot.ordinal(), stack);
         }
 
     }

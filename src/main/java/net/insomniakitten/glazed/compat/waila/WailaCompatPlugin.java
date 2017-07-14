@@ -1,4 +1,4 @@
-package net.insomniakitten.glazed.compat.hwyla;
+package net.insomniakitten.glazed.compat.waila;
 
 /*
  *  Copyright 2017 InsomniaKitten
@@ -20,8 +20,8 @@ import mcp.mobius.waila.api.IWailaPlugin;
 import mcp.mobius.waila.api.IWailaRegistrar;
 import mcp.mobius.waila.api.WailaPlugin;
 import net.insomniakitten.glazed.Glazed;
-import net.insomniakitten.glazed.compat.hwyla.provider.GlassDataProvider;
-import net.insomniakitten.glazed.compat.hwyla.provider.KilnDataProvider;
+import net.insomniakitten.glazed.compat.waila.provider.GlassDataProvider;
+import net.insomniakitten.glazed.compat.waila.provider.KilnDataProvider;
 import net.insomniakitten.glazed.glass.BlockGlass;
 import net.insomniakitten.glazed.kiln.BlockKiln;
 

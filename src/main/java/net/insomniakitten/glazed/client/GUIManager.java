@@ -25,7 +25,7 @@ import net.minecraftforge.fml.common.network.IGuiHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class GuiHandler implements IGuiHandler {
+public class GUIManager implements IGuiHandler {
 
     @Override
     public Object getServerGuiElement(

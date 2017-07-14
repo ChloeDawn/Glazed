@@ -16,14 +16,17 @@ package net.insomniakitten.glazed;
  *   limitations under the License.
  */
 
-import net.insomniakitten.glazed.client.GuiHandler;
+import net.insomniakitten.glazed.client.GUIManager;
 import net.insomniakitten.glazed.glass.BlockGlass;
 import net.insomniakitten.glazed.glass.ItemBlockGlass;
 import net.insomniakitten.glazed.kiln.BlockKiln;
 import net.insomniakitten.glazed.kiln.ItemBlockKiln;
+import net.insomniakitten.glazed.kiln.RecipesKiln;
 import net.insomniakitten.glazed.material.BlockMaterial;
 import net.insomniakitten.glazed.material.ItemBlockMaterial;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
@@ -72,9 +75,26 @@ public class Glazed {
     @Mod.EventHandler
     public void onPostInit(FMLPostInitializationEvent event) {
         NetworkRegistry.INSTANCE.registerGuiHandler(
-                Glazed.MOD_ID, new GuiHandler());
+                Glazed.MOD_ID, new GUIManager());
         proxy.registerColorHandler();
         proxy.parseSpecials();
+
+        RecipesKiln.addKilnRecipe(
+                new ItemStack(Blocks.SAND),
+                new ItemStack(Items.REDSTONE),
+                new ItemStack(Objects.BGLASS, 1, 3));
+
+        RecipesKiln.addKilnRecipe(
+                new ItemStack(Blocks.SAND),
+                ItemStack.EMPTY, // TODO: Figure out why this isn't working
+                new ItemStack(Blocks.GLASS));
+        // Also don't actually add this recipe, it makes everything else a nightmare to process
+        // Probably should make catalyst required (non-empty)
+
+        RecipesKiln.addKilnRecipe(
+                new ItemStack(Blocks.SAND),
+                new ItemStack(Blocks.SAND),
+                new ItemStack(Blocks.GLASS, 2));
     }
 
     public static class ProxyWrapper {
@@ -88,7 +108,7 @@ public class Glazed {
         TabGlazed() { super(Glazed.MOD_ID); }
         @Override @Nonnull
         public ItemStack getTabIconItem() {
-            return new ItemStack(Objects.IGLASS, 1, 3);
+            return new ItemStack(Objects.BKILN);
         }
     }
 

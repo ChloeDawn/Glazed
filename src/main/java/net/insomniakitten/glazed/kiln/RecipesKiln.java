@@ -25,7 +25,7 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RecipeHandlerKiln {
+public class RecipesKiln {
 
     private static final List<KilnRecipe> KILN_RECIPES = new ArrayList<KilnRecipe>();
 
@@ -72,28 +72,25 @@ public class RecipeHandlerKiln {
             @Nonnull ItemStack input,
             @Nonnull ItemStack catalyst) {
         KilnRecipe recipe = getRecipe(input, catalyst);
+        if (recipe == null) return false;
         ItemStack output = Slots.getSlot(tile, Slots.OUTPUT);
-
-        if (recipe == null)
+        if (!output.isEmpty() && !output.isItemEqual(recipe.getOutput()))
             return false;
 
-        if (output.isEmpty()) {
-            Slots.setSlot(tile, TileKiln.Slots.OUTPUT,
-                    recipe.getOutput().copy());
-        } else if (output.isItemEqual(recipe.getOutput())
-                && output.getCount() < output.getMaxStackSize()) {
+        if (output.getCount() < output.getMaxStackSize()) {
             input.shrink(recipe.getInput().getCount());
             catalyst.shrink(recipe.getCatalyst().getCount());
-            output.grow(recipe.getOutput().getCount());
-        } else
-            return false;
+            if (output.isEmpty()) Slots.setSlot(
+                    tile, TileKiln.Slots.OUTPUT,
+                    recipe.getOutput().copy());
+            else output.grow(recipe.getOutput().getCount());
+        } else return false;
 
         return true;
     }
 
     public static ImmutableList<KilnRecipe> getRecipes() {
-        return ImmutableList
-                .copyOf(KILN_RECIPES);
+        return ImmutableList.copyOf(KILN_RECIPES);
     }
 
     public static class KilnRecipe {
@@ -106,10 +103,10 @@ public class RecipeHandlerKiln {
                 @Nonnull ItemStack input,
                 @Nonnull ItemStack catalyst,
                 @Nonnull ItemStack output) {
-            if (input.isEmpty()) throw new IllegalArgumentException(
-                            "Kiln recipe cannot have an empty input!");
-            if (output.isEmpty()) throw new IllegalArgumentException(
-                            "Kiln recipe cannot have an empty output!");
+            if (input.isEmpty() || output.isEmpty()) {
+                throw new IllegalArgumentException(
+                        "Kiln recipe cannot have an empty ingredient!");
+            }
 
             this.input = input;
             this.catalyst = catalyst;

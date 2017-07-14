@@ -1,4 +1,4 @@
-package net.insomniakitten.glazed.compat.hwyla.provider;
+package net.insomniakitten.glazed.compat.waila.provider;
 
 /*
  *  Copyright 2017 InsomniaKitten
@@ -19,15 +19,20 @@ package net.insomniakitten.glazed.compat.hwyla.provider;
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
 import mcp.mobius.waila.api.IWailaDataProvider;
+import net.insomniakitten.glazed.kiln.BlockKiln;
+import net.insomniakitten.glazed.kiln.TileKiln;
+import net.insomniakitten.glazed.kiln.TileKiln.Slots;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
 import java.util.List;
 
-public class GlassDataProvider implements IWailaDataProvider {
+public class KilnDataProvider implements IWailaDataProvider {
 
     @Override @Nonnull @SideOnly(Side.CLIENT)
     public List<String> getWailaBody(
@@ -35,10 +40,22 @@ public class GlassDataProvider implements IWailaDataProvider {
             List<String> tooltip,
             IWailaDataAccessor accessor,
             IWailaConfigHandler config) {
-        String key = stack.getUnlocalizedName() + ".tooltip";
-        if (I18n.hasKey(key))
-            tooltip.add(I18n.format(key));
+
+        boolean isUpper = BlockKiln.isUpper(accessor.getBlockState());
+        BlockPos tilePos = isUpper ? accessor.getPosition().down() : accessor.getPosition();
+        TileEntity tile = accessor.getWorld().getTileEntity(tilePos);
+
+        if (tile == null) return tooltip;
+
+        for (Slots slot : Slots.values()) {
+            ItemStack item  = Slots.getSlot((TileKiln) tile, slot);
+            if (!item.isEmpty()) {
+                String label = I18n.format("waila.glazed.kiln." + slot.getName()) + ": ";
+                String multiplier = " x " + item.getCount();
+                tooltip.add(label + item.getDisplayName() + multiplier);
+            }
+        }
+
         return tooltip;
     }
-
 }

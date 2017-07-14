@@ -118,10 +118,13 @@ public class BlockKiln extends Block {
                 8 : 0;
     }
 
-    @Override
+    @Override @Nonnull
     public ItemStack getPickBlock(
-            IBlockState state, RayTraceResult target, World world,
-            BlockPos pos, EntityPlayer player) {
+            @Nonnull IBlockState state,
+            RayTraceResult target,
+            @Nonnull World world,
+            @Nonnull BlockPos pos,
+            EntityPlayer player) {
         return new ItemStack(this);
     }
 
@@ -150,7 +153,6 @@ public class BlockKiln extends Block {
             @Nonnull BlockPos pos) {
         boolean canPlaceLower = world.getBlockState(pos)
                 .getBlock().isReplaceable(world, pos);
-
         boolean canPlaceUpper = world.getBlockState(pos.up())
                 .getBlock().isReplaceable(world, pos.up());
 
@@ -211,7 +213,8 @@ public class BlockKiln extends Block {
     }
 
     @Override
-    public boolean hasTileEntity(IBlockState state) {
+    public boolean hasTileEntity(
+            IBlockState state) {
         return state.getValue(HALF)
                 .equals(KilnHalf.LOWER);
     }
@@ -242,7 +245,8 @@ public class BlockKiln extends Block {
         else return state.withProperty(ACTIVE, tile.isActive);
     }
 
-    public static boolean isUpper(IBlockState state) {
+    public static boolean isUpper(
+            IBlockState state) {
         return state.getValue(HALF)
                 .equals(KilnHalf.UPPER);
     }

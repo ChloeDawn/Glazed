@@ -22,7 +22,7 @@ import net.insomniakitten.glazed.Glazed;
 import net.insomniakitten.glazed.compat.jei.recipe.KilnJEICategory;
 import net.insomniakitten.glazed.compat.jei.recipe.KilnJEIRecipe;
 import net.insomniakitten.glazed.kiln.GuiKiln;
-import net.insomniakitten.glazed.kiln.RecipeHandlerKiln;
+import net.insomniakitten.glazed.kiln.RecipesKiln;
 import net.minecraft.item.ItemStack;
 
 import javax.annotation.Nonnull;
@@ -37,11 +37,11 @@ public class JEICompatPlugin implements IModPlugin {
         helpers = registry.getJeiHelpers();
 
         registry.addRecipes(
-                RecipeHandlerKiln.getRecipes(),
+                RecipesKiln.getRecipes(),
                 KilnJEICategory.ID);
 
         registry.handleRecipes(
-                RecipeHandlerKiln.KilnRecipe.class,
+                RecipesKiln.KilnRecipe.class,
                 KilnJEIRecipe::new,
                 KilnJEICategory.ID);
 
