@@ -54,7 +54,7 @@ public class Glazed {
     public static final String MC_VERSION = "%mc_version%";
     public static final String DEPS = "required-after:forge@[14.21.1.2387,)";
 
-    public static final String CPROXY = "net.insomniakitten.glazed.Glazed$ClientWrapper";
+    public static final String CPROXY = "net.insomniakitten.glazed.client.ClientWrapper";
     public static final String SPROXY = "net.insomniakitten.glazed.Glazed$ProxyWrapper";
 
     public static final Logger LOGGER = LogManager.getLogger(MOD_NAME);
