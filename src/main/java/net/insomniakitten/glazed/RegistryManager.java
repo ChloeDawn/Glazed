@@ -16,6 +16,7 @@ package net.insomniakitten.glazed;
  *   limitations under the License.
  */
 
+import net.insomniakitten.glazed.Glazed.Objects;
 import net.insomniakitten.glazed.glass.GlassType;
 import net.insomniakitten.glazed.kiln.TileKiln;
 import net.insomniakitten.glazed.material.MaterialType;
@@ -26,7 +27,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.client.model.obj.OBJLoader;
-import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.event.RegistryEvent.Register;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
@@ -41,19 +42,19 @@ public class RegistryManager {
     private static class ObjectRegistry {
 
         @SubscribeEvent
-        public static void onBlockRegistry(RegistryEvent.Register<Block> event) {
-            event.getRegistry().register(Glazed.Objects.BGLASS);
-            event.getRegistry().register(Glazed.Objects.BKILN);
-            String name = Glazed.Objects.BKILN.getRegistryName().toString();
+        public static void onBlockRegistry(Register<Block> event) {
+            event.getRegistry().register(Objects.BGLASS);
+            event.getRegistry().register(Objects.BKILN);
+            String name = Objects.BKILN.getRegistryName().toString();
             GameRegistry.registerTileEntity(TileKiln.class, name);
-            event.getRegistry().register(Glazed.Objects.BMATERIAL);
+            event.getRegistry().register(Objects.BMATERIAL);
         }
 
         @SubscribeEvent
-        public static void onItemRegistry(RegistryEvent.Register<Item> event) {
-            event.getRegistry().register(Glazed.Objects.IGLASS);
-            event.getRegistry().register(Glazed.Objects.IKILN);
-            event.getRegistry().register(Glazed.Objects.IMATERIAL);
+        public static void onItemRegistry(Register<Item> event) {
+            event.getRegistry().register(Objects.IGLASS);
+            event.getRegistry().register(Objects.IKILN);
+            event.getRegistry().register(Objects.IMATERIAL);
         }
 
     }
@@ -66,24 +67,24 @@ public class RegistryManager {
         @SideOnly(Side.CLIENT)
         public static void onModelRegistry(ModelRegistryEvent event) {
             Glazed.LOGGER.info("ModelRegistryEvent");
-            ResourceLocation glass = Glazed.Objects.BGLASS.getRegistryName();
-            ResourceLocation kiln = Glazed.Objects.BKILN.getRegistryName();
-            ResourceLocation material = Glazed.Objects.BMATERIAL.getRegistryName();
+            ResourceLocation glass = Objects.BGLASS.getRegistryName();
+            ResourceLocation kiln = Objects.BKILN.getRegistryName();
+            ResourceLocation material = Objects.BMATERIAL.getRegistryName();
 
             OBJLoader.INSTANCE.addDomain(Glazed.MOD_ID);
 
             for (int i = 0; i < GlassType.values().length; ++i) {
                 String type = GlassType.values()[i].getName();
-                ModelLoader.setCustomModelResourceLocation(Glazed.Objects.IGLASS, i,
+                ModelLoader.setCustomModelResourceLocation(Objects.IGLASS, i,
                         new ModelResourceLocation(glass, "type=" + type));
             }
 
-            ModelLoader.setCustomModelResourceLocation(Glazed.Objects.IKILN, 0,
+            ModelLoader.setCustomModelResourceLocation(Objects.IKILN, 0,
                     new ModelResourceLocation(kiln, "inventory"));
 
             for (int i = 0; i < MaterialType.values().length; ++i) {
                 String type = MaterialType.values()[i].getName();
-                ModelLoader.setCustomModelResourceLocation(Glazed.Objects.IMATERIAL, i,
+                ModelLoader.setCustomModelResourceLocation(Objects.IMATERIAL, i,
                         new ModelResourceLocation(material, "type=" + type));
             }
         }
