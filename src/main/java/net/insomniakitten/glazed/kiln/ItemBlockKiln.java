@@ -39,10 +39,14 @@ public class ItemBlockKiln extends ItemBlock {
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void addInformation(@Nonnull ItemStack stack, @Nullable World worldIn,
-                               @Nonnull List<String> tooltip, @Nonnull ITooltipFlag flag) {
-        tooltip.add(I18n.format(stack.getUnlocalizedName() + ".tooltip0"));
-        tooltip.add(I18n.format(stack.getUnlocalizedName() + ".tooltip1"));
+    public void addInformation(
+            @Nonnull ItemStack stack,
+            @Nullable World worldIn,
+            @Nonnull List<String> tooltip,
+            @Nonnull ITooltipFlag flag) {
+        String unloc = stack.getUnlocalizedName();
+        tooltip.add(I18n.format(unloc + ".tooltip0"));
+        tooltip.add(I18n.format(unloc + ".tooltip1"));
     }
 
 }

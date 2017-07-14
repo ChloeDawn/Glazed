@@ -30,14 +30,16 @@ public class KilnJEIRecipe implements IRecipeWrapper {
 
     private final RecipeHandlerKiln.KilnRecipe recipe;
 
-    public KilnJEIRecipe(RecipeHandlerKiln.KilnRecipe recipe) {
-        this.recipe = recipe;
-    }
+    public KilnJEIRecipe(RecipeHandlerKiln.KilnRecipe recipe) { this.recipe = recipe; }
 
     @Override
     public void getIngredients(@Nonnull IIngredients ingredients) {
-        List<List<ItemStack>> inputs = JEICompatPlugin.helpers.getStackHelper().expandRecipeItemStackInputs(Lists.newArrayList(recipe.getInput(), recipe.getCatalyst()));
-        ingredients.setInputLists(ItemStack.class, inputs);
-        ingredients.setOutput(ItemStack.class, recipe.getOutput());
+        List<List<ItemStack>> inputs = JEICompatPlugin.helpers.getStackHelper()
+                .expandRecipeItemStackInputs(Lists.newArrayList(
+                        recipe.getInput(), recipe.getCatalyst()));
+        ingredients.setInputLists(
+                ItemStack.class, inputs);
+        ingredients.setOutput(
+                ItemStack.class, recipe.getOutput());
     }
 }

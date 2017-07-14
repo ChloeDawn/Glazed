@@ -30,8 +30,10 @@ public class WailaCompatPlugin implements IWailaPlugin {
 
     @Override
     public void register(IWailaRegistrar registrar) {
-        registrar.registerBodyProvider(new GlassDataProvider(), BlockGlass.class);
-        registrar.registerBodyProvider(new KilnDataProvider(), BlockKiln.class);
+        registrar.registerBodyProvider(
+                new GlassDataProvider(), BlockGlass.class);
+        registrar.registerBodyProvider(
+                new KilnDataProvider(), BlockKiln.class);
     }
 
 }

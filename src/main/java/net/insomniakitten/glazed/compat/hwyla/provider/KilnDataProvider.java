@@ -35,7 +35,11 @@ import java.util.List;
 public class KilnDataProvider implements IWailaDataProvider {
 
     @Override @Nonnull @SideOnly(Side.CLIENT)
-    public List<String> getWailaBody(ItemStack stack, List<String> tooltip, IWailaDataAccessor accessor, IWailaConfigHandler config) {
+    public List<String> getWailaBody(
+            ItemStack stack,
+            List<String> tooltip,
+            IWailaDataAccessor accessor,
+            IWailaConfigHandler config) {
 
         boolean isUpper = BlockKiln.isUpper(accessor.getBlockState());
         BlockPos tilePos = isUpper ? accessor.getPosition().down() : accessor.getPosition();

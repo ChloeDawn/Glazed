@@ -22,8 +22,6 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
 
@@ -35,33 +33,43 @@ public class ContainerKiln extends Container {
     private IItemHandler inventory;
 
     public ContainerKiln(TileEntity tile, EntityPlayer player) {
-        Capability<IItemHandler> items = CapabilityItemHandler.ITEM_HANDLER_CAPABILITY;
         this.player = player;
-        inventory = tile.hasCapability(items, null) ?
-                tile.getCapability(items, null) : null;
+        inventory = tile.hasCapability(TileKiln.CAPABILITY, null) ?
+                tile.getCapability(TileKiln.CAPABILITY, null) : null;
         this.createKilnSlots();
         this.createPlayerSlots();
     }
 
     private void createPlayerSlots() {
-        for (int i = 0; i < 3; i++)
+        for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 9; j++) {
                 int itemsX = (j * 18), itemsY = (i * 18);
                 int index = j + i * 9 + 9;
-                addSlotToContainer(new net.minecraft.inventory.Slot(
-                        player.inventory, index, 8 + itemsX, 8 + itemsY + 22 + (3 * 18)));
+                addSlotToContainer(new Slot(
+                        player.inventory, index,
+                        8 + itemsX,
+                        8 + itemsY + 22 + (3 * 18))
+                );
             }
-        for (int k = 0; k < 9; k++) {
-            int itemsX = (k * 18);
-            addSlotToContainer(new net.minecraft.inventory.Slot(
-                    player.inventory, k, 8 + itemsX, 8 + 58 + 22 + (3 * 18)));
+        }
+
+        for (int index = 0; index < 9; index++) {
+            int itemsX = (index * 18);
+            addSlotToContainer(new Slot(
+                    player.inventory, index,
+                    8 + itemsX,
+                    8 + 58 + 22 + (3 * 18)))
+            ;
         }
     }
 
     private void createKilnSlots() {
         for (Slots slot : Slots.values()) {
-            int index = slot.ordinal(), x = slot.getX(), y = slot.getY();
-            this.addSlotToContainer(new SlotItemHandler(inventory, index, x, y));
+            int index = slot.ordinal(),
+                    x = slot.getX(),
+                    y = slot.getY();
+            this.addSlotToContainer(new SlotItemHandler(
+                            inventory, index, x, y));
         }
     }
 
@@ -71,7 +79,6 @@ public class ContainerKiln extends Container {
         ItemStack stack = holder.getStack();
 
         if (holder.getHasStack()) {
-
             int kilnSlots = 3, inventorySlots = 28;
             int hotbarIndex = kilnSlots + inventorySlots;
             int playerSlots = hotbarIndex + 9;
@@ -88,7 +95,9 @@ public class ContainerKiln extends Container {
 
             holder.onSlotChanged();
 
-            if (stack.isEmpty()) holder.putStack(ItemStack.EMPTY);
+            if (stack.isEmpty())
+                holder.putStack(ItemStack.EMPTY);
+
             else if (stack.getCount() == holder.getStack().getCount())
                 return ItemStack.EMPTY;
 
@@ -96,7 +105,6 @@ public class ContainerKiln extends Container {
 
             return stack;
         }
-
 
         return ItemStack.EMPTY;
     }

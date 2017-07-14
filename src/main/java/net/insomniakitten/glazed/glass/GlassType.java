@@ -45,8 +45,15 @@ public enum GlassType implements IStringSerializable {
     private final boolean isPowered;
     private final boolean dropsItem;
 
-    GlassType(float hardness, float resistance, int lightLevel,
-              SoundType soundType, BlockRenderLayer layer, boolean isOpaque, boolean isPowered, boolean dropsItem) {
+    GlassType(
+            float hardness,
+            float resistance,
+            int lightLevel,
+            SoundType soundType,
+            BlockRenderLayer layer,
+            boolean isOpaque,
+            boolean isPowered,
+            boolean dropsItem) {
         this.hardness = hardness;
         this.resistance = resistance;
         this.lightLevel = lightLevel;
@@ -58,14 +65,9 @@ public enum GlassType implements IStringSerializable {
     }
 
     private static final PropertyEnum<GlassType> PROPERTY = PropertyEnum.create("type", GlassType.class);
-    public static PropertyEnum<GlassType> getProperty() {
-        return PROPERTY;
-    }
+    public static PropertyEnum<GlassType> getProperty() { return PROPERTY; }
 
-    public static GlassType getType(IBlockState state) {
-        return state.getValue(PROPERTY);
-    }
-
+    public static GlassType getType(IBlockState state) { return state.getValue(PROPERTY); }
     public static GlassType getType(int meta) {
         if (meta >= values().length || meta < 0) return values()[0];
         return values()[meta];

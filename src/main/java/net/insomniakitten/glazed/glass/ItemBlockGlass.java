@@ -44,31 +44,36 @@ public class ItemBlockGlass extends ItemBlock {
     }
 
     @Override @Nonnull @SideOnly(Side.CLIENT)
-    public String getUnlocalizedName(ItemStack stack) {
+    public String getUnlocalizedName(
+            @Nonnull ItemStack stack) {
         int meta = stack.getMetadata() % GlassType.values().length;
         String type = GlassType.values()[meta].getName();
         return this.getBlock().getUnlocalizedName() + "." + type;
     }
 
     @Override @Nonnull @SideOnly(Side.CLIENT)
-    public String getItemStackDisplayName(@Nonnull ItemStack stack) {
+    public String getItemStackDisplayName(
+            @Nonnull ItemStack stack) {
         int meta = stack.getMetadata() % GlassType.values().length;
         String type = GlassType.values()[meta].getName();
+
         Set<Pair<UUID, String>> keys = Objects.SPECIALS.keySet();
         Pair match = Pair.of(Glazed.proxy.getUUID(), type);
+
         if (keys.contains(match))
             return Objects.SPECIALS.get(match);
         else return super.getItemStackDisplayName(stack);
     }
 
     @Override @SideOnly(Side.CLIENT)
-    public void addInformation(@Nonnull ItemStack stack, @Nullable World worldIn,
-                               @Nonnull List<String> tooltip, @Nonnull ITooltipFlag flag) {
+    public void addInformation(
+            @Nonnull ItemStack stack,
+            @Nullable World worldIn,
+            @Nonnull List<String> tooltip,
+            @Nonnull ITooltipFlag flag) {
         String key = stack.getUnlocalizedName() + ".tooltip";
         if (I18n.hasKey(key)) tooltip.add(I18n.format(key));
     }
-
-
 
     @Override public int getMetadata(int damage) { return damage; }
 

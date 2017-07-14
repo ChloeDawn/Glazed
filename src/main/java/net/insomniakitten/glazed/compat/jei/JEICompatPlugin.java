@@ -35,14 +35,29 @@ public class JEICompatPlugin implements IModPlugin {
     @Override
     public void register(@Nonnull IModRegistry registry) {
         helpers = registry.getJeiHelpers();
-        registry.addRecipes(RecipeHandlerKiln.getRecipes(), KilnJEICategory.ID);
-        registry.handleRecipes(RecipeHandlerKiln.KilnRecipe.class, KilnJEIRecipe::new, KilnJEICategory.ID);
-        registry.addRecipeCatalyst(new ItemStack(Glazed.Objects.BKILN), KilnJEICategory.ID);
-        registry.addRecipeClickArea(GuiKiln.class, 80, 35, 21, 14, KilnJEICategory.ID);
+
+        registry.addRecipes(
+                RecipeHandlerKiln.getRecipes(),
+                KilnJEICategory.ID);
+
+        registry.handleRecipes(
+                RecipeHandlerKiln.KilnRecipe.class,
+                KilnJEIRecipe::new,
+                KilnJEICategory.ID);
+
+        registry.addRecipeCatalyst(
+                new ItemStack(Glazed.Objects.BKILN),
+                KilnJEICategory.ID);
+
+        registry.addRecipeClickArea(
+                GuiKiln.class,
+                80, 35, 21, 14,
+                KilnJEICategory.ID);
     }
 
     @Override
     public void registerCategories(@Nonnull IRecipeCategoryRegistration registry) {
-        registry.addRecipeCategories(new KilnJEICategory(registry.getJeiHelpers().getGuiHelper()));
+        registry.addRecipeCategories(new KilnJEICategory(
+                registry.getJeiHelpers().getGuiHelper()));
     }
 }

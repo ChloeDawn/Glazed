@@ -40,44 +40,33 @@ public class KilnJEICategory implements IRecipeCategory<KilnJEIRecipe> {
     private final String displayName;
 
     public KilnJEICategory(IGuiHelper guiHelper) {
-        ResourceLocation backgroundLoc = new ResourceLocation("glazed", "textures/gui/kiln.png");
-        this.background = guiHelper.createDrawable(backgroundLoc, 33, 16, 110, 54);
-
-        IDrawableStatic flameDrawable = guiHelper.createDrawable(backgroundLoc, 176, 0, 14, 14);
-        this.flame = guiHelper.createAnimatedDrawable(flameDrawable, 300, IDrawableAnimated.StartDirection.TOP, true);
-
-        IDrawableStatic arrowDrawable = guiHelper.createDrawable(backgroundLoc, 176, 14, 24, 17);
-        this.arrow = guiHelper.createAnimatedDrawable(arrowDrawable, 200, IDrawableAnimated.StartDirection.LEFT, false);
+        final ResourceLocation KILN_GUI = new ResourceLocation(
+                Glazed.MOD_ID, "textures/gui/kiln.png");
+        final IDrawableStatic flameDrawable = guiHelper.createDrawable(
+                KILN_GUI, 176, 0, 14, 14);
+        final IDrawableStatic arrowDrawable = guiHelper.createDrawable(
+                KILN_GUI, 176, 14, 24, 17);
 
         this.displayName = I18n.format("tile.glazed.kiln.name");
+
+        this.background = guiHelper.createDrawable(
+                KILN_GUI, 33, 16, 110, 54);
+        this.flame = guiHelper.createAnimatedDrawable(
+                flameDrawable, 300, IDrawableAnimated.StartDirection.TOP, true);
+        this.arrow = guiHelper.createAnimatedDrawable(
+                arrowDrawable, 200, IDrawableAnimated.StartDirection.LEFT, false);
     }
 
-    @Nonnull
-    @Override
-    public String getUid() {
-        return ID;
-    }
-
-    @Nonnull
-    @Override
-    public String getTitle() {
-        return displayName;
-    }
-
-    @Nonnull
-    @Override
-    public String getModName() {
-        return Glazed.MOD_NAME;
-    }
-
-    @Nonnull
-    @Override
-    public IDrawable getBackground() {
-        return background;
-    }
+    @Override @Nonnull public String getUid() { return ID; }
+    @Override @Nonnull public String getTitle() { return displayName; }
+    @Override @Nonnull public String getModName() { return Glazed.MOD_NAME; }
+    @Override @Nonnull public IDrawable getBackground() { return background; }
 
     @Override
-    public void setRecipe(@Nonnull IRecipeLayout recipeLayout, @Nonnull KilnJEIRecipe recipeWrapper, @Nonnull IIngredients ingredients) {
+    public void setRecipe(
+            @Nonnull IRecipeLayout recipeLayout,
+            @Nonnull KilnJEIRecipe recipeWrapper,
+            @Nonnull IIngredients ingredients) {
         IGuiItemStackGroup guiItemStacks = recipeLayout.getItemStacks();
 
         guiItemStacks.init(INPUT_SLOT, true, 0, 0);

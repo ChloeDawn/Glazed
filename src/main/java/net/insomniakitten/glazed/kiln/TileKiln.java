@@ -24,6 +24,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.oredict.OreDictionary;
 
@@ -35,47 +36,54 @@ public class TileKiln extends TileEntity implements ITickable {
 
 
     public boolean isActive = false;
+    private int progress = 0;
+
+    public static final Capability<IItemHandler> CAPABILITY =
+            CapabilityItemHandler.ITEM_HANDLER_CAPABILITY;
+
     private ItemStackHandler ITEMS = new ItemStackHandler(4) {
 
         @Override
-        protected int getStackLimit(int slot, @Nonnull ItemStack stack) {
-            switch (slot) {
-                case 0: // input
-                    return isSand(stack) ? super.getStackLimit(slot, stack) : 0;
-                case 2: // fuel
-                    return TileEntityFurnace.getItemBurnTime(stack) > 0 ?
-                            super.getStackLimit(slot, stack) : 0;
-                case 3: // output
-                    return 0;
+        protected int getStackLimit(int index, @Nonnull ItemStack stack) {
+            switch (index) {
+                case 0: return isSand(stack) ?
+                            super.getStackLimit(index, stack) : 0;
+
+                case 2: return TileEntityFurnace.getItemBurnTime(stack) > 0 ?
+                            super.getStackLimit(index, stack) : 0;
+
+                case 3: return 0;
             }
-            return super.getStackLimit(slot, stack);
+            return super.getStackLimit(index, stack);
         }
 
         private boolean isSand(ItemStack stack) {
             int[] ids = OreDictionary.getOreIDs(stack);
             int sand = OreDictionary.getOreID("sand");
-            for (int id : ids)
+            for (int id : ids) {
                 if (id == sand)
                     return true;
+            }
             return false;
         }
 
     };
-    private int progress = 0;
 
-    public int getProgress() {
-        return progress;
-    }
+    public int getProgress() { return progress; }
 
     @Override
-    public boolean hasCapability(@Nonnull Capability<?> capability, @Nullable EnumFacing facing) {
-        return capability.equals(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+    public boolean hasCapability(
+            @Nonnull Capability<?> capability,
+            @Nullable EnumFacing facing) {
+        return capability.equals(CAPABILITY)
                 || super.hasCapability(capability, facing);
     }
 
     @Override @Nullable @SuppressWarnings("unchecked")
-    public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing) {
-        if (capability.equals(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY))
+    public <T> T getCapability(
+            @Nonnull Capability<T> capability,
+            @Nullable EnumFacing facing) {
+        if (capability.equals(CAPABILITY))
             return (T) this.ITEMS;
         return super.getCapability(capability, facing);
     }
@@ -84,7 +92,8 @@ public class TileKiln extends TileEntity implements ITickable {
     public final void readFromNBT(NBTTagCompound nbt) {
         super.readFromNBT(nbt);
         this.ITEMS.deserializeNBT(nbt.getCompoundTag("contents"));
-        this.progress = nbt.hasKey("progress") ? nbt.getInteger("progress") : 0;
+        this.progress = nbt.hasKey("progress") ?
+                nbt.getInteger("progress") : 0;
     }
 
     @Override @Nonnull
@@ -97,7 +106,6 @@ public class TileKiln extends TileEntity implements ITickable {
 
     @Override
     public void update() {
-
         if (!Slots.getSlot(this, Slots.INPUT).isEmpty()) {
             ItemStack input = Slots.getSlot(this, Slots.INPUT);
             ItemStack catalyst = Slots.getSlot(this, Slots.CATALYST);

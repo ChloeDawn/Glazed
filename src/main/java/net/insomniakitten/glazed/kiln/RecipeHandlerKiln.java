@@ -41,7 +41,8 @@ public class RecipeHandlerKiln {
             @Nonnull ItemStack input,
             @Nonnull ItemStack catalyst,
             @Nonnull ItemStack output) {
-        return KILN_RECIPES.add(new KilnRecipe(input, catalyst, output));
+        return KILN_RECIPES.add(
+                new KilnRecipe(input, catalyst, output));
     }
 
     @Nullable
@@ -71,22 +72,32 @@ public class RecipeHandlerKiln {
             @Nonnull ItemStack input,
             @Nonnull ItemStack catalyst) {
         KilnRecipe recipe = getRecipe(input, catalyst);
-        if (recipe != null) {
-            input.shrink(recipe.getInput().getCount());
-            catalyst.shrink(recipe.getCatalyst().getCount());
-            ItemStack tileOutput = Slots.getSlot(tile, Slots.OUTPUT);
-            if (tileOutput.isEmpty()) Slots.setSlot(tile, TileKiln.Slots.OUTPUT, recipe.getOutput().copy());
-            else if (tileOutput.isItemEqual(recipe.getOutput())
-                    && tileOutput.getMaxStackSize() <= (tileOutput.getCount() + recipe.getOutput().getCount()))
-                tileOutput.grow(recipe.getOutput().getCount());
-            else return false;
-            return true;
-        }
-        return false;
+        ItemStack output = Slots.getSlot(tile, Slots.OUTPUT);
+
+        if (recipe == null)
+            return false;
+
+        input.shrink(recipe.getInput().getCount());
+        catalyst.shrink(recipe.getCatalyst().getCount());
+
+        if (output.isEmpty())
+            Slots.setSlot(tile, TileKiln.Slots.OUTPUT,
+                    recipe.getOutput().copy());
+
+        else if (output.isItemEqual(recipe.getOutput())
+                && output.getMaxStackSize()
+                <= (output.getCount()
+                + recipe.getOutput().getCount())) {
+            output.grow(recipe.getOutput().getCount());
+        } else
+            return false;
+
+        return true;
     }
 
     public static ImmutableList<KilnRecipe> getRecipes() {
-        return ImmutableList.copyOf(KILN_RECIPES);
+        return ImmutableList
+                .copyOf(KILN_RECIPES);
     }
 
     public static class KilnRecipe {
@@ -99,8 +110,11 @@ public class RecipeHandlerKiln {
                 @Nonnull ItemStack input,
                 @Nonnull ItemStack catalyst,
                 @Nonnull ItemStack output) {
-            if (input.isEmpty()) throw new IllegalArgumentException("Kiln recipe cannot have an empty input!");
-            if (output.isEmpty()) throw new IllegalArgumentException("Kiln recipe cannot have an empty output!");
+            if (input.isEmpty()) throw new IllegalArgumentException(
+                            "Kiln recipe cannot have an empty input!");
+            if (output.isEmpty()) throw new IllegalArgumentException(
+                            "Kiln recipe cannot have an empty output!");
+
             this.input = input;
             this.catalyst = catalyst;
             this.output = output;

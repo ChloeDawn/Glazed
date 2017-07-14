@@ -1,4 +1,4 @@
-package net.insomniakitten.glazed;
+package net.insomniakitten.glazed.client;
 
 /*
  *  Copyright 2017 InsomniaKitten
@@ -16,6 +16,7 @@ package net.insomniakitten.glazed;
  *   limitations under the License.
  */
 
+import net.insomniakitten.glazed.Glazed;
 import net.insomniakitten.glazed.glass.BlockGlass;
 import net.insomniakitten.glazed.material.BlockMaterial;
 import net.insomniakitten.glazed.glass.GlassType;
@@ -59,20 +60,26 @@ public class OverlayRenderer {
         IBlockState state = world.getBlockState(pos);
 
         if (state.getBlock() instanceof BlockGlass
-                && GLASS.containsKey(GlassType.getType(state))) {
+                && GLASS.containsKey(
+                        GlassType.getType(state))) {
             GlStateManager.pushMatrix();
             GlStateManager.enableBlend();
-            mc.renderEngine.bindTexture(GLASS.get(GlassType.getType(state)));
-            mc.ingameGUI.drawTexturedModalRect(0, 0, 0, 0, w, h);
+            mc.renderEngine.bindTexture(
+                    GLASS.get(GlassType.getType(state)));
+            mc.ingameGUI.drawTexturedModalRect(
+                    0, 0, 0, 0, w, h);
             GlStateManager.popMatrix();
         }
 
         if (state.getBlock() instanceof BlockMaterial
-                && MATERIALS.containsKey(MaterialType.getType(state))){
+                && MATERIALS.containsKey(
+                        MaterialType.getType(state))){
             GlStateManager.pushMatrix();
             GlStateManager.enableBlend();
-            mc.renderEngine.bindTexture(MATERIALS.get(MaterialType.getType(state)));
-            mc.ingameGUI.drawTexturedModalRect(0, 0, 0, 0, w, h);
+            mc.renderEngine.bindTexture(
+                    MATERIALS.get(MaterialType.getType(state)));
+            mc.ingameGUI.drawTexturedModalRect(
+                    0, 0, 0, 0, w, h);
             GlStateManager.popMatrix();
         }
 

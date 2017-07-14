@@ -49,22 +49,29 @@ public class ItemBlockMaterial extends ItemBlock {
     }
 
     @Override
-    public int getMetadata(int damage) {
-        return damage;
-    }
-
-
-    @Override
     public boolean placeBlockAt(
-            ItemStack stack, EntityPlayer player,
-            World world, BlockPos pos, EnumFacing side,
-            float hitX, float hitY, float hitZ, IBlockState newState) {
-        if (!MaterialType.getType(stack.getMetadata()).equals(MaterialType.CRYSTAL))
-            return super.placeBlockAt(stack, player, world, pos, side, hitX, hitY, hitZ, newState);
+            @Nonnull ItemStack stack,
+            @Nonnull EntityPlayer player,
+            World world,
+            @Nonnull BlockPos pos,
+            EnumFacing side,
+            float hitX, float hitY, float hitZ,
+            @Nonnull IBlockState newState) {
+        if (!MaterialType.getType(stack.getMetadata())
+                .equals(MaterialType.CRYSTAL))
+            return super.placeBlockAt(
+                    stack, player, world, pos, side,
+                    hitX, hitY, hitZ, newState);
         else {
-            boolean isEndStone = world.getBlockState(pos.down()).getBlock().equals(Blocks.END_STONE);
-            return isEndStone && super.placeBlockAt(stack, player, world, pos, side, hitX, hitY, hitZ, newState);
+            boolean isEndStone = world.getBlockState(pos.down())
+                    .getBlock().equals(Blocks.END_STONE);
+            return isEndStone
+                    && super.placeBlockAt(
+                    stack, player, world, pos, side,
+                    hitX, hitY, hitZ, newState);
         }
     }
+
+    @Override public int getMetadata(int damage) { return damage; }
 
 }

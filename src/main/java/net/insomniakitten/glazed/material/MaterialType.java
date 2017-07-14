@@ -38,7 +38,14 @@ public enum MaterialType implements IStringSerializable {
     private final BlockRenderLayer layer;
     private final boolean isSolid;
 
-    MaterialType(float hardness, float resistance, int lightLevel, Material material, SoundType soundType, BlockRenderLayer layer, boolean isSolid) {
+    MaterialType(
+            float hardness,
+            float resistance,
+            int lightLevel,
+            Material material,
+            SoundType soundType,
+            BlockRenderLayer layer,
+            boolean isSolid) {
         this.hardness = hardness;
         this.resistance = resistance;
         this.lightLevel = lightLevel;
@@ -48,15 +55,11 @@ public enum MaterialType implements IStringSerializable {
         this.isSolid = isSolid;
     }
 
-    private static final PropertyEnum<MaterialType> PROPERTY = PropertyEnum.create("type", MaterialType.class);
-    public static PropertyEnum<MaterialType> getProperty() {
-        return PROPERTY;
-    }
+    private static final PropertyEnum<MaterialType> PROPERTY = PropertyEnum
+            .create("type", MaterialType.class);
+    public static PropertyEnum<MaterialType> getProperty() { return PROPERTY; }
 
-    public static MaterialType getType(IBlockState state) {
-        return state.getValue(PROPERTY);
-    }
-
+    public static MaterialType getType(IBlockState state) { return state.getValue(PROPERTY); }
     public static MaterialType getType(int meta) {
         if (meta >= values().length || meta < 0) return values()[0];
         return values()[meta];
