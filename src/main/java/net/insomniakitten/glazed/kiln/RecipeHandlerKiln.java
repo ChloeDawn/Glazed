@@ -77,17 +77,13 @@ public class RecipeHandlerKiln {
         if (recipe == null)
             return false;
 
-        input.shrink(recipe.getInput().getCount());
-        catalyst.shrink(recipe.getCatalyst().getCount());
-
-        if (output.isEmpty())
+        if (output.isEmpty()) {
             Slots.setSlot(tile, TileKiln.Slots.OUTPUT,
                     recipe.getOutput().copy());
-
-        else if (output.isItemEqual(recipe.getOutput())
-                && output.getMaxStackSize()
-                <= (output.getCount()
-                + recipe.getOutput().getCount())) {
+        } else if (output.isItemEqual(recipe.getOutput())
+                && output.getCount() < output.getMaxStackSize()) {
+            input.shrink(recipe.getInput().getCount());
+            catalyst.shrink(recipe.getCatalyst().getCount());
             output.grow(recipe.getOutput().getCount());
         } else
             return false;
