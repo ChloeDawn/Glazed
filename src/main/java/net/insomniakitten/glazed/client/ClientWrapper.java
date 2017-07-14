@@ -41,11 +41,14 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nullable;
 import java.io.InputStreamReader;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
 @Mod.EventBusSubscriber
 public class ClientWrapper extends Glazed.ProxyWrapper {
+
+    public static final HashMap<Pair<UUID, String>, String> SPECIALS = new HashMap<>();
 
     @Override
     @SideOnly(Side.CLIENT)
@@ -97,7 +100,7 @@ public class ClientWrapper extends Glazed.ProxyWrapper {
         for (Map.Entry<String, JsonElement> group : json.entrySet()) {
             JsonObject obj = group.getValue().getAsJsonObject();
             for (Map.Entry<String, JsonElement> e : obj.entrySet()) {
-                Glazed.Objects.SPECIALS.put(Pair.of(
+                SPECIALS.put(Pair.of(
                         UUID.fromString(e.getKey()), group.getKey()),
                         e.getValue().getAsString());
             }

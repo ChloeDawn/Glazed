@@ -29,56 +29,50 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
-import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nonnull;
-import java.util.HashMap;
 import java.util.UUID;
 
 @Mod(   modid = Glazed.MOD_ID,
         name = Glazed.MOD_NAME,
         version = Glazed.VERSION,
         acceptedMinecraftVersions = Glazed.MC_VERSION,
-        dependencies = Glazed.DEPS)
+        dependencies = Glazed.DEPENDENCIES)
 
 public class Glazed {
 
     @Mod.Instance(Glazed.MOD_ID)
     public static Glazed instance;
 
-    public static final String MOD_ID = "glazed";
-    public static final String MOD_NAME = "Glazed";
-    public static final String VERSION = "%mod_version%";
-    public static final String MC_VERSION = "%mc_version%";
-    public static final String DEPS = "required-after:forge@[14.21.1.2387,)";
-
-    public static final String CPROXY = "net.insomniakitten.glazed.client.ClientWrapper";
-    public static final String SPROXY = "net.insomniakitten.glazed.Glazed$ProxyWrapper";
+    public static final String
+            MOD_ID = "glazed", MOD_NAME = "Glazed",
+            VERSION = "%mod_version%", MC_VERSION = "%mc_version%",
+            DEPENDENCIES = "required-after:forge@[14.21.1.2387,)",
+            CLIENT_PROXY = "net.insomniakitten.glazed.client.ClientWrapper",
+            SERVER_PROXY = "net.insomniakitten.glazed.Glazed$ProxyWrapper";
 
     public static final Logger LOGGER = LogManager.getLogger(MOD_NAME);
     public static final TabGlazed TAB = new TabGlazed();
 
+    @SuppressWarnings("SpellCheckingInspection")
     public static class Objects {
-        public static final HashMap<Pair<UUID, String>, String> SPECIALS = new HashMap<>();
-
         public static final BlockGlass BGLASS = new BlockGlass();
         public static final ItemBlockGlass IGLASS = new ItemBlockGlass(BGLASS);
-
         public static final BlockKiln BKILN = new BlockKiln();
         public static final ItemBlockKiln IKILN = new ItemBlockKiln(BKILN);
-
         public static final BlockMaterial BMATERIAL = new BlockMaterial();
         public static final ItemBlockMaterial IMATERIAL = new ItemBlockMaterial(BMATERIAL);
     }
 
-    @SidedProxy(clientSide = CPROXY, serverSide = SPROXY)
+    @SidedProxy(clientSide = CLIENT_PROXY, serverSide = SERVER_PROXY)
     public static ProxyWrapper proxy;
 
     @Mod.EventHandler
     public void onPostInit(FMLPostInitializationEvent event) {
-        NetworkRegistry.INSTANCE.registerGuiHandler(Glazed.MOD_ID, new GuiHandler());
+        NetworkRegistry.INSTANCE.registerGuiHandler(
+                Glazed.MOD_ID, new GuiHandler());
         proxy.registerColorHandler();
         proxy.parseSpecials();
     }

@@ -17,7 +17,7 @@ package net.insomniakitten.glazed.glass;
  */
 
 import net.insomniakitten.glazed.Glazed;
-import net.insomniakitten.glazed.Glazed.Objects;
+import net.insomniakitten.glazed.client.ClientWrapper;
 import net.minecraft.block.Block;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
@@ -57,11 +57,11 @@ public class ItemBlockGlass extends ItemBlock {
         int meta = stack.getMetadata() % GlassType.values().length;
         String type = GlassType.values()[meta].getName();
 
-        Set<Pair<UUID, String>> keys = Objects.SPECIALS.keySet();
+        Set<Pair<UUID, String>> keys = ClientWrapper.SPECIALS.keySet();
         Pair match = Pair.of(Glazed.proxy.getUUID(), type);
 
         if (keys.contains(match))
-            return Objects.SPECIALS.get(match);
+            return ClientWrapper.SPECIALS.get(match);
         else return super.getItemStackDisplayName(stack);
     }
 
