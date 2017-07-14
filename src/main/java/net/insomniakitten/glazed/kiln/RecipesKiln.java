@@ -73,17 +73,18 @@ public class RecipesKiln {
             @Nonnull ItemStack catalyst) {
         KilnRecipe recipe = getRecipe(input, catalyst);
         if (recipe == null) return false;
-        ItemStack output = Slots.getSlot(tile, Slots.OUTPUT);
-        if (!output.isEmpty() && !output.isItemEqual(recipe.getOutput()))
+        ItemStack slot = Slots.getSlot(tile, Slots.OUTPUT);
+
+        if (!slot.isEmpty() && !slot.isItemEqual(recipe.getOutput()))
             return false;
 
-        if (output.getCount() < output.getMaxStackSize()) {
+        if (slot.getCount() < slot.getMaxStackSize()) {
             input.shrink(recipe.getInput().getCount());
             catalyst.shrink(recipe.getCatalyst().getCount());
-            if (output.isEmpty()) {
-                Slots.setSlot(tile, TileKiln.Slots.OUTPUT,
-                        recipe.getOutput().copy());
-            } else output.grow(recipe.getOutput().getCount());
+
+            if (slot.isEmpty()) {
+                Slots.setSlot(tile, Slots.OUTPUT, recipe.getOutput().copy());
+            } else slot.grow(recipe.getOutput().getCount());
 
         } else return false;
 
