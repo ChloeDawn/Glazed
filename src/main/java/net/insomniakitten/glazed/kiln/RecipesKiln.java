@@ -80,10 +80,11 @@ public class RecipesKiln {
         if (output.getCount() < output.getMaxStackSize()) {
             input.shrink(recipe.getInput().getCount());
             catalyst.shrink(recipe.getCatalyst().getCount());
-            if (output.isEmpty()) Slots.setSlot(
-                    tile, TileKiln.Slots.OUTPUT,
-                    recipe.getOutput().copy());
-            else output.grow(recipe.getOutput().getCount());
+            if (output.isEmpty()) {
+                Slots.setSlot(tile, TileKiln.Slots.OUTPUT,
+                        recipe.getOutput().copy());
+            } else output.grow(recipe.getOutput().getCount());
+
         } else return false;
 
         return true;
