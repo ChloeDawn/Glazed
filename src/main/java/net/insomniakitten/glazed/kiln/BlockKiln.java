@@ -16,7 +16,6 @@ package net.insomniakitten.glazed.kiln;
  *   limitations under the License.
  */
 
-import com.sun.istack.internal.NotNull;
 import net.insomniakitten.glazed.Glazed;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -107,8 +106,8 @@ public class BlockKiln extends Block {
                 .withProperty(ACTIVE, false);
     }
 
-    @Override public boolean isFullCube(@NotNull IBlockState state) { return false; }
-    @Override public boolean isOpaqueCube(@NotNull IBlockState state) { return false; }
+    @Override public boolean isFullCube(@Nonnull IBlockState state) { return false; }
+    @Override public boolean isOpaqueCube(@Nonnull IBlockState state) { return false; }
 
     @Override
     public int getLightValue(
