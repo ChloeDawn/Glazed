@@ -26,7 +26,6 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.*;
@@ -54,7 +53,7 @@ public class BlockMaterial extends Block {
 
     @Override
     public Material getMaterial(IBlockState state) {
-        return MaterialType.getType(state)
+        return MaterialBlockType.getType(state)
                 .getMaterial();
     }
 
@@ -63,7 +62,7 @@ public class BlockMaterial extends Block {
             IBlockState state,
             World world,
             BlockPos pos) {
-        return MaterialType.getType(state)
+        return MaterialBlockType.getType(state)
                 .getHardness();
     }
 
@@ -74,7 +73,7 @@ public class BlockMaterial extends Block {
             @Nullable Entity exploder,
             Explosion explosion) {
         IBlockState state = world.getBlockState(pos);
-        return MaterialType.getType(state)
+        return MaterialBlockType.getType(state)
                 .getResistance();
     }
 
@@ -82,7 +81,7 @@ public class BlockMaterial extends Block {
     public boolean canRenderInLayer(
             IBlockState state,
             BlockRenderLayer layer) {
-        return layer.equals(MaterialType.getType(state)
+        return layer.equals(MaterialBlockType.getType(state)
                 .getRenderLayer());
     }
 
@@ -93,7 +92,7 @@ public class BlockMaterial extends Block {
             World world,
             BlockPos pos,
             @Nullable Entity entity) {
-        return MaterialType.getType(state)
+        return MaterialBlockType.getType(state)
                 .getSoundType();
     }
 
@@ -101,34 +100,34 @@ public class BlockMaterial extends Block {
     public void getSubBlocks(
             CreativeTabs tab,
             NonNullList<ItemStack> items) {
-        for (int i = 0; i < MaterialType.values().length; ++i) {
+        for (int i = 0; i < MaterialBlockType.values().length; ++i) {
             items.add(new ItemStack(this, 1, i));
         }
     }
 
     @Override
     public int damageDropped(IBlockState state) {
-        return MaterialType.getType(state)
+        return MaterialBlockType.getType(state)
                 .ordinal();
     }
 
     @Override
     public int getLightValue(IBlockState state) {
-        return MaterialType.getType(state)
+        return MaterialBlockType.getType(state)
                 .getLightLevel();
     }
 
     @Override
     public int getMetaFromState(IBlockState state) {
-        return MaterialType.getType(state)
+        return MaterialBlockType.getType(state)
                 .getMetadata();
     }
 
     @Override
     public IBlockState getStateFromMeta(int meta) {
         return this.getDefaultState().withProperty(
-                MaterialType.getProperty(),
-                MaterialType.getType(meta));
+                MaterialBlockType.getProperty(),
+                MaterialBlockType.getType(meta));
     }
 
     @Override
@@ -158,15 +157,21 @@ public class BlockMaterial extends Block {
     @Override
     public boolean isFullCube(
             @Nonnull IBlockState state) {
-        return MaterialType.getType(state)
+        return MaterialBlockType.getType(state)
                 .isSolid();
     }
 
     @Override
     public boolean isOpaqueCube(
             @Nonnull IBlockState state) {
-        return MaterialType.getType(state)
+        return MaterialBlockType.getType(state)
                 .isSolid();
+    }
+
+    @Override
+    public boolean causesSuffocation(IBlockState state) {
+        return MaterialBlockType.getType(state)
+                .isSolid() && super.causesSuffocation(state);
     }
 
     @Override
@@ -175,8 +180,8 @@ public class BlockMaterial extends Block {
             @Nonnull BlockPos pos,
             @Nonnull IBlockState state,
             @Nonnull Entity entity) {
-        if (!MaterialType.getType(state)
-                .equals(MaterialType.SLAG))
+        if (!MaterialBlockType.getType(state)
+                .equals(MaterialBlockType.SLAG))
             return;
         if (entity.motionY < 0.0D)
             entity.motionY *= 0.005D;
@@ -190,8 +195,8 @@ public class BlockMaterial extends Block {
             IBlockState state,
             IBlockAccess source,
             BlockPos pos) {
-        if (MaterialType.getType(state)
-                .equals(MaterialType.CRYSTAL))
+        if (MaterialBlockType.getType(state)
+                .equals(MaterialBlockType.CRYSTAL))
             return new AxisAlignedBB(
                     0.1, 0, 0.1, 0.9, 0.625, 0.9);
         else return super.getBoundingBox(state, source, pos);
@@ -203,43 +208,12 @@ public class BlockMaterial extends Block {
             @Nonnull IBlockState state,
             @Nonnull IBlockAccess world,
             @Nonnull BlockPos pos) {
-        if (MaterialType.getType(state)
-                .equals(MaterialType.SLAG))
+        if (MaterialBlockType.getType(state)
+                .equals(MaterialBlockType.SLAG))
             return new AxisAlignedBB(
                     pos.getX(), pos.getY(), pos.getZ(),
                     pos.getX() + 1.0D, pos.getY() + 0.0625D, pos.getZ() + 1.0D);
         return super.getCollisionBoundingBox(state, world, pos);
-    }
-
-    public void neighborChanged(
-            IBlockState state,
-            World world,
-            BlockPos pos,
-            Block block,
-            BlockPos fromPos) {
-        if (!MaterialType.getType(state)
-                .equals(MaterialType.CRYSTAL))
-            return;
-
-        boolean isBlockBelowEndStone = world.getBlockState(pos.down())
-                .getBlock().equals(Blocks.END_STONE);
-        SoundEvent sound = MaterialType.getType(state)
-                .getSoundType().getBreakSound();
-
-        if (!world.isRemote
-                && !isBlockBelowEndStone
-                && !world.isAirBlock(pos)) {
-            world.playSound(
-                    null, pos, sound,
-                    SoundCategory.BLOCKS,
-                    1.0f, 1.0f);
-
-            BlockPos dropPos = new BlockPos(
-                    pos.getX(), pos.getY() - 0.5, pos.getZ());
-
-            dropBlockAsItem(world, dropPos, state, 0);
-            world.setBlockToAir(pos);
-        }
     }
 
     @Override
@@ -253,8 +227,8 @@ public class BlockMaterial extends Block {
         double d4 = ((float) pos.getY() + 0.8F);
         double d5 = ((float) pos.getZ() + rand.nextFloat());
 
-        if (MaterialType.getType(state)
-                .equals(MaterialType.CRYSTAL)
+        if (MaterialBlockType.getType(state)
+                .equals(MaterialBlockType.CRYSTAL)
                 && world.getBlockState(pos.up())
                 .getMaterial() == Material.AIR
                 && !world.getBlockState(pos.up())
@@ -265,8 +239,8 @@ public class BlockMaterial extends Block {
 
         }
 
-        if (MaterialType.getType(state)
-                .equals(MaterialType.SLAG)
+        if (MaterialBlockType.getType(state)
+                .equals(MaterialBlockType.SLAG)
                 && world.getBlockState(pos.up())
                 .getMaterial() == Material.AIR
                 && !world.getBlockState(pos.up())
@@ -287,6 +261,36 @@ public class BlockMaterial extends Block {
         }
     }
 
+    public void neighborChanged(
+            IBlockState state,
+            World world,
+            BlockPos pos,
+            Block block,
+            BlockPos fromPos) {
+        if (!MaterialBlockType.getType(state)
+                .equals(MaterialBlockType.CRYSTAL))
+            return;
+
+        boolean canStay = this.isTopSolid(world.getBlockState(pos.down()));
+        SoundEvent sound = MaterialBlockType.getType(state)
+                .getSoundType().getBreakSound();
+
+        if (!world.isRemote
+                && !canStay
+                && !world.isAirBlock(pos)) {
+            world.playSound(
+                    null, pos, sound,
+                    SoundCategory.BLOCKS,
+                    1.0f, 1.0f);
+
+            BlockPos dropPos = new BlockPos(
+                    pos.getX(), pos.getY() - 0.5, pos.getZ());
+
+            dropBlockAsItem(world, dropPos, state, 0);
+            world.setBlockToAir(pos);
+        }
+    }
+
     @Override @SideOnly(Side.CLIENT)
     public boolean shouldSideBeRendered(
             IBlockState state,
@@ -296,22 +300,25 @@ public class BlockMaterial extends Block {
         IBlockState iblockstate = world.getBlockState(
                 pos.offset(side));
         Block block = iblockstate.getBlock();
-        return block != this;
+        return (block == this
+                && MaterialBlockType.getType(iblockstate)
+                .equals(MaterialBlockType.SLAG))
+                || super.shouldSideBeRendered(state, world, pos, side);
     }
 
     @Override
     public boolean isToolEffective(
             String toolType,
             @Nonnull IBlockState state) {
-        return MaterialType.getType(state)
-                .equals(MaterialType.CRYSTAL)
+        return MaterialBlockType.getType(state)
+                .equals(MaterialBlockType.CRYSTAL)
                 && toolType.equals("pickaxe");
     }
 
-    @Override
+    @Override @Nonnull
     public BlockStateContainer createBlockState() {
         return new BlockStateContainer(
-                this, MaterialType.getProperty());
+                this, MaterialBlockType.getProperty());
     }
 
 }

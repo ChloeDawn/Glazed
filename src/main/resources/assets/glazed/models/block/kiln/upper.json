@@ -1,14 +1,14 @@
 {
 	"__comment": "Copyright © InsomniaKitten 2017",
 	"textures": {
-		"particle": "glazed:blocks/kiln/blank",
-		"upper_down": "glazed:blocks/kiln/blank",
-		"upper_up": "glazed:blocks/kiln/blank",
-		"upper_north": "glazed:blocks/kiln/blank",
-		"upper_south": "glazed:blocks/kiln/blank",
-		"upper_east": "glazed:blocks/kiln/blank",
-		"upper_west": "glazed:blocks/kiln/blank",
-		"upper_edges": "glazed:blocks/kiln/blank"
+		"particle": "glazed:blocks/kiln/upper_north",
+		"upper_down": "glazed:blocks/kiln/upper_down",
+		"upper_up": "glazed:blocks/kiln/upper_up",
+		"upper_north": "glazed:blocks/kiln/upper_north",
+		"upper_south": "glazed:blocks/kiln/upper_south",
+		"upper_east": "glazed:blocks/kiln/upper_east",
+		"upper_west": "glazed:blocks/kiln/upper_west",
+		"upper_edges": "glazed:blocks/kiln/upper_edges"
 	},
 	"elements": [
 		{

@@ -19,6 +19,7 @@ package net.insomniakitten.glazed;
 import net.insomniakitten.glazed.client.GUIManager;
 import net.insomniakitten.glazed.glass.BlockGlass;
 import net.insomniakitten.glazed.glass.ItemBlockGlass;
+import net.insomniakitten.glazed.glass.ItemGlassShard;
 import net.insomniakitten.glazed.kiln.BlockKiln;
 import net.insomniakitten.glazed.kiln.ItemBlockKiln;
 import net.insomniakitten.glazed.kiln.RecipesKiln;
@@ -26,7 +27,6 @@ import net.insomniakitten.glazed.material.BlockMaterial;
 import net.insomniakitten.glazed.material.ItemBlockMaterial;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
@@ -67,6 +67,7 @@ public class Glazed {
         public static final ItemBlockKiln IKILN = new ItemBlockKiln(BKILN);
         public static final BlockMaterial BMATERIAL = new BlockMaterial();
         public static final ItemBlockMaterial IMATERIAL = new ItemBlockMaterial(BMATERIAL);
+        public static final ItemGlassShard ISHARD = new ItemGlassShard();
     }
 
     @SidedProxy(clientSide = CLIENT_PROXY, serverSide = SERVER_PROXY)
@@ -80,9 +81,9 @@ public class Glazed {
         proxy.parseSpecials();
 
         RecipesKiln.addKilnRecipe(
-                new ItemStack(Blocks.SAND),
-                new ItemStack(Items.REDSTONE),
-                new ItemStack(Objects.BGLASS, 1, 3));
+                new ItemStack(Blocks.SAND, 16),
+                new ItemStack(Blocks.REDSTONE_BLOCK),
+                new ItemStack(Objects.BGLASS, 16, 3));
 
         RecipesKiln.addKilnRecipe(
                 new ItemStack(Blocks.SAND),

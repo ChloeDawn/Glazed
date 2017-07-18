@@ -16,6 +16,11 @@ package net.insomniakitten.glazed.kiln;
  *   limitations under the License.
  */
 
+import java.util.Locale;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -23,14 +28,11 @@ import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.oredict.OreDictionary;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.Locale;
 
 public class TileKiln extends TileEntity implements ITickable {
 
@@ -110,10 +112,18 @@ public class TileKiln extends TileEntity implements ITickable {
 
             ItemStack   input = Slots.getSlot(this, Slots.INPUT),
                         catalyst = Slots.getSlot(this, Slots.CATALYST),
+                        fuel = Slots.getSlot(this, Slots.FUEL),
                         output = Slots.getSlot(this, Slots.OUTPUT);
 
-            if (RecipesKiln.getRecipe(input, catalyst) != null) {
+            int burnTime = ForgeEventFactory.getItemBurnTime(fuel);
+            int remainingFuelTime = 0;
+
+            if (RecipesKiln.getRecipe(input, catalyst) != null && (!fuel.isEmpty() || remainingFuelTime > 0)) {
                 isActive = RecipesKiln.trySmelt(this, input, catalyst);
+            }
+
+            if (isActive) {
+
             }
 
             if (!RecipesKiln.getOutput(input, catalyst).isItemEqual(output)

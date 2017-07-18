@@ -16,6 +16,11 @@ package net.insomniakitten.glazed.glass;
  *   limitations under the License.
  */
 
+import java.util.List;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import net.insomniakitten.glazed.Glazed;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
@@ -40,10 +45,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.List;
-
 public class BlockGlass extends Block {
 
     public BlockGlass() {
@@ -58,7 +59,7 @@ public class BlockGlass extends Block {
             IBlockState state,
             World world,
             BlockPos pos) {
-        return GlassType.getType(state)
+        return GlassBlockType.getType(state)
                 .getHardness();
     }
 
@@ -68,7 +69,7 @@ public class BlockGlass extends Block {
             BlockPos pos,
             @Nullable Entity exploder,
             Explosion explosion) {
-        return GlassType.getType(
+        return GlassBlockType.getType(
                 world.getBlockState(pos))
                 .getResistance();
     }
@@ -96,7 +97,7 @@ public class BlockGlass extends Block {
             World world,
             BlockPos pos,
             @Nullable Entity entity) {
-        return GlassType.getType(state)
+        return GlassBlockType.getType(state)
                 .getSoundType();
     }
 
@@ -108,33 +109,33 @@ public class BlockGlass extends Block {
     public void getSubBlocks(
             CreativeTabs tab,
             NonNullList<ItemStack> items) {
-        for (int i = 0; i < GlassType.values().length; ++i) {
+        for (int i = 0; i < GlassBlockType.values().length; ++i) {
             items.add(new ItemStack(this, 1, i));
         }
     }
 
     @Override public int damageDropped(IBlockState state) {
-        return GlassType.getType(state)
+        return GlassBlockType.getType(state)
                 .ordinal();
     }
 
     @Override
     public int getLightValue(IBlockState state) {
-        return GlassType.getType(state)
+        return GlassBlockType.getType(state)
                 .getLightLevel();
     }
 
     @Override
     public int getMetaFromState(IBlockState state) {
-        return GlassType.getType(state)
+        return GlassBlockType.getType(state)
                 .getMetadata();
     }
 
     @Override
     public IBlockState getStateFromMeta(int meta) {
         return this.getDefaultState().withProperty(
-                GlassType.getProperty(),
-                GlassType.getType(meta));
+                GlassBlockType.getProperty(),
+                GlassBlockType.getType(meta));
     }
 
     @Override @Nonnull
@@ -165,7 +166,7 @@ public class BlockGlass extends Block {
             IBlockState state,
             BlockRenderLayer layer) {
         return layer.equals(
-                GlassType.getType(state)
+                GlassBlockType.getType(state)
                 .getRenderLayer());
     }
 
@@ -176,7 +177,7 @@ public class BlockGlass extends Block {
             BlockPos pos,
             @Nonnull IBlockState state,
             int fortune) {
-        if (!GlassType.getType(state).dropsItem())
+        if (!GlassBlockType.getType(state).dropsItem())
             return;
         super.getDrops(drops, world, pos, state, fortune);
     }
@@ -187,25 +188,25 @@ public class BlockGlass extends Block {
     public boolean isToolEffective(
             String toolType,
             @Nonnull IBlockState state) {
-        return GlassType.getType(state).isHeavy()
+        return GlassBlockType.getType(state).isHeavy()
                 && toolType.equals("pickaxe");
     }
 
     @Override
     public int getLightOpacity(IBlockState state) {
-        return GlassType.getType(state)
+        return GlassBlockType.getType(state)
                 .isOpaque() ? 255 : 0;
     }
 
     @Override
     public boolean causesSuffocation(IBlockState state) {
-        return GlassType.getType(state)
+        return GlassBlockType.getType(state)
                 .getResistance() >= 3000;
     }
 
     @Override
     public boolean canProvidePower(IBlockState state) {
-        return GlassType.getType(state)
+        return GlassBlockType.getType(state)
                 .isPowered();
     }
 
@@ -215,7 +216,7 @@ public class BlockGlass extends Block {
             IBlockAccess world,
             BlockPos pos,
             EnumFacing side) {
-        return GlassType.getType(state)
+        return GlassBlockType.getType(state)
                 .isPowered() ? 15 : 0;
     }
 
@@ -225,7 +226,7 @@ public class BlockGlass extends Block {
             IBlockAccess world,
             BlockPos pos,
             EnumFacing side) {
-        return GlassType.getType(state)
+        return GlassBlockType.getType(state)
                 .isPowered() ? 15 : 0;
     }
 
@@ -235,8 +236,8 @@ public class BlockGlass extends Block {
             @Nonnull BlockPos pos,
             @Nonnull IBlockState state,
             @Nonnull Entity entity) {
-        if (!GlassType.getType(state)
-                .equals(GlassType.VOIDIC))
+        if (!GlassBlockType.getType(state)
+                .equals(GlassBlockType.VOIDIC))
             return;
         if (entity.isSneaking())
             return;
@@ -258,7 +259,7 @@ public class BlockGlass extends Block {
             @Nonnull List<AxisAlignedBB> collisions,
             @Nullable Entity entity,
             boolean p_185477_7_) {
-        if (!GlassType.getType(state).equals(GlassType.VOIDIC)
+        if (!GlassBlockType.getType(state).equals(GlassBlockType.VOIDIC)
                 || entity == null
                 || !(entity instanceof EntityPlayer)
                 || entity.isSneaking())
@@ -270,7 +271,7 @@ public class BlockGlass extends Block {
     @Override @Nonnull
     public BlockStateContainer createBlockState() {
         return new BlockStateContainer(
-                this, GlassType.getProperty());
+                this, GlassBlockType.getProperty());
     }
 
 }

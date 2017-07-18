@@ -16,15 +16,15 @@ package net.insomniakitten.glazed.glass;
  *   limitations under the License.
  */
 
+import java.util.Locale;
+
 import net.minecraft.block.SoundType;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.IStringSerializable;
 
-import java.util.Locale;
-
-public enum GlassType implements IStringSerializable {
+public enum GlassBlockType implements IStringSerializable {
 
     GAIA(0.3f, 1.5f, 0, SoundType.GLASS, BlockRenderLayer.TRANSLUCENT, false, false, false),
     RADIANT(0.3f, 1.5f, 15, SoundType.GLASS, BlockRenderLayer.TRANSLUCENT, false, false, false),
@@ -34,6 +34,7 @@ public enum GlassType implements IStringSerializable {
     VOIDIC(0.3f, 10.0f, 8, SoundType.GLASS, BlockRenderLayer.TRANSLUCENT, false, false, false),
     QUILTED(0.3f, 10.0f, 0, SoundType.CLOTH, BlockRenderLayer.CUTOUT, false, false, true),
     REINFORCED(2.0f, 3000.0f, 0, SoundType.METAL, BlockRenderLayer.CUTOUT, false, false, true),
+    SLIMY(0.3f, -1.0f, 0, SoundType.GLASS, BlockRenderLayer.TRANSLUCENT, false, false, false),
     AURORIC(0.3f, 10.0f, 8, SoundType.GLASS, BlockRenderLayer.TRANSLUCENT, false, false, false);
 
     private final float hardness;
@@ -45,7 +46,7 @@ public enum GlassType implements IStringSerializable {
     private final boolean isPowered;
     private final boolean dropsItem;
 
-    GlassType(
+    GlassBlockType(
             float hardness,
             float resistance,
             int lightLevel,
@@ -64,11 +65,11 @@ public enum GlassType implements IStringSerializable {
         this.dropsItem = dropsItem;
     }
 
-    private static final PropertyEnum<GlassType> PROPERTY = PropertyEnum.create("type", GlassType.class);
-    public static PropertyEnum<GlassType> getProperty() { return PROPERTY; }
+    private static final PropertyEnum<GlassBlockType> PROPERTY = PropertyEnum.create("type", GlassBlockType.class);
+    public static PropertyEnum<GlassBlockType> getProperty() { return PROPERTY; }
 
-    public static GlassType getType(IBlockState state) { return state.getValue(PROPERTY); }
-    public static GlassType getType(int meta) {
+    public static GlassBlockType getType(IBlockState state) { return state.getValue(PROPERTY); }
+    public static GlassBlockType getType(int meta) {
         if (meta >= values().length || meta < 0) return values()[0];
         return values()[meta];
     }

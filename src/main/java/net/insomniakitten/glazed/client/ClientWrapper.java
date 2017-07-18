@@ -20,7 +20,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.insomniakitten.glazed.Glazed;
-import net.insomniakitten.glazed.glass.GlassType;
+import net.insomniakitten.glazed.glass.GlassBlockType;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.color.IBlockColor;
@@ -58,7 +58,7 @@ public class ClientWrapper extends Glazed.ProxyWrapper {
             public int colorMultiplier(
                     IBlockState state, @Nullable IBlockAccess world,
                     @Nullable BlockPos pos, int tintIndex) {
-                if (!GlassType.getType(state).equals(GlassType.GAIA)) return -1;
+                if (!GlassBlockType.getType(state).equals(GlassBlockType.GAIA)) return -1;
                 return world != null && pos != null ?
                         BiomeColorHelper.getGrassColorAtPos(world, pos)
                         : ColorizerGrass.getGrassColor(0.5D, 1.0D);
@@ -70,7 +70,7 @@ public class ClientWrapper extends Glazed.ProxyWrapper {
             public int getColorFromItemstack(ItemStack stack, int tintIndex) {
                 EntityPlayer plr = Minecraft.getMinecraft().player;
                 if (plr == null) return -1;
-                if (!GlassType.getType(stack.getMetadata()).equals(GlassType.GAIA)) return -1;
+                if (!GlassBlockType.getType(stack.getMetadata()).equals(GlassBlockType.GAIA)) return -1;
                 BlockPos pos = new BlockPos(plr.posX, plr.posY, plr.posZ);
                 return plr.world != null ?
                         BiomeColorHelper.getGrassColorAtPos(plr.world, pos)

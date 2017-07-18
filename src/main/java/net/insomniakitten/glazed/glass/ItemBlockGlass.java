@@ -46,23 +46,24 @@ public class ItemBlockGlass extends ItemBlock {
     @Override @Nonnull @SideOnly(Side.CLIENT)
     public String getUnlocalizedName(
             @Nonnull ItemStack stack) {
-        int meta = stack.getMetadata() % GlassType.values().length;
-        String type = GlassType.values()[meta].getName();
+        int meta = stack.getMetadata() % GlassBlockType.values().length;
+        String type = GlassBlockType.values()[meta].getName();
         return this.getBlock().getUnlocalizedName() + "." + type;
     }
 
     @Override @Nonnull @SideOnly(Side.CLIENT)
     public String getItemStackDisplayName(
             @Nonnull ItemStack stack) {
-        int meta = stack.getMetadata() % GlassType.values().length;
-        String type = GlassType.values()[meta].getName();
-
+        int meta = stack.getMetadata() % GlassBlockType.values().length;
+        String type = GlassBlockType.values()[meta].getName();
         Set<Pair<UUID, String>> keys = ClientWrapper.SPECIALS.keySet();
         Pair match = Pair.of(Glazed.proxy.getUUID(), type);
 
-        if (keys.contains(match))
+        if (keys.contains(match)) {
             return ClientWrapper.SPECIALS.get(match);
-        else return super.getItemStackDisplayName(stack);
+        } else {
+            return super.getItemStackDisplayName(stack);
+        }
     }
 
     @Override @SideOnly(Side.CLIENT)

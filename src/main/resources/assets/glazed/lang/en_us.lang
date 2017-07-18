@@ -8,6 +8,7 @@ tile.glazed.glass.shadowed.name=Shadowed Glass
 tile.glazed.glass.voidic.name=Voidic Glass
 tile.glazed.glass.quilted.name=Quilted Glass
 tile.glazed.glass.reinforced.name=Reinforced Glass
+tile.glazed.glass.slimy.name=Slimy Glass
 tile.glazed.glass.auroric.name=Auroric Glass
 
 tile.glazed.glass.gaia.tooltip=Blessed by nature
@@ -18,6 +19,7 @@ tile.glazed.glass.shadowed.tooltip=Darker than the night
 tile.glazed.glass.voidic.tooltip=Infused with emptiness
 tile.glazed.glass.quilted.tooltip=Peacefully silent
 tile.glazed.glass.reinforced.tooltip=Stronger than diamond
+tile.glazed.glass.slimy.tooltip=Extra slippery
 tile.glazed.glass.auroric.tooltip=Supremely mystical
 
 tile.glazed.kiln.name=Glass Kiln
@@ -29,5 +31,8 @@ waila.glazed.kiln.catalyst=Catalyst
 waila.glazed.kiln.fuel=Fuel
 waila.glazed.kiln.output=Output
 
+tile.glazed.material.bricks.name=Kiln Bricks
 tile.glazed.material.slag.name=Obsidian Slag
 tile.glazed.material.crystal.name=Void Crystal
+
+item.glazed.shard.name=Glass Shard

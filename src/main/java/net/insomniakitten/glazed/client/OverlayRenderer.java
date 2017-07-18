@@ -19,8 +19,8 @@ package net.insomniakitten.glazed.client;
 import net.insomniakitten.glazed.Glazed;
 import net.insomniakitten.glazed.glass.BlockGlass;
 import net.insomniakitten.glazed.material.BlockMaterial;
-import net.insomniakitten.glazed.glass.GlassType;
-import net.insomniakitten.glazed.material.MaterialType;
+import net.insomniakitten.glazed.glass.GlassBlockType;
+import net.insomniakitten.glazed.material.MaterialBlockType;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
@@ -39,14 +39,14 @@ import java.util.HashMap;
 @Mod.EventBusSubscriber(Side.CLIENT)
 public class OverlayRenderer {
 
-    public static final HashMap<GlassType, ResourceLocation> GLASS =
-            new HashMap<GlassType, ResourceLocation>();
-    public static final HashMap<MaterialType, ResourceLocation> MATERIALS =
-            new HashMap<MaterialType, ResourceLocation>();
+    public static final HashMap<GlassBlockType, ResourceLocation> GLASS =
+            new HashMap<GlassBlockType, ResourceLocation>();
+    public static final HashMap<MaterialBlockType, ResourceLocation> MATERIALS =
+            new HashMap<MaterialBlockType, ResourceLocation>();
 
     static {
-        GLASS.put(GlassType.VOIDIC, new ResourceLocation(Glazed.MOD_ID, "textures/overlay/voided.png"));
-        MATERIALS.put(MaterialType.SLAG, new ResourceLocation(Glazed.MOD_ID, "textures/overlay/slag.png"));
+        GLASS.put(GlassBlockType.VOIDIC, new ResourceLocation(Glazed.MOD_ID, "textures/overlay/voided.png"));
+        MATERIALS.put(MaterialBlockType.SLAG, new ResourceLocation(Glazed.MOD_ID, "textures/overlay/slag.png"));
         // TODO: Move to enums
     }
 
@@ -61,11 +61,11 @@ public class OverlayRenderer {
 
         if (state.getBlock() instanceof BlockGlass
                 && GLASS.containsKey(
-                        GlassType.getType(state))) {
+                        GlassBlockType.getType(state))) {
             GlStateManager.pushMatrix();
             GlStateManager.enableBlend();
             mc.renderEngine.bindTexture(
-                    GLASS.get(GlassType.getType(state)));
+                    GLASS.get(GlassBlockType.getType(state)));
             mc.ingameGUI.drawTexturedModalRect(
                     0, 0, 0, 0, w, h);
             GlStateManager.popMatrix();
@@ -73,11 +73,11 @@ public class OverlayRenderer {
 
         if (state.getBlock() instanceof BlockMaterial
                 && MATERIALS.containsKey(
-                        MaterialType.getType(state))){
+                        MaterialBlockType.getType(state))){
             GlStateManager.pushMatrix();
             GlStateManager.enableBlend();
             mc.renderEngine.bindTexture(
-                    MATERIALS.get(MaterialType.getType(state)));
+                    MATERIALS.get(MaterialBlockType.getType(state)));
             mc.ingameGUI.drawTexturedModalRect(
                     0, 0, 0, 0, w, h);
             GlStateManager.popMatrix();

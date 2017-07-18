@@ -1,0 +1,9 @@
+{
+  "result": { "item": "glazed:material", "data": 0, "count": 4 },
+  "pattern": [ "MXM", "X X", "MXM" ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "M": { "item": "minecraft:magma_cream" },
+	"X": { "item": "minecraft:brick_block" }
+  }
+}

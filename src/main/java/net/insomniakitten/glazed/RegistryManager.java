@@ -17,31 +17,76 @@ package net.insomniakitten.glazed;
  */
 
 import net.insomniakitten.glazed.Glazed.Objects;
-import net.insomniakitten.glazed.glass.GlassType;
+import net.insomniakitten.glazed.glass.GlassBlockType;
 import net.insomniakitten.glazed.kiln.TileKiln;
-import net.insomniakitten.glazed.material.MaterialType;
+import net.insomniakitten.glazed.material.MaterialBlockType;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.client.model.obj.OBJLoader;
 import net.minecraftforge.event.RegistryEvent.Register;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.oredict.OreDictionary;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @SuppressWarnings("unused")
 public class RegistryManager {
+
+    @Mod.EventBusSubscriber
+    public static class ShardRegistry {
+
+        public static final Map<ItemStack, ItemStack> SHARDS = new HashMap<ItemStack, ItemStack>();
+
+        @SuppressWarnings("ConstantConditions")
+        @SubscribeEvent(priority = EventPriority.LOWEST)
+        public static void onShardRegistry(Register<Item> event) {
+
+            event.getRegistry().register(Objects.ISHARD);
+
+            for (String ore : OreDictionary.getOreNames()) {
+                if (ore.startsWith("blockGlass") && !ore.equals("blockGlassColorless")) {
+                    for (ItemStack glass : OreDictionary.getOres(ore)) {
+                        ItemStack shard = new ItemStack(Objects.ISHARD);
+                        String name = glass.getItem().getRegistryName().toString();
+
+                        shard.setTagCompound(new NBTTagCompound());
+                        shard.getTagCompound().setString("name", name);
+
+                        if (glass.getHasSubtypes()) {
+                            shard.getTagCompound().setInteger(
+                                    "metadata", glass.getMetadata());
+                        }
+
+                        if (!SHARDS.containsKey(shard) && glass.getMetadata() <= 15) {
+                            Glazed.LOGGER.info("Registering {} <{}#{}> from {}",
+                                    glass.getDisplayName(), name,
+                                    glass.getMetadata(), ore);
+                            SHARDS.put(shard, glass);
+                        }
+                    }
+                }
+            }
+        }
+
+    }
 
     @SuppressWarnings("ConstantConditions")
     @Mod.EventBusSubscriber
     private static class ObjectRegistry {
 
-        @SubscribeEvent
+        @SubscribeEvent(priority = EventPriority.LOWEST)
         public static void onBlockRegistry(Register<Block> event) {
             event.getRegistry().register(Objects.BGLASS);
             event.getRegistry().register(Objects.BKILN);
@@ -50,7 +95,7 @@ public class RegistryManager {
             event.getRegistry().register(Objects.BMATERIAL);
         }
 
-        @SubscribeEvent
+        @SubscribeEvent(priority = EventPriority.LOWEST)
         public static void onItemRegistry(Register<Item> event) {
             event.getRegistry().register(Objects.IGLASS);
             event.getRegistry().register(Objects.IKILN);
@@ -70,11 +115,12 @@ public class RegistryManager {
             ResourceLocation glass = Objects.BGLASS.getRegistryName();
             ResourceLocation kiln = Objects.BKILN.getRegistryName();
             ResourceLocation material = Objects.BMATERIAL.getRegistryName();
+            ResourceLocation shard = Objects.ISHARD.getRegistryName();
 
             OBJLoader.INSTANCE.addDomain(Glazed.MOD_ID);
 
-            for (int i = 0; i < GlassType.values().length; ++i) {
-                String type = GlassType.values()[i].getName();
+            for (int i = 0; i < GlassBlockType.values().length; ++i) {
+                String type = GlassBlockType.values()[i].getName();
                 ModelLoader.setCustomModelResourceLocation(Objects.IGLASS, i,
                         new ModelResourceLocation(glass, "type=" + type));
             }
@@ -82,11 +128,15 @@ public class RegistryManager {
             ModelLoader.setCustomModelResourceLocation(Objects.IKILN, 0,
                     new ModelResourceLocation(kiln, "inventory"));
 
-            for (int i = 0; i < MaterialType.values().length; ++i) {
-                String type = MaterialType.values()[i].getName();
+            for (int i = 0; i < MaterialBlockType.values().length; ++i) {
+                String type = MaterialBlockType.values()[i].getName();
                 ModelLoader.setCustomModelResourceLocation(Objects.IMATERIAL, i,
                         new ModelResourceLocation(material, "type=" + type));
             }
+
+            ModelLoader.setCustomModelResourceLocation(Objects.ISHARD, 0,
+                    new ModelResourceLocation(shard, "inventory"));
+
         }
 
     }
