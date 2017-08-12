@@ -39,10 +39,8 @@ import java.util.HashMap;
 @Mod.EventBusSubscriber(Side.CLIENT)
 public class OverlayRenderer {
 
-    public static final HashMap<GlassBlockType, ResourceLocation> GLASS =
-            new HashMap<GlassBlockType, ResourceLocation>();
-    public static final HashMap<MaterialBlockType, ResourceLocation> MATERIALS =
-            new HashMap<MaterialBlockType, ResourceLocation>();
+    public static final HashMap<GlassBlockType, ResourceLocation> GLASS = new HashMap<>();
+    public static final HashMap<MaterialBlockType, ResourceLocation> MATERIALS = new HashMap<>();
 
     static {
         GLASS.put(GlassBlockType.VOIDIC, new ResourceLocation(Glazed.MOD_ID, "textures/overlay/voided.png"));
@@ -52,37 +50,27 @@ public class OverlayRenderer {
 
     @SubscribeEvent
     public static void onRenderOverlay(RenderGameOverlayEvent.Pre event) {
-        if (!event.getType().equals(RenderGameOverlayEvent.ElementType.ALL)) return;
-        int w = event.getResolution().getScaledWidth(), h = event.getResolution().getScaledHeight();
-        Minecraft mc = Minecraft.getMinecraft();
-        World world = mc.player.world;
-        BlockPos pos = new BlockPos(mc.player.posX, mc.player.posY + mc.player.eyeHeight, mc.player.posZ);
-        IBlockState state = world.getBlockState(pos);
-
-        if (state.getBlock() instanceof BlockGlass
-                && GLASS.containsKey(
-                        GlassBlockType.getType(state))) {
-            GlStateManager.pushMatrix();
-            GlStateManager.enableBlend();
-            mc.renderEngine.bindTexture(
-                    GLASS.get(GlassBlockType.getType(state)));
-            mc.ingameGUI.drawTexturedModalRect(
-                    0, 0, 0, 0, w, h);
-            GlStateManager.popMatrix();
+        if (event.getType().equals(RenderGameOverlayEvent.ElementType.ALL)) {
+            int w = event.getResolution().getScaledWidth(), h = event.getResolution().getScaledHeight();
+            Minecraft mc = Minecraft.getMinecraft();
+            World world = mc.player.world;
+            BlockPos pos = new BlockPos(mc.player.posX, mc.player.posY + mc.player.eyeHeight, mc.player.posZ);
+            IBlockState state = world.getBlockState(pos);
+            if (state.getBlock() instanceof BlockGlass && GLASS.containsKey(GlassBlockType.getType(state))) {
+                GlStateManager.pushMatrix();
+                GlStateManager.enableBlend();
+                mc.renderEngine.bindTexture(GLASS.get(GlassBlockType.getType(state)));
+                mc.ingameGUI.drawTexturedModalRect(0, 0, 0, 0, w, h);
+                GlStateManager.popMatrix();
+            }
+            if (state.getBlock() instanceof BlockMaterial && MATERIALS.containsKey(MaterialBlockType.getType(state))) {
+                GlStateManager.pushMatrix();
+                GlStateManager.enableBlend();
+                mc.renderEngine.bindTexture(MATERIALS.get(MaterialBlockType.getType(state)));
+                mc.ingameGUI.drawTexturedModalRect(0, 0, 0, 0, w, h);
+                GlStateManager.popMatrix();
+            }
         }
-
-        if (state.getBlock() instanceof BlockMaterial
-                && MATERIALS.containsKey(
-                        MaterialBlockType.getType(state))){
-            GlStateManager.pushMatrix();
-            GlStateManager.enableBlend();
-            mc.renderEngine.bindTexture(
-                    MATERIALS.get(MaterialBlockType.getType(state)));
-            mc.ingameGUI.drawTexturedModalRect(
-                    0, 0, 0, 0, w, h);
-            GlStateManager.popMatrix();
-        }
-
     }
 
 }

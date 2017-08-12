@@ -28,8 +28,6 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.commons.lang3.tuple.Pair;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -43,22 +41,19 @@ public class ItemBlockGlass extends ItemBlock {
         setHasSubtypes(true);
     }
 
-    @Override @Nonnull @SideOnly(Side.CLIENT)
-    public String getUnlocalizedName(
-            @Nonnull ItemStack stack) {
+    @Override @SideOnly(Side.CLIENT)
+    public String getUnlocalizedName(ItemStack stack) {
         int meta = stack.getMetadata() % GlassBlockType.values().length;
         String type = GlassBlockType.values()[meta].getName();
         return this.getBlock().getUnlocalizedName() + "." + type;
     }
 
-    @Override @Nonnull @SideOnly(Side.CLIENT)
-    public String getItemStackDisplayName(
-            @Nonnull ItemStack stack) {
+    @Override @SideOnly(Side.CLIENT)
+    public String getItemStackDisplayName(ItemStack stack) {
         int meta = stack.getMetadata() % GlassBlockType.values().length;
         String type = GlassBlockType.values()[meta].getName();
         Set<Pair<UUID, String>> keys = ClientWrapper.SPECIALS.keySet();
         Pair match = Pair.of(Glazed.proxy.getUUID(), type);
-
         if (keys.contains(match)) {
             return ClientWrapper.SPECIALS.get(match);
         } else {
@@ -67,15 +62,16 @@ public class ItemBlockGlass extends ItemBlock {
     }
 
     @Override @SideOnly(Side.CLIENT)
-    public void addInformation(
-            @Nonnull ItemStack stack,
-            @Nullable World worldIn,
-            @Nonnull List<String> tooltip,
-            @Nonnull ITooltipFlag flag) {
+    public void addInformation(ItemStack stack, World world, List<String> tooltip, ITooltipFlag flag) {
         String key = stack.getUnlocalizedName() + ".tooltip";
-        if (I18n.hasKey(key)) tooltip.add(I18n.format(key));
+        if (I18n.hasKey(key)) {
+            tooltip.add(I18n.format(key));
+        }
     }
 
-    @Override public int getMetadata(int damage) { return damage; }
+    @Override
+    public int getMetadata(int damage) {
+        return damage;
+    }
 
 }

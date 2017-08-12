@@ -37,62 +37,51 @@ public class RecipesKiln {
      * @param output   The output ingredient. This cannot be empty.
      * @return Whether the registration was successful.
      */
-    public static boolean addKilnRecipe(
-            @Nonnull ItemStack input,
-            @Nonnull ItemStack catalyst,
-            @Nonnull ItemStack output) {
-        return KILN_RECIPES.add(
-                new KilnRecipe(input, catalyst, output));
+    public static boolean addKilnRecipe(ItemStack input, ItemStack catalyst, ItemStack output) {
+        return KILN_RECIPES.add(new KilnRecipe(input, catalyst, output));
     }
 
     @Nullable
-    public static KilnRecipe getRecipe(
-            @Nonnull ItemStack input,
-            @Nonnull ItemStack catalyst) {
+    public static KilnRecipe getRecipe(ItemStack input, ItemStack catalyst) {
         for (KilnRecipe recipe : KILN_RECIPES) {
-            if (recipe.canSmelt(input, catalyst))
+            if (recipe.canSmelt(input, catalyst)) {
                 return recipe;
+            }
         }
         return null;
     }
 
     @Nonnull
-    public static ItemStack getOutput(
-            @Nonnull ItemStack input,
-            @Nonnull ItemStack catalyst) {
+    public static ItemStack getOutput(ItemStack input, ItemStack catalyst) {
         for (KilnRecipe recipe : KILN_RECIPES) {
-            if (recipe.canSmelt(input, catalyst))
+            if (recipe.canSmelt(input, catalyst)) {
                 return recipe.getOutput();
+            }
         }
         return ItemStack.EMPTY;
     }
 
-    public static boolean trySmelt(
-            @Nonnull TileKiln tile,
-            @Nonnull ItemStack input,
-            @Nonnull ItemStack catalyst) {
-        KilnRecipe rcp = getRecipe(input, catalyst);
-        ItemStack slot = Slots.getSlot(tile, Slots.OUTPUT);
-        if (rcp == null)
+    public static boolean trySmelt(TileKiln tile, ItemStack input, ItemStack catalyst) {
+        KilnRecipe recipe = getRecipe(input, catalyst);
+        ItemStack output = Slots.getSlot(tile, Slots.OUTPUT);
+        if (recipe == null) {
             return false;
-        if (!slot.isEmpty() && !slot.isItemEqual(rcp.getOutput()))
+        }
+        if (!output.isEmpty() && !output.isItemEqual(recipe.getOutput())) {
             return false;
-
-        if (slot.getCount() < slot.getMaxStackSize()) {
-            input.shrink(rcp.getInput().getCount());
-            catalyst.shrink(rcp.getCatalyst().getCount());
-
-            if (slot.isEmpty()) {
-                ItemStack stack = rcp.getOutput().copy();
+        }
+        if (output.getCount() < output.getMaxStackSize()) {
+            input.shrink(recipe.getInput().getCount());
+            catalyst.shrink(recipe.getCatalyst().getCount());
+            if (output.isEmpty()) {
+                ItemStack stack = recipe.getOutput().copy();
                 Slots.setSlot(tile, Slots.OUTPUT, stack);
             } else {
-                slot.grow(rcp.getOutput().getCount());
+                output.grow(recipe.getOutput().getCount());
             }
-
         } else {
             return false;
         }
-
         return true;
     }
 
@@ -106,31 +95,30 @@ public class RecipesKiln {
         private final ItemStack catalyst;
         private final ItemStack output;
 
-        public KilnRecipe(
-                @Nonnull ItemStack input,
-                @Nonnull ItemStack catalyst,
-                @Nonnull ItemStack output) {
+        public KilnRecipe(ItemStack input, ItemStack catalyst, ItemStack output) {
             if (input.isEmpty() || output.isEmpty()) {
-                throw new IllegalArgumentException(
-                        "Kiln recipe cannot have an empty ingredient!");
+                throw new IllegalArgumentException("Kiln recipe cannot have an empty ingredient!");
             }
-
             this.input = input;
             this.catalyst = catalyst;
             this.output = output;
         }
 
-        public ItemStack getOutput() { return output; }
-        public ItemStack getInput() { return input; }
-        public ItemStack getCatalyst() { return catalyst; }
+        public ItemStack getOutput() {
+            return output;
+        }
 
-        public boolean canSmelt(
-                @Nonnull ItemStack input,
-                @Nonnull ItemStack catalyst) {
-            return !(this.input.getCount() > input.getCount()
-                    || this.catalyst.getCount() > catalyst.getCount())
-                    && this.input.isItemEqual(input)
-                    && this.catalyst.isItemEqual(catalyst);
+        public ItemStack getInput() {
+            return input;
+        }
+
+        public ItemStack getCatalyst() {
+            return catalyst;
+        }
+
+        public boolean canSmelt(ItemStack input, ItemStack catalyst) {
+            return !(this.input.getCount() > input.getCount() || this.catalyst.getCount() > catalyst.getCount())
+                    && this.input.isItemEqual(input) && this.catalyst.isItemEqual(catalyst);
         }
 
     }

@@ -56,25 +56,55 @@ public enum MaterialBlockType implements IStringSerializable {
         this.isSolid = isSolid;
     }
 
-    private static final PropertyEnum<MaterialBlockType> PROPERTY = PropertyEnum
-            .create("type", MaterialBlockType.class);
-    public static PropertyEnum<MaterialBlockType> getProperty() { return PROPERTY; }
+    private static final PropertyEnum<MaterialBlockType> PROPERTY = PropertyEnum.create("type", MaterialBlockType.class);
 
-    public static MaterialBlockType getType(IBlockState state) { return state.getValue(PROPERTY); }
+    public static PropertyEnum<MaterialBlockType> getProperty() {
+        return PROPERTY;
+    }
+
+    public static MaterialBlockType getType(IBlockState state) {
+        return state.getValue(PROPERTY);
+    }
+
     public static MaterialBlockType getType(int meta) {
         if (meta >= values().length || meta < 0) return values()[0];
         return values()[meta];
     }
 
-    public String getName() { return name().toLowerCase(Locale.ENGLISH); }
-    public int getMetadata() { return ordinal(); }
+    public String getName() {
+        return name().toLowerCase(Locale.ENGLISH);
+    }
 
-    public float getHardness() { return hardness; }
-    public float getResistance() { return resistance; }
-    public int getLightLevel() { return lightLevel; }
-    public Material getMaterial() { return material; }
-    public SoundType getSoundType() { return soundType; }
-    public BlockRenderLayer getRenderLayer() { return layer; }
-    public boolean isSolid() { return isSolid; }
+    public int getMetadata() {
+        return ordinal();
+    }
+
+    public float getHardness() {
+        return hardness;
+    }
+
+    public float getResistance() {
+        return resistance;
+    }
+
+    public int getLightLevel() {
+        return lightLevel;
+    }
+
+    public Material getMaterial() {
+        return material;
+    }
+
+    public SoundType getSoundType() {
+        return soundType;
+    }
+
+    public BlockRenderLayer getRenderLayer() {
+        return layer;
+    }
+
+    public boolean isSolid() {
+        return isSolid;
+    }
 
 }

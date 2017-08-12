@@ -16,11 +16,6 @@ package net.insomniakitten.glazed.kiln;
  *   limitations under the License.
  */
 
-import java.util.Locale;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -34,6 +29,9 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.oredict.OreDictionary;
 
+import javax.annotation.Nonnull;
+import java.util.Locale;
+
 public class TileKiln extends TileEntity implements ITickable {
 
 
@@ -46,13 +44,17 @@ public class TileKiln extends TileEntity implements ITickable {
     private ItemStackHandler ITEMS = new ItemStackHandler(4) {
 
         @Override
-        protected int getStackLimit(int index, @Nonnull ItemStack stack) {
+        protected int getStackLimit(int index, ItemStack stack) {
             switch (index) {
-                case 0: return isSand(stack) ?
-                            super.getStackLimit(index, stack) : 0;
+                case 0:
+                    if (!isSand(stack)) {
+                        return 0;
+                    }
 
-                case 2: return TileEntityFurnace.getItemBurnTime(stack) > 0 ?
-                            super.getStackLimit(index, stack) : 0;
+                case 2:
+                    if (TileEntityFurnace.getItemBurnTime(stack) <= 0) {
+                        return 0;
+                    }
 
                 case 3: return 0;
             }
@@ -63,10 +65,10 @@ public class TileKiln extends TileEntity implements ITickable {
             int[] ids = OreDictionary.getOreIDs(stack);
             int sand = OreDictionary.getOreID("sand");
             for (int id : ids) {
-                if (id == sand)
+                if (id == sand) {
                     return true;
-            }
-            return false;
+                }
+            } return false;
         }
 
     };
@@ -74,20 +76,15 @@ public class TileKiln extends TileEntity implements ITickable {
     public int getProgress() { return progress; }
 
     @Override
-    public boolean hasCapability(
-            @Nonnull Capability<?> capability,
-            @Nullable EnumFacing facing) {
-        return capability.equals(CAPABILITY)
-                || super.hasCapability(capability, facing);
+    public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
+        return capability.equals(CAPABILITY) || super.hasCapability(capability, facing);
     }
 
-    @Override @Nullable @SuppressWarnings("unchecked")
-    public <T> T getCapability(
-            @Nonnull Capability<T> capability,
-            @Nullable EnumFacing facing) {
-        if (capability.equals(CAPABILITY))
+    @Override @SuppressWarnings("unchecked")
+    public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
+        if (capability.equals(CAPABILITY)) {
             return (T) this.ITEMS;
-        return super.getCapability(capability, facing);
+        } else return super.getCapability(capability, facing);
     }
 
     @Override
@@ -152,13 +149,11 @@ public class TileKiln extends TileEntity implements ITickable {
         public String getName() { return name().toLowerCase(Locale.ENGLISH); }
 
         public static ItemStack getSlot(TileKiln tile, Slots slot){
-            return tile.ITEMS.getStackInSlot(
-                    slot.ordinal());
+            return tile.ITEMS.getStackInSlot(slot.ordinal());
         }
 
         public static void setSlot(TileKiln tile, Slots slot, ItemStack stack) {
-            tile.ITEMS.setStackInSlot(
-                    slot.ordinal(), stack);
+            tile.ITEMS.setStackInSlot(slot.ordinal(), stack);
         }
 
     }

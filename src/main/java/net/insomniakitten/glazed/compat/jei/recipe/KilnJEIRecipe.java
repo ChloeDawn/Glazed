@@ -19,11 +19,11 @@ package net.insomniakitten.glazed.compat.jei.recipe;
 import com.google.common.collect.Lists;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.IRecipeWrapper;
+import mezz.jei.api.recipe.IStackHelper;
 import net.insomniakitten.glazed.compat.jei.JEICompatPlugin;
 import net.insomniakitten.glazed.kiln.RecipesKiln;
 import net.minecraft.item.ItemStack;
 
-import javax.annotation.Nonnull;
 import java.util.List;
 
 public class KilnJEIRecipe implements IRecipeWrapper {
@@ -33,13 +33,10 @@ public class KilnJEIRecipe implements IRecipeWrapper {
     public KilnJEIRecipe(RecipesKiln.KilnRecipe recipe) { this.recipe = recipe; }
 
     @Override
-    public void getIngredients(@Nonnull IIngredients ingredients) {
-        List<List<ItemStack>> inputs = JEICompatPlugin.helpers.getStackHelper()
-                .expandRecipeItemStackInputs(Lists.newArrayList(
-                        recipe.getInput(), recipe.getCatalyst()));
-        ingredients.setInputLists(
-                ItemStack.class, inputs);
-        ingredients.setOutput(
-                ItemStack.class, recipe.getOutput());
+    public void getIngredients(IIngredients ingredients) {
+        IStackHelper helper = JEICompatPlugin.helpers.getStackHelper();
+        List<ItemStack> inputs = Lists.newArrayList(recipe.getInput(), recipe.getCatalyst());
+        ingredients.setInputLists(ItemStack.class, helper.expandRecipeItemStackInputs(inputs));
+        ingredients.setOutput(ItemStack.class, recipe.getOutput());
     }
 }

@@ -16,13 +16,13 @@ package net.insomniakitten.glazed.glass;
  *   limitations under the License.
  */
 
-import java.util.Locale;
-
 import net.minecraft.block.SoundType;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.IStringSerializable;
+
+import java.util.Locale;
 
 public enum GlassBlockType implements IStringSerializable {
 
@@ -66,25 +66,62 @@ public enum GlassBlockType implements IStringSerializable {
     }
 
     private static final PropertyEnum<GlassBlockType> PROPERTY = PropertyEnum.create("type", GlassBlockType.class);
-    public static PropertyEnum<GlassBlockType> getProperty() { return PROPERTY; }
 
-    public static GlassBlockType getType(IBlockState state) { return state.getValue(PROPERTY); }
+    public static PropertyEnum<GlassBlockType> getProperty() {
+        return PROPERTY;
+    }
+
+    public static GlassBlockType getType(IBlockState state) {
+        return state.getValue(PROPERTY);
+    }
+
     public static GlassBlockType getType(int meta) {
         if (meta >= values().length || meta < 0) return values()[0];
         return values()[meta];
     }
 
-    public String getName() { return name().toLowerCase(Locale.ENGLISH); }
-    public int getMetadata() { return ordinal(); }
+    public String getName() {
+        return name().toLowerCase(Locale.ENGLISH);
+    }
 
-    public float getHardness() { return hardness; }
-    public float getResistance() { return resistance; }
-    public int getLightLevel() { return lightLevel; }
-    public SoundType getSoundType() { return soundType; }
-    public BlockRenderLayer getRenderLayer() { return layer; }
-    public boolean isOpaque() { return isOpaque; }
-    public boolean isPowered() { return isPowered; }
-    public boolean dropsItem() { return dropsItem; }
-    public boolean isHeavy() { return resistance >= 3000; }
+    public int getMetadata() {
+        return ordinal();
+    }
+
+    public float getHardness() {
+        return hardness;
+    }
+
+    public float getResistance() {
+        return resistance;
+    }
+
+    public int getLightLevel() {
+        return lightLevel;
+    }
+
+    public SoundType getSoundType() {
+        return soundType;
+    }
+
+    public BlockRenderLayer getRenderLayer() {
+        return layer;
+    }
+
+    public boolean isOpaque() {
+        return isOpaque;
+    }
+
+    public boolean isPowered() {
+        return isPowered;
+    }
+
+    public boolean dropsItem() {
+        return dropsItem;
+    }
+
+    public boolean isHeavy() {
+        return resistance >= 3000;
+    }
 
 }

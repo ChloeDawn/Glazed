@@ -25,8 +25,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
 
-import javax.annotation.Nonnull;
-
 public class ContainerKiln extends Container {
 
     private EntityPlayer player;
@@ -34,8 +32,9 @@ public class ContainerKiln extends Container {
 
     public ContainerKiln(TileEntity tile, EntityPlayer player) {
         this.player = player;
-        inventory = tile.hasCapability(TileKiln.CAPABILITY, null) ?
-                tile.getCapability(TileKiln.CAPABILITY, null) : null;
+        if (tile.hasCapability(TileKiln.CAPABILITY, null)) {
+            inventory = tile.getCapability(TileKiln.CAPABILITY, null);
+        }
         this.createKilnSlots();
         this.createPlayerSlots();
     }
@@ -43,73 +42,62 @@ public class ContainerKiln extends Container {
     private void createPlayerSlots() {
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 9; j++) {
-                int itemsX = (j * 18), itemsY = (i * 18);
                 int index = j + i * 9 + 9;
-                addSlotToContainer(new Slot(
-                        player.inventory, index,
-                        8 + itemsX,
-                        8 + itemsY + 22 + (3 * 18))
-                );
+                addSlotToContainer(new Slot(player.inventory, index, 8 + (j * 18), 8 + (i * 18) + 22 + (3 * 18)));
             }
         }
-
-        for (int index = 0; index < 9; index++) {
-            int itemsX = (index * 18);
-            addSlotToContainer(new Slot(
-                    player.inventory, index,
-                    8 + itemsX,
-                    8 + 58 + 22 + (3 * 18)))
-            ;
+        for (int k = 0; k < 9; k++) {
+            addSlotToContainer(new Slot(player.inventory, k, 8 + (k * 18), 8 + 58 + 22 + (3 * 18)));
         }
     }
 
     private void createKilnSlots() {
         for (Slots slot : Slots.values()) {
-            int index = slot.ordinal(),
-                    x = slot.getX(),
-                    y = slot.getY();
-            this.addSlotToContainer(new SlotItemHandler(
-                            inventory, index, x, y));
+            this.addSlotToContainer(new SlotItemHandler(inventory, slot.ordinal(), slot.getX(), slot.getY()));
         }
     }
 
-    @Override @Nonnull
+    @Override
     public ItemStack transferStackInSlot(EntityPlayer player, int sourceIndex) {
         Slot holder = inventorySlots.get(sourceIndex);
         ItemStack stack = holder.getStack();
 
         if (holder.getHasStack()) {
-            int kilnSlots = 3, inventorySlots = 28;
+            int kilnSlots = 3;
+            int inventorySlots = 28;
             int hotbarIndex = kilnSlots + inventorySlots;
             int playerSlots = hotbarIndex + 9;
 
             if (sourceIndex > kilnSlots) {
                 if (!this.mergeItemStack(stack, 0, 1, false)
-                        && (!this.mergeItemStack(stack, 2, 3, false))
-                        && (!this.mergeItemStack(stack, 1, 2, false)))
+                && (!this.mergeItemStack(stack, 2, 3, false))
+                && (!this.mergeItemStack(stack, 1, 2, false)))
                     return ItemStack.EMPTY;
+            } else {
+                if (!mergeItemStack(stack, kilnSlots, playerSlots, true)) {
+                    return ItemStack.EMPTY;
+                }
             }
-
-            else if (!mergeItemStack(stack, kilnSlots, playerSlots, true))
-                return ItemStack.EMPTY;
 
             holder.onSlotChanged();
 
-            if (stack.isEmpty())
+            if (stack.isEmpty()) {
                 holder.putStack(ItemStack.EMPTY);
-
-            else if (stack.getCount() == holder.getStack().getCount())
-                return ItemStack.EMPTY;
+            } else {
+                if (stack.getCount() == holder.getStack().getCount()) {
+                    return ItemStack.EMPTY;
+                }
+            }
 
             holder.onTake(player, stack);
-
             return stack;
         }
-
         return ItemStack.EMPTY;
     }
 
     @Override
-    public boolean canInteractWith(@Nonnull EntityPlayer player) { return true; }
+    public boolean canInteractWith(EntityPlayer player) {
+        return true;
+    }
 
 }

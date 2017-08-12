@@ -42,23 +42,15 @@ import net.minecraftforge.fml.common.network.internal.FMLNetworkHandler;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.Locale;
 
 public class BlockKiln extends Block {
 
-    private static final PropertyEnum<KilnHalf> HALF = PropertyEnum
-            .create("half", KilnHalf.class);
-    private static final PropertyDirection FACING = PropertyDirection
-            .create("facing", EnumFacing.Plane.HORIZONTAL);
-    private static final PropertyBool ACTIVE = PropertyBool
-            .create("active");
+    private static final PropertyEnum<KilnHalf> HALF = PropertyEnum.create("half", KilnHalf.class);
+    private static final PropertyDirection FACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
+    private static final PropertyBool ACTIVE = PropertyBool.create("active");
 
-    private static final AxisAlignedBB AABB_UPPER = new AxisAlignedBB(
-            0.0625, 0, 0.0625, 0.9375, 0.8125, 0.9375);
-    private static final AxisAlignedBB AABB_LOWER = new AxisAlignedBB(
-            0, 0, 0, 1, 1, 1);
+    private static final AxisAlignedBB AABB_UPPER = new AxisAlignedBB(0.0625, 0, 0.0625, 0.9375, 0.8125, 0.9375);
 
     public BlockKiln() {
         super(Material.ROCK);
@@ -92,168 +84,125 @@ public class BlockKiln extends Block {
                 .withProperty(ACTIVE, active);
     }
 
-    @Override @Nonnull
+    @Override
     public IBlockState getStateForPlacement(
-            @Nonnull World world,
-            @Nonnull BlockPos pos,
-            @Nonnull EnumFacing facing,
+            World world, BlockPos pos, EnumFacing facing,
             float hitX, float hitY, float hitZ, int meta,
-            @Nonnull EntityLivingBase placer,
-            EnumHand hand) {
+            EntityLivingBase placer, EnumHand hand) {
         return this.getDefaultState()
                 .withProperty(HALF, KilnHalf.LOWER)
                 .withProperty(FACING, placer.getHorizontalFacing().getOpposite())
                 .withProperty(ACTIVE, false);
     }
 
-    @Override public boolean isFullCube(@Nonnull IBlockState state) { return false; }
-    @Override public boolean isOpaqueCube(@Nonnull IBlockState state) { return false; }
-
     @Override
-    public int getLightValue(
-            @Nonnull IBlockState state,
-            IBlockAccess world,
-            @Nonnull BlockPos pos) {
-        return state.getValue(ACTIVE) ?
-                8 : 0;
+    public boolean isFullCube(IBlockState state) {
+        return false;
     }
 
-    @Override @Nonnull
+    @Override
+    public boolean isOpaqueCube(IBlockState state) {
+        return false;
+    }
+
+    @Override
+    public int getLightValue(IBlockState state, IBlockAccess world, BlockPos pos) {
+        return state.getValue(ACTIVE) ? 8 : 0;
+    }
+
+    @Override
     public ItemStack getPickBlock(
-            @Nonnull IBlockState state,
-            RayTraceResult target,
-            @Nonnull World world,
-            @Nonnull BlockPos pos,
-            EntityPlayer player) {
+            IBlockState state, RayTraceResult target, World world,
+            BlockPos pos, EntityPlayer player) {
         return new ItemStack(this);
     }
 
     @Override
     public boolean onBlockActivated(
-            World world,
-            BlockPos pos,
-            IBlockState state,
-            EntityPlayer player,
-            EnumHand hand,
-            EnumFacing facing,
+            World world, BlockPos pos, IBlockState state,
+            EntityPlayer player, EnumHand hand, EnumFacing facing,
             float hitX, float hitY, float hitZ) {
-        if (world.isRemote)
-            return true;
-        if (isUpper(state))
+        if (isUpper(state)) {
             pos = pos.down();
-        FMLNetworkHandler.openGui(
-                player, Glazed.instance, 0, world,
-                pos.getX(), pos.getY(), pos.getZ());
+        }
+        if (!world.isRemote) {
+            FMLNetworkHandler.openGui(player, Glazed.instance, 0, world, pos.getX(), pos.getY(), pos.getZ());
+        }
         return true;
     }
 
     @Override
-    public boolean canPlaceBlockAt(
-            World world,
-            @Nonnull BlockPos pos) {
-        boolean canPlaceLower = world.getBlockState(pos)
-                .getBlock().isReplaceable(world, pos);
-        boolean canPlaceUpper = world.getBlockState(pos.up())
-                .getBlock().isReplaceable(world, pos.up());
-
+    public boolean canPlaceBlockAt(World world, BlockPos pos) {
+        boolean canPlaceLower = world.getBlockState(pos).getBlock().isReplaceable(world, pos);
+        boolean canPlaceUpper = world.getBlockState(pos.up()).getBlock().isReplaceable(world, pos.up());
         return canPlaceLower && canPlaceUpper;
     }
 
     @Override
     public void onBlockPlacedBy(
-            World world,
-            BlockPos pos,
-            IBlockState state,
-            EntityLivingBase placer,
-            ItemStack stack) {
-        world.setBlockState(pos.up(), state
-                .withProperty(HALF, KilnHalf.UPPER));
+            World world, BlockPos pos, IBlockState state,
+            EntityLivingBase entity, ItemStack stack) {
+        world.setBlockState(pos.up(), state.withProperty(HALF, KilnHalf.UPPER));
     }
 
-
-    @Override
-    @SuppressWarnings("ConstantConditions")
-    public void breakBlock(@Nonnull World world,
-                           @Nonnull BlockPos pos,
-                           @Nonnull IBlockState state) {
+    @Override @SuppressWarnings("ConstantConditions")
+    public void breakBlock(World world, BlockPos pos, IBlockState state) {
         final BlockPos tilePos = isUpper(state) ? pos.down() : pos;
         Capability<IItemHandler> items = CapabilityItemHandler.ITEM_HANDLER_CAPABILITY;
-        TileEntity te = world.getTileEntity(tilePos);
+        TileEntity tile = world.getTileEntity(tilePos);
 
-        if (te.hasCapability(items, null)) {
-            IItemHandler inventory = te.getCapability(items, null);
-            boolean tileDrops = world.getGameRules().getBoolean("doTileDrops");
-
-            if (inventory != null && tileDrops) {
+        if (tile.hasCapability(items, null)) {
+            IItemHandler inventory = tile.getCapability(items, null);
+            if (inventory != null && world.getGameRules().getBoolean("doTileDrops")) {
                 for (int i = 0; i < inventory.getSlots(); i++) {
                     ItemStack stack = inventory.getStackInSlot(i);
-                    if (!stack.isEmpty())
-                        InventoryHelper.spawnItemStack(
-                                world,
-                                tilePos.getX(),
-                                tilePos.getY(),
-                                tilePos.getZ(),
-                                stack);
+                    InventoryHelper.spawnItemStack(world, tilePos.getX(), tilePos.getY(), tilePos.getZ(), stack);
                 }
             }
         }
 
-        BlockPos target = isUpper(state) ?
-                pos.down() : pos.up();
+        BlockPos target = isUpper(state) ? pos.down() : pos.up();
         world.setBlockToAir(target);
     }
 
     @Override
-    public AxisAlignedBB getBoundingBox(
-            IBlockState state,
-            IBlockAccess source,
-            BlockPos pos) {
-        return isUpper(state) ?
-                AABB_UPPER : AABB_LOWER;
+    public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {
+        return isUpper(state) ? AABB_UPPER : FULL_BLOCK_AABB;
     }
 
     @Override
-    public boolean hasTileEntity(
-            IBlockState state) {
-        return state.getValue(HALF)
-                .equals(KilnHalf.LOWER);
+    public boolean hasTileEntity(IBlockState state) {
+        return state.getValue(HALF).equals(KilnHalf.LOWER);
     }
 
-    @Override @Nullable
-    public TileEntity createTileEntity(
-            @Nonnull World world,
-            @Nonnull IBlockState state) {
-        return !isUpper(state) ?
-                new TileKiln() : null;
+    @Override
+    public TileEntity createTileEntity(World world, IBlockState state) {
+        return !isUpper(state) ? new TileKiln() : null;
     }
 
-    @Override @Nonnull
+    @Override
     protected BlockStateContainer createBlockState() {
-        return new BlockStateContainer(
-                this, HALF, FACING, ACTIVE);
+        return new BlockStateContainer(this, HALF, FACING, ACTIVE);
     }
 
     @Override
-    public IBlockState getActualState(
-            @Nonnull IBlockState state,
-            IBlockAccess world,
-            BlockPos pos) {
+    public IBlockState getActualState(IBlockState state, IBlockAccess world, BlockPos pos) {
         if (isUpper(state)) pos = pos.down();
         TileKiln tile = (TileKiln) world.getTileEntity(pos);
-        if (tile == null)
-            return super.getActualState(state, world, pos);
-        else return state.withProperty(ACTIVE, tile.isActive);
+        if (tile != null) {
+            return state.withProperty(ACTIVE, tile.isActive);
+        } else return super.getActualState(state, world, pos);
     }
 
-    public static boolean isUpper(
-            IBlockState state) {
-        return state.getValue(HALF)
-                .equals(KilnHalf.UPPER);
+    public static boolean isUpper(IBlockState state) {
+        return state.getValue(HALF).equals(KilnHalf.UPPER);
     }
 
     private enum KilnHalf implements IStringSerializable {
         UPPER, LOWER;
-        public String getName() { return name().toLowerCase(Locale.ENGLISH); }
+        public String getName() {
+            return name().toLowerCase(Locale.ENGLISH);
+        }
     }
 
 }

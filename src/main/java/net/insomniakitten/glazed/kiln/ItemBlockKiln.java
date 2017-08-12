@@ -25,8 +25,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.List;
 
 public class ItemBlockKiln extends ItemBlock {
@@ -37,16 +35,11 @@ public class ItemBlockKiln extends ItemBlock {
         setRegistryName(block.getRegistryName());
     }
 
-    @Override
-    @SideOnly(Side.CLIENT)
-    public void addInformation(
-            @Nonnull ItemStack stack,
-            @Nullable World worldIn,
-            @Nonnull List<String> tooltip,
-            @Nonnull ITooltipFlag flag) {
-        String unloc = stack.getUnlocalizedName();
-        tooltip.add(I18n.format(unloc + ".tooltip0"));
-        tooltip.add(I18n.format(unloc + ".tooltip1"));
+    @Override @SideOnly(Side.CLIENT)
+    public void addInformation(ItemStack stack, World world, List<String> tooltip, ITooltipFlag flag) {
+        String loc = stack.getUnlocalizedName();
+        tooltip.add(I18n.format(loc + ".tooltip0"));
+        tooltip.add(I18n.format(loc + ".tooltip1"));
     }
 
 }

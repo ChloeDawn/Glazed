@@ -25,7 +25,6 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.color.IBlockColor;
 import net.minecraft.client.renderer.color.IItemColor;
-import net.minecraft.client.resources.IResource;
 import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -39,7 +38,6 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.commons.lang3.tuple.Pair;
 
-import javax.annotation.Nullable;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
@@ -55,63 +53,68 @@ public class ClientWrapper extends Glazed.ProxyWrapper {
     public void registerColorHandler() {
         Minecraft.getMinecraft().getBlockColors().registerBlockColorHandler(new IBlockColor() {
             @Override @SideOnly(Side.CLIENT)
-            public int colorMultiplier(
-                    IBlockState state, @Nullable IBlockAccess world,
-                    @Nullable BlockPos pos, int tintIndex) {
-                if (!GlassBlockType.getType(state).equals(GlassBlockType.GAIA)) return -1;
-                return world != null && pos != null ?
-                        BiomeColorHelper.getGrassColorAtPos(world, pos)
-                        : ColorizerGrass.getGrassColor(0.5D, 1.0D);
+            public int colorMultiplier(IBlockState state, IBlockAccess world, BlockPos pos, int tintIndex) {
+                GlassBlockType type = GlassBlockType.getType(state);
+                if (type.equals(GlassBlockType.GAIA)) {
+                    if (world != null && pos != null ) {
+                        return BiomeColorHelper.getGrassColorAtPos(world, pos);
+                    } else {
+                        return ColorizerGrass.getGrassColor(0.5D, 1.0D);
+                    }
+                } else {
+                    return -1;
+                }
             }
         }, Glazed.Objects.BGLASS);
 
         Minecraft.getMinecraft().getItemColors().registerItemColorHandler(new IItemColor() {
             @Override @SideOnly(Side.CLIENT)
             public int getColorFromItemstack(ItemStack stack, int tintIndex) {
-                EntityPlayer plr = Minecraft.getMinecraft().player;
-                if (plr == null) return -1;
-                if (!GlassBlockType.getType(stack.getMetadata()).equals(GlassBlockType.GAIA)) return -1;
-                BlockPos pos = new BlockPos(plr.posX, plr.posY, plr.posZ);
-                return plr.world != null ?
-                        BiomeColorHelper.getGrassColorAtPos(plr.world, pos)
-                        : ColorizerGrass.getGrassColor(0.5D, 1.0D);
+                EntityPlayer player = Minecraft.getMinecraft().player;
+                GlassBlockType type = GlassBlockType.getType(stack.getMetadata());
+                if (player != null && type.equals(GlassBlockType.GAIA)) {
+                    BlockPos pos = new BlockPos(player.posX, player.posY, player.posZ);
+                    if (player.world != null) {
+                        return BiomeColorHelper.getGrassColorAtPos(player.world, pos);
+                    } else {
+                        return ColorizerGrass.getGrassColor(0.5D, 1.0D);
+                    }
+                } else {
+                    return -1;
+                }
             }
         }, Glazed.Objects.IGLASS); // sand and glass itemblocks
     }
 
-    @Override
-    @SideOnly(Side.CLIENT)
+    @Override @SideOnly(Side.CLIENT)
     public void parseSpecials() {
         IResourceManager manager = Minecraft.getMinecraft().getResourceManager();
         ResourceLocation rl = new ResourceLocation(Glazed.MOD_ID, "data/specials.json");
-        Gson gson = new Gson(); JsonElement ele;
-
+        Gson gson = new Gson(); JsonElement element;
         try {
-            IResource resource = manager.getResource(rl);
-            InputStreamReader reader = new InputStreamReader(resource.getInputStream());
-            ele = gson.fromJson(reader, JsonElement.class);
+            InputStreamReader reader = new InputStreamReader(manager.getResource(rl).getInputStream());
+            element = gson.fromJson(reader, JsonElement.class);
             reader.close();
         } catch (Exception ignored) {
             Glazed.LOGGER.warn("Failed to parse specials.json!");
             return;
         }
 
-        JsonObject json = ele.getAsJsonObject();
+        JsonObject json = element.getAsJsonObject();
         for (Map.Entry<String, JsonElement> group : json.entrySet()) {
             JsonObject obj = group.getValue().getAsJsonObject();
             for (Map.Entry<String, JsonElement> e : obj.entrySet()) {
-                SPECIALS.put(Pair.of(
-                        UUID.fromString(e.getKey()), group.getKey()),
-                        e.getValue().getAsString());
+                SPECIALS.put(Pair.of(UUID.fromString(e.getKey()), group.getKey()), e.getValue().getAsString());
             }
         }
     }
 
-    @Override
-    @SideOnly(Side.CLIENT)
+    @Override @SideOnly(Side.CLIENT)
     public UUID getUUID() {
-        EntityPlayer plr = Minecraft.getMinecraft().player;
-        return plr != null ? plr.getGameProfile().getId() : EMPTY_UUID;
+        EntityPlayer player = Minecraft.getMinecraft().player;
+        if (player != null) {
+            return player.getGameProfile().getId();
+        } else return EMPTY_UUID;
     }
 
 }

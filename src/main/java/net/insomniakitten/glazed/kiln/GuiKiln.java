@@ -35,28 +35,23 @@ public class GuiKiln extends GuiContainer {
     }
 
     @Override
-    public void drawScreen(
-            int mouseX, int mouseY, float partialTicks) {
+    public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         this.drawDefaultBackground();
         super.drawScreen(mouseX, mouseY, partialTicks);
         this.renderHoveredToolTip(mouseX, mouseY);
     }
 
     @Override
-    protected void drawGuiContainerForegroundLayer(
-            int mouseX, int mouseY) {
+    protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         String label = I18n.format("tile.glazed.kiln.name");
         int width = this.fontRenderer.getStringWidth(label);
         int color = 4210752;
-        this.fontRenderer.drawString(
-                label, 88 - (width / 2), 6, color);
-        this.fontRenderer.drawString(
-                I18n.format("container.inventory"), 8, ySize - 94, color);
+        this.fontRenderer.drawString(label, 88 - (width / 2), 6, color);
+        this.fontRenderer.drawString(I18n.format("container.inventory"), 8, ySize - 94, color);
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(
-            float partialTicks, int mouseX, int mouseY) {
+    protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
         GlStateManager.color(1f, 1f, 1f);
         mc.getTextureManager().bindTexture(texture);
         int x = (width - xSize) / 2;

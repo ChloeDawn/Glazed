@@ -35,7 +35,6 @@ import net.minecraftforge.fml.common.network.NetworkRegistry;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import javax.annotation.Nonnull;
 import java.util.UUID;
 
 @Mod(   modid = Glazed.MOD_ID,
@@ -49,17 +48,22 @@ public class Glazed {
     @Mod.Instance(Glazed.MOD_ID)
     public static Glazed instance;
 
-    public static final String
-            MOD_ID = "glazed", MOD_NAME = "Glazed",
-            VERSION = "%mod_version%", MC_VERSION = "%mc_version%",
-            DEPENDENCIES = "required-after:forge@[14.21.1.2387,)",
-            CLIENT_PROXY = "net.insomniakitten.glazed.client.ClientWrapper",
-            SERVER_PROXY = "net.insomniakitten.glazed.Glazed$ProxyWrapper";
+    public static final String MOD_ID = "glazed";
+    public static final String MOD_NAME = "Glazed";
+    public static final String VERSION = "%mod_version%";
+    public static final String MC_VERSION = "%mc_version%";
+    public static final String DEPENDENCIES = "required-after:forge@[14.21.1.2387,)";
+    public static final String CLIENT_PROXY = "net.insomniakitten.glazed.client.ClientWrapper";
+    public static final String SERVER_PROXY = "net.insomniakitten.glazed.Glazed$ProxyWrapper";
 
     public static final Logger LOGGER = LogManager.getLogger(MOD_NAME);
-    public static final TabGlazed TAB = new TabGlazed();
+    public static final CreativeTabs TAB = new CreativeTabs(Glazed.MOD_ID) {
+        @Override
+        public ItemStack getTabIconItem() {
+            return new ItemStack(Objects.BKILN);
+        }
+    };
 
-    @SuppressWarnings("SpellCheckingInspection")
     public static class Objects {
         public static final BlockGlass BGLASS = new BlockGlass();
         public static final ItemBlockGlass IGLASS = new ItemBlockGlass(BGLASS);
@@ -103,14 +107,6 @@ public class Glazed {
         public void registerColorHandler() {}
         public void parseSpecials() {}
         public UUID getUUID() { return EMPTY_UUID; }
-    }
-
-    private static class TabGlazed extends CreativeTabs {
-        TabGlazed() { super(Glazed.MOD_ID); }
-        @Override @Nonnull
-        public ItemStack getTabIconItem() {
-            return new ItemStack(Objects.BKILN);
-        }
     }
 
 }

@@ -29,30 +29,26 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import javax.annotation.Nonnull;
 import java.util.List;
 
 public class KilnDataProvider implements IWailaDataProvider {
 
-    @Override @Nonnull @SideOnly(Side.CLIENT)
+    @Override @SideOnly(Side.CLIENT)
     public List<String> getWailaBody(
-            ItemStack stack,
-            List<String> tooltip,
-            IWailaDataAccessor accessor,
-            IWailaConfigHandler config) {
-
+            ItemStack stack, List<String> tooltip,
+            IWailaDataAccessor accessor, IWailaConfigHandler config) {
         boolean isUpper = BlockKiln.isUpper(accessor.getBlockState());
         BlockPos tilePos = isUpper ? accessor.getPosition().down() : accessor.getPosition();
         TileEntity tile = accessor.getWorld().getTileEntity(tilePos);
 
-        if (tile == null) return tooltip;
-
-        for (Slots slot : Slots.values()) {
-            ItemStack item  = Slots.getSlot((TileKiln) tile, slot);
-            if (!item.isEmpty()) {
-                String label = I18n.format("waila.glazed.kiln." + slot.getName()) + ": ";
-                String multiplier = " x " + item.getCount();
-                tooltip.add(label + item.getDisplayName() + multiplier);
+        if (tile != null) {
+            for (Slots slot : Slots.values()) {
+                ItemStack item = Slots.getSlot((TileKiln) tile, slot);
+                if (!item.isEmpty()) {
+                    String label = I18n.format("waila.glazed.kiln." + slot.getName()) + ": ";
+                    String multiplier = " x " + item.getCount();
+                    tooltip.add(label + item.getDisplayName() + multiplier);
+                }
             }
         }
 

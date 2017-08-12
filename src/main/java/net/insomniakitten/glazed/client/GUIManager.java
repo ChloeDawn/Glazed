@@ -28,23 +28,25 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class GUIManager implements IGuiHandler {
 
     @Override
-    public Object getServerGuiElement(
-            int ID, EntityPlayer player,
-            World world, int x, int y, int z) {
+    public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
         BlockPos pos = new BlockPos(x, y, z);
-        if (ID == 0) return new ContainerKiln(
-                world.getTileEntity(pos), player);
-        else return null;
+        if (ID == 0) {
+            return new ContainerKiln(world.getTileEntity(pos), player);
+        }
+        else {
+            return null;
+        }
     }
 
     @Override @SideOnly(Side.CLIENT)
-    public Object getClientGuiElement(
-            int ID, EntityPlayer player,
-            World world, int x, int y, int z) {
+    public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
         BlockPos pos = new BlockPos(x, y, z);
-        if (ID == 0) return new GuiKiln(
-                world.getTileEntity(pos), player);
-        else return null;
+        if (ID == 0) {
+            return new GuiKiln(world.getTileEntity(pos), player);
+        }
+        else {
+            return null;
+        }
     }
 
 }

@@ -16,6 +16,7 @@ package net.insomniakitten.glazed.glass;
  *   limitations under the License.
  */
 
+import com.google.common.base.Equivalence.Wrapper;
 import net.insomniakitten.glazed.Glazed;
 import net.insomniakitten.glazed.RegistryManager.ShardRegistry;
 import net.minecraft.client.util.ITooltipFlag;
@@ -27,9 +28,9 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.List;
+
+import static net.insomniakitten.glazed.RegistryManager.ShardRegistry.SHARDS;
 
 public class ItemGlassShard extends Item {
 
@@ -41,19 +42,22 @@ public class ItemGlassShard extends Item {
     }
 
     @Override @SuppressWarnings("ConstantConditions")
-    public void getSubItems(
-            @Nonnull CreativeTabs tab,
-            @Nonnull NonNullList<ItemStack> items) {
-        if (this.isInCreativeTab(tab))
-            items.addAll(ShardRegistry.SHARDS.keySet());
+    public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> items) {
+        if (this.isInCreativeTab(tab)) {
+            for (Wrapper<ItemStack> eqv : SHARDS.keySet()) {
+                items.add(eqv.get());
+            }
+        }
     }
 
     @Override @SideOnly(Side.CLIENT)
-    public void addInformation(
-            ItemStack stack,
-            @Nullable World world,
-            List<String> tooltip,
-            ITooltipFlag flag) {
-        // TODO: Tooltips
+    public void addInformation(ItemStack stack, World world, List<String> tooltip, ITooltipFlag flag) {
+        Wrapper<ItemStack> eqv = ShardRegistry.EQV.wrap(stack);
+        if (SHARDS.containsKey(eqv)) {
+            ItemStack glass = SHARDS.get(eqv).get();
+            if (glass != null) {
+                tooltip.add(glass.getDisplayName());
+            }
+        }
     }
 }

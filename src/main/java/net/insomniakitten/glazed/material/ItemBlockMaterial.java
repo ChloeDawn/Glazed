@@ -27,8 +27,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import javax.annotation.Nonnull;
-
 public class ItemBlockMaterial extends ItemBlock {
 
     public ItemBlockMaterial(Block block) {
@@ -38,9 +36,7 @@ public class ItemBlockMaterial extends ItemBlock {
         setHasSubtypes(true);
     }
 
-    @Override
-    @Nonnull
-    @SideOnly(Side.CLIENT)
+    @Override @SideOnly(Side.CLIENT)
     public String getUnlocalizedName(ItemStack stack) {
         int meta = stack.getMetadata() % MaterialBlockType.values().length;
         String type = MaterialBlockType.values()[meta].getName();
@@ -49,24 +45,22 @@ public class ItemBlockMaterial extends ItemBlock {
 
     @Override
     public boolean placeBlockAt(
-            @Nonnull ItemStack stack,
-            @Nonnull EntityPlayer player,
-            World world,
-            @Nonnull BlockPos pos,
-            EnumFacing side,
+            ItemStack stack, EntityPlayer player, World world,
+            BlockPos pos, EnumFacing side,
             float hitX, float hitY, float hitZ,
-            @Nonnull IBlockState newState) {
+            IBlockState newState) {
         IBlockState state = world.getBlockState(pos.down());
         boolean isSolid = state.getBlock().isTopSolid(state);
-        if (!MaterialBlockType.getType(stack.getMetadata())
-                .equals(MaterialBlockType.CRYSTAL)) {
+        MaterialBlockType type = MaterialBlockType.getType(stack.getMetadata());
+        if (!type.equals(MaterialBlockType.CRYSTAL)) {
             isSolid = true;
         }
-        return isSolid && super.placeBlockAt(
-                stack, player, world, pos, side,
-                hitX, hitY, hitZ, newState);
+        return isSolid && super.placeBlockAt(stack, player, world, pos, side, hitX, hitY, hitZ, newState);
     }
 
-    @Override public int getMetadata(int damage) { return damage; }
+    @Override
+    public int getMetadata(int damage) {
+        return damage;
+    }
 
 }
