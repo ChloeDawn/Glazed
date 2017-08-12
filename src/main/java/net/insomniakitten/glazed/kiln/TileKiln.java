@@ -19,7 +19,6 @@ package net.insomniakitten.glazed.kiln;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraftforge.common.capabilities.Capability;
@@ -45,20 +44,9 @@ public class TileKiln extends TileEntity implements ITickable {
 
         @Override
         protected int getStackLimit(int index, ItemStack stack) {
-            switch (index) {
-                case 0:
-                    if (!isSand(stack)) {
-                        return 0;
-                    }
-
-                case 2:
-                    if (TileEntityFurnace.getItemBurnTime(stack) <= 0) {
-                        return 0;
-                    }
-
-                case 3: return 0;
-            }
-            return super.getStackLimit(index, stack);
+            if ((index == 0 && isSand(stack)) || (index == 1) || (index == 2 && isFuel(stack))) {
+                return super.getStackLimit(index, stack);
+            } else return 0;
         }
 
         private boolean isSand(ItemStack stack) {
@@ -69,6 +57,10 @@ public class TileKiln extends TileEntity implements ITickable {
                     return true;
                 }
             } return false;
+        }
+
+        private boolean isFuel(ItemStack stack) {
+            return ForgeEventFactory.getItemBurnTime(stack) > 0;
         }
 
     };
@@ -84,15 +76,16 @@ public class TileKiln extends TileEntity implements ITickable {
     public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
         if (capability.equals(CAPABILITY)) {
             return (T) this.ITEMS;
-        } else return super.getCapability(capability, facing);
+        } else {
+            return super.getCapability(capability, facing);
+        }
     }
 
     @Override
     public final void readFromNBT(NBTTagCompound nbt) {
         super.readFromNBT(nbt);
         this.ITEMS.deserializeNBT(nbt.getCompoundTag("contents"));
-        this.progress = nbt.hasKey("progress") ?
-                nbt.getInteger("progress") : 0;
+        this.progress = nbt.hasKey("progress") ? nbt.getInteger("progress") : 0;
     }
 
     @Override @Nonnull
@@ -112,7 +105,6 @@ public class TileKiln extends TileEntity implements ITickable {
                         fuel = Slots.getSlot(this, Slots.FUEL),
                         output = Slots.getSlot(this, Slots.OUTPUT);
 
-            int burnTime = ForgeEventFactory.getItemBurnTime(fuel);
             int remainingFuelTime = 0;
 
             if (RecipesKiln.getRecipe(input, catalyst) != null && (!fuel.isEmpty() || remainingFuelTime > 0)) {
@@ -124,8 +116,9 @@ public class TileKiln extends TileEntity implements ITickable {
             }
 
             if (!RecipesKiln.getOutput(input, catalyst).isItemEqual(output)
-                    || output.getCount() == output.getMaxStackSize())
+                    || output.getCount() == output.getMaxStackSize()) {
                 isActive = false;
+            }
 
             this.markDirty();
         }
