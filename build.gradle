@@ -14,12 +14,6 @@ buildscript {
 apply plugin: 'net.minecraftforge.gradle.forge'
 
 version = "${mc_version}-${mod_version}"
-def version_alt = "${mod_version}"
-
-if (mod_build != "") {
-    version = "${mc_version}-${mod_version}-${mod_build}"
-    version_alt = "${mod_version}-${mod_build}"
-}
 
 group = "net.insomniakitten.glazed"
 archivesBaseName = "glazed"
@@ -65,7 +59,7 @@ dependencies {
 processResources {
     from(sourceSets.main.resources.srcDirs) {
         include 'mcmod.info', 'pack.mcmeta'
-        expand  'build_version': "${version_alt}",
+        expand  'build_version': "${mod_version}",
                 'mcf_version': "${mc_version}-${forge_version}"
     }
 

@@ -33,12 +33,10 @@ import java.util.Locale;
 
 public class TileKiln extends TileEntity implements ITickable {
 
+    public static final Capability<IItemHandler> CAPABILITY = CapabilityItemHandler.ITEM_HANDLER_CAPABILITY;
 
     public boolean isActive = false;
     private int progress = 0;
-
-    public static final Capability<IItemHandler> CAPABILITY =
-            CapabilityItemHandler.ITEM_HANDLER_CAPABILITY;
 
     private ItemStackHandler ITEMS = new ItemStackHandler(4) {
 
