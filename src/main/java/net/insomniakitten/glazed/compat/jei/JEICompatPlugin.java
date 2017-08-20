@@ -21,7 +21,7 @@ import mezz.jei.api.IModPlugin;
 import mezz.jei.api.IModRegistry;
 import mezz.jei.api.JEIPlugin;
 import mezz.jei.api.recipe.IRecipeCategoryRegistration;
-import net.insomniakitten.glazed.Glazed;
+import net.insomniakitten.glazed.Glazed.ModBlocks;
 import net.insomniakitten.glazed.compat.jei.recipe.KilnJEICategory;
 import net.insomniakitten.glazed.compat.jei.recipe.KilnJEIRecipe;
 import net.insomniakitten.glazed.kiln.GuiKiln;
@@ -31,19 +31,21 @@ import net.minecraft.item.ItemStack;
 @JEIPlugin
 public class JEICompatPlugin implements IModPlugin {
 
+    public static final String ID = "glazed.jei.kiln";
     public static IJeiHelpers helpers;
 
     @Override
     public void register(IModRegistry registry) {
         helpers = registry.getJeiHelpers();
-        registry.addRecipes(RecipesKiln.getRecipes(), KilnJEICategory.ID);
-        registry.handleRecipes(RecipesKiln.KilnRecipe.class, KilnJEIRecipe::new, KilnJEICategory.ID);
-        registry.addRecipeCatalyst(new ItemStack(Glazed.Objects.BKILN), KilnJEICategory.ID);
-        registry.addRecipeClickArea(GuiKiln.class, 80, 35, 21, 14, KilnJEICategory.ID);
+        registry.addRecipes(RecipesKiln.getRecipes(), ID);
+        registry.handleRecipes(RecipesKiln.KilnRecipe.class, KilnJEIRecipe::new, ID);
+        registry.addRecipeCatalyst(new ItemStack(ModBlocks.KILN.get()), ID);
+        registry.addRecipeClickArea(GuiKiln.class, 80, 35, 21, 14, ID);
     }
 
     @Override
     public void registerCategories(IRecipeCategoryRegistration registry) {
         registry.addRecipeCategories(new KilnJEICategory(registry.getJeiHelpers().getGuiHelper()));
     }
+
 }

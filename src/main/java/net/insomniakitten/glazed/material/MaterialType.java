@@ -25,7 +25,7 @@ import net.minecraft.util.IStringSerializable;
 
 import java.util.Locale;
 
-public enum MaterialBlockType implements IStringSerializable {
+public enum MaterialType implements IStringSerializable {
 
     BRICKS(2.0f, 30f, 0, Material.ROCK, SoundType.STONE, BlockRenderLayer.SOLID, true),
     SLAG(0.5f, 2.5f, 0, Material.GROUND, SoundType.SLIME, BlockRenderLayer.SOLID, false),
@@ -39,13 +39,9 @@ public enum MaterialBlockType implements IStringSerializable {
     private final BlockRenderLayer layer;
     private final boolean isSolid;
 
-    MaterialBlockType(
-            float hardness,
-            float resistance,
-            int lightLevel,
-            Material material,
-            SoundType soundType,
-            BlockRenderLayer layer,
+    MaterialType(
+            float hardness, float resistance, int lightLevel,
+            Material material, SoundType soundType, BlockRenderLayer layer,
             boolean isSolid) {
         this.hardness = hardness;
         this.resistance = resistance;
@@ -56,17 +52,17 @@ public enum MaterialBlockType implements IStringSerializable {
         this.isSolid = isSolid;
     }
 
-    private static final PropertyEnum<MaterialBlockType> PROPERTY = PropertyEnum.create("type", MaterialBlockType.class);
+    private static final PropertyEnum<MaterialType> PROPERTY = PropertyEnum.create("type", MaterialType.class);
 
-    public static PropertyEnum<MaterialBlockType> getProperty() {
+    public static PropertyEnum<MaterialType> getProperty() {
         return PROPERTY;
     }
 
-    public static MaterialBlockType getType(IBlockState state) {
+    public static MaterialType get(IBlockState state) {
         return state.getValue(PROPERTY);
     }
 
-    public static MaterialBlockType getType(int meta) {
+    public static MaterialType get(int meta) {
         if (meta >= values().length || meta < 0) return values()[0];
         return values()[meta];
     }

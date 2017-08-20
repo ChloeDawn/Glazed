@@ -16,138 +16,50 @@ package net.insomniakitten.glazed;
  *   limitations under the License.
  */
 
-import com.google.common.base.Equivalence;
-import net.insomniakitten.glazed.Glazed.Objects;
-import net.insomniakitten.glazed.glass.GlassBlockType;
+import net.insomniakitten.glazed.Glazed.ModBlocks;
+import net.insomniakitten.glazed.Glazed.ModItems;
 import net.insomniakitten.glazed.kiln.TileKiln;
-import net.insomniakitten.glazed.material.MaterialBlockType;
 import net.minecraft.block.Block;
-import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.client.event.ModelRegistryEvent;
-import net.minecraftforge.client.model.ModelLoader;
-import net.minecraftforge.client.model.obj.OBJLoader;
-import net.minecraftforge.event.RegistryEvent.Register;
+import net.minecraft.item.ItemBlock;
+import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-import net.minecraftforge.oredict.OreDictionary;
 
-import javax.annotation.Nonnull;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 @SuppressWarnings({"unused", "ConstantConditions"})
+@Mod.EventBusSubscriber
 public class RegistryManager {
 
-    @Mod.EventBusSubscriber
-    public static class ShardRegistry {
+    private static final List<ItemBlock> ITEM_BLOCKS = new ArrayList<>();
 
-        public static final Map<Equivalence.Wrapper<ItemStack>, Equivalence.Wrapper<ItemStack>> SHARDS = new HashMap<>();
-
-        public static final Equivalence<ItemStack> EQV = new Equivalence<ItemStack>() {
-            @Override protected boolean doEquivalent(@Nonnull ItemStack a, @Nonnull ItemStack b) {
-                return ItemStack.areItemStackShareTagsEqual(a, b);
-            }
-            @Override protected int doHash(@Nonnull ItemStack stack) {
-                int result = stack.getItem().getRegistryName().hashCode();
-                result = 31 * result + stack.getItemDamage();
-                //result = 31 * result + stack.getCount();
-                result = 31 * result + (stack.hasTagCompound() ? stack.getTagCompound().hashCode() : 0);
-                return result;
-            }
-        };
-
-        @SubscribeEvent(priority = EventPriority.LOWEST)
-        public static void onShardRegistry(Register<Item> event) {
-
-            event.getRegistry().register(Objects.ISHARD);
-
-            for (String ore : OreDictionary.getOreNames()) {
-                if (ore.startsWith("blockGlass") && !ore.equals("blockGlassColorless")) {
-                    for (ItemStack glass : OreDictionary.getOres(ore)) {
-                        ItemStack shard = new ItemStack(Objects.ISHARD);
-                        String name = glass.getItem().getRegistryName().toString();
-
-                        shard.setTagCompound(new NBTTagCompound());
-                        shard.getTagCompound().setString("name", name);
-
-                        if (glass.getHasSubtypes()) {
-                            shard.getTagCompound().setInteger("metadata", glass.getMetadata());
-                        }
-
-                        if (!SHARDS.containsKey(EQV.wrap(shard)) && glass.getMetadata() <= 15) {
-                            Glazed.LOGGER.info("Registering {} <{}#{}> from {}",
-                                    glass.getDisplayName(), name, glass.getMetadata(), ore);
-                            SHARDS.put(EQV.wrap(shard), EQV.wrap(glass));
-                        }
-                    }
-                }
-            }
+    public static void registerItemBlock(ItemBlock iblock) {
+        if (!ITEM_BLOCKS.contains(iblock)) {
+            ITEM_BLOCKS.add(iblock);
         }
-
     }
 
-    @Mod.EventBusSubscriber
-    private static class ObjectRegistry {
-
-        @SubscribeEvent(priority = EventPriority.LOWEST)
-        public static void onBlockRegistry(Register<Block> event) {
-            event.getRegistry().register(Objects.BGLASS);
-            event.getRegistry().register(Objects.BKILN);
-            event.getRegistry().register(Objects.BMATERIAL);
-            GameRegistry.registerTileEntity(TileKiln.class, "kiln");
+    @SubscribeEvent
+    public static void onBlockRegistry(RegistryEvent.Register<Block> event) {
+        GameRegistry.registerTileEntity(TileKiln.class, TileKiln.getKey());
+        for (ModBlocks block : ModBlocks.values()) {
+            event.getRegistry().register(block.get());
         }
-
-        @SubscribeEvent(priority = EventPriority.LOWEST)
-        public static void onItemRegistry(Register<Item> event) {
-            event.getRegistry().register(Objects.IGLASS);
-            event.getRegistry().register(Objects.IKILN);
-            event.getRegistry().register(Objects.IMATERIAL);
-        }
-
     }
 
-    @Mod.EventBusSubscriber(Side.CLIENT)
-    public static class ModelRegistry {
-
-        @SubscribeEvent
-        @SideOnly(Side.CLIENT)
-        public static void onModelRegistry(ModelRegistryEvent event) {
-            Glazed.LOGGER.info("ModelRegistryEvent");
-            ResourceLocation glass = Objects.BGLASS.getRegistryName();
-            ResourceLocation kiln = Objects.BKILN.getRegistryName();
-            ResourceLocation material = Objects.BMATERIAL.getRegistryName();
-            ResourceLocation shard = Objects.ISHARD.getRegistryName();
-
-            OBJLoader.INSTANCE.addDomain(Glazed.MOD_ID);
-
-            for (int i = 0; i < GlassBlockType.values().length; ++i) {
-                String type = GlassBlockType.values()[i].getName();
-                ModelResourceLocation glassMRL = new ModelResourceLocation(glass, "type=" + type);
-                ModelLoader.setCustomModelResourceLocation(Objects.IGLASS, i, glassMRL);
+    @SubscribeEvent
+    public static void onItemRegistry(RegistryEvent.Register<Item> event) {
+        if (!ITEM_BLOCKS.isEmpty()) {
+            for (ItemBlock iblock : ITEM_BLOCKS) {
+                event.getRegistry().register(iblock);
             }
-
-            ModelResourceLocation kilnMRL = new ModelResourceLocation(kiln, "inventory");
-            ModelLoader.setCustomModelResourceLocation(Objects.IKILN, 0, kilnMRL);
-
-            for (int i = 0; i < MaterialBlockType.values().length; ++i) {
-                String type = MaterialBlockType.values()[i].getName();
-                ModelResourceLocation materialMRL = new ModelResourceLocation(material, "type=" + type);
-                ModelLoader.setCustomModelResourceLocation(Objects.IMATERIAL, i, materialMRL);
-            }
-
-            ModelResourceLocation shardMRL = new ModelResourceLocation(shard, "inventory");
-            ModelLoader.setCustomModelResourceLocation(Objects.ISHARD, 0, shardMRL);
-
         }
-
+        for (ModItems item : ModItems.values()) {
+            event.getRegistry().register(item.get());
+        }
     }
 
 }

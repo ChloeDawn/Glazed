@@ -24,7 +24,7 @@ import net.minecraft.util.IStringSerializable;
 
 import java.util.Locale;
 
-public enum GlassBlockType implements IStringSerializable {
+public enum GlassType implements IStringSerializable {
 
     GAIA(0.3f, 1.5f, 0, SoundType.GLASS, BlockRenderLayer.TRANSLUCENT, false, false, false),
     RADIANT(0.3f, 1.5f, 15, SoundType.GLASS, BlockRenderLayer.TRANSLUCENT, false, false, false),
@@ -46,15 +46,10 @@ public enum GlassBlockType implements IStringSerializable {
     private final boolean isPowered;
     private final boolean dropsItem;
 
-    GlassBlockType(
-            float hardness,
-            float resistance,
-            int lightLevel,
-            SoundType soundType,
-            BlockRenderLayer layer,
-            boolean isOpaque,
-            boolean isPowered,
-            boolean dropsItem) {
+    GlassType(
+            float hardness, float resistance, int lightLevel,
+            SoundType soundType, BlockRenderLayer layer,
+            boolean isOpaque, boolean isPowered, boolean dropsItem) {
         this.hardness = hardness;
         this.resistance = resistance;
         this.lightLevel = lightLevel;
@@ -65,17 +60,17 @@ public enum GlassBlockType implements IStringSerializable {
         this.dropsItem = dropsItem;
     }
 
-    private static final PropertyEnum<GlassBlockType> PROPERTY = PropertyEnum.create("type", GlassBlockType.class);
+    private static final PropertyEnum<GlassType> PROPERTY = PropertyEnum.create("type", GlassType.class);
 
-    public static PropertyEnum<GlassBlockType> getProperty() {
+    public static PropertyEnum<GlassType> getProperty() {
         return PROPERTY;
     }
 
-    public static GlassBlockType getType(IBlockState state) {
+    public static GlassType get(IBlockState state) {
         return state.getValue(PROPERTY);
     }
 
-    public static GlassBlockType getType(int meta) {
+    public static GlassType get(int meta) {
         if (meta >= values().length || meta < 0) return values()[0];
         return values()[meta];
     }

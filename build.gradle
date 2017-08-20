@@ -13,54 +13,46 @@ buildscript {
 
 apply plugin: 'net.minecraftforge.gradle.forge'
 
-version = "${mc_version}-${mod_version}"
+version = "${mcVersion}-${modVersion}"
 
 group = "net.insomniakitten.glazed"
 archivesBaseName = "glazed"
 
-sourceCompatibility = compat_version
-targetCompatibility = compat_version
-
-libsDirName = build_dir
-distsDirName = build_dir
+sourceCompatibility = "1.8"
+targetCompatibility = "1.8"
 
 compileJava {
-    sourceCompatibility = compat_version
-    targetCompatibility = compat_version
+    sourceCompatibility = "1.8"
+    targetCompatibility = "1.8"
 }
 
 minecraft {
-    version = "${mc_version}-${forge_version}"
-    mappings = mcp_mappings
+    version = "${mcVersion}-${mcfVersion}"
+    mappings = mcpMappings
     runDir = "run"
 
-    replace '%mod_version%', mod_version
-    replace '%mc_version%', mc_version
+    replace '%VERSION%', modVersion
+    replaceIn 'Glazed.java'
 }
 
 repositories {
-    maven { name = "ctm"
-            url = "http://maven.tterrag.com/" }
-    maven { name = "hwyla"
-            url "http://tehnut.info/maven" }
-    maven { name "jei"
-            url = "http://dvs1.progwml6.com/files/maven" }
+    maven { name = "tterrag"; url = "http://maven.tterrag.com/" }
+    maven { name = "tehnut"; url "http://tehnut.info/maven" }
+    maven { name "progwml6"; url = "http://dvs1.progwml6.com/files/maven" }
 }
 
 dependencies {
-    compile "team.chisel.ctm:CTM:MC${mc_version}-${ctm_version}:api"
-    runtime "team.chisel.ctm:CTM:MC${mc_version}-${ctm_version}"
-    runtime "team.chisel:Chisel:MC${mc_version}-${chisel_version}"
-    deobfCompile "mcp.mobius.waila:Hwyla:${hwyla_version}_${mc_version}"
-    deobfCompile "mezz.jei:jei_${mc_version}:${jei_version}:api"
-    runtime "mezz.jei:jei_${mc_version}:${jei_version}"
+    deobfCompile "team.chisel.ctm:CTM:MC${mcVersion}-${ctmVersion}:api"
+    deobfCompile "mcp.mobius.waila:Hwyla:${hwylaVersion}_${mcVersion}"
+    deobfCompile "mezz.jei:jei_${mcVersion}:${jeiVersion}:api"
+    runtime "mezz.jei:jei_${mcVersion}:${jeiVersion}"
 }
 
 processResources {
     from(sourceSets.main.resources.srcDirs) {
         include 'mcmod.info', 'pack.mcmeta'
-        expand  'build_version': "${mod_version}",
-                'mcf_version': "${mc_version}-${forge_version}"
+        expand  'build_version': modVersion,
+                'mc_version': mcVersion
     }
 
     from(sourceSets.main.resources.srcDirs) {

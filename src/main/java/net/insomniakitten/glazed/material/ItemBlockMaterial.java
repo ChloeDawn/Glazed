@@ -16,6 +16,8 @@ package net.insomniakitten.glazed.material;
  *   limitations under the License.
  */
 
+import net.insomniakitten.glazed.client.model.ModelRegistry;
+import net.insomniakitten.glazed.client.model.WrappedModel.ModelBuilder;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
@@ -27,6 +29,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+@SuppressWarnings("deprecation")
 public class ItemBlockMaterial extends ItemBlock {
 
     public ItemBlockMaterial(Block block) {
@@ -34,28 +37,32 @@ public class ItemBlockMaterial extends ItemBlock {
         assert block.getRegistryName() != null;
         setRegistryName(block.getRegistryName());
         setHasSubtypes(true);
+        registerModels();
+    }
+
+    private void registerModels() {
+        for (MaterialType type : MaterialType.values()) {
+            ModelBuilder builder = new ModelBuilder(this, type.getMetadata());
+            builder.addVariant("type=" + type.getName());
+            ModelRegistry.registerModel(builder.build());
+        }
     }
 
     @Override @SideOnly(Side.CLIENT)
     public String getUnlocalizedName(ItemStack stack) {
-        int meta = stack.getMetadata() % MaterialBlockType.values().length;
-        String type = MaterialBlockType.values()[meta].getName();
+        int meta = stack.getMetadata() % MaterialType.values().length;
+        String type = MaterialType.values()[meta].getName();
         return this.getBlock().getUnlocalizedName() + "." + type;
     }
 
     @Override
     public boolean placeBlockAt(
-            ItemStack stack, EntityPlayer player, World world,
-            BlockPos pos, EnumFacing side,
-            float hitX, float hitY, float hitZ,
-            IBlockState newState) {
-        IBlockState state = world.getBlockState(pos.down());
-        boolean isSolid = state.getBlock().isTopSolid(state);
-        MaterialBlockType type = MaterialBlockType.getType(stack.getMetadata());
-        if (!type.equals(MaterialBlockType.CRYSTAL)) {
-            isSolid = true;
-        }
-        return isSolid && super.placeBlockAt(stack, player, world, pos, side, hitX, hitY, hitZ, newState);
+            ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side,
+            float hitX, float hitY, float hitZ, IBlockState state) {
+        IBlockState stateAt = world.getBlockState(pos.down());
+        boolean isSolid = stateAt.getBlock().isTopSolid(stateAt);
+        boolean isCrystal = MaterialType.get(stack.getMetadata()).equals(MaterialType.CRYSTAL);
+        return (!isCrystal || isSolid) && super.placeBlockAt(stack, player, world, pos, side, hitX, hitY, hitZ, state);
     }
 
     @Override

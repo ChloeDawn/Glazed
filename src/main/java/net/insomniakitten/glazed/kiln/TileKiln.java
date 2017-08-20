@@ -16,11 +16,15 @@ package net.insomniakitten.glazed.kiln;
  *   limitations under the License.
  */
 
+import net.insomniakitten.glazed.Glazed;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -34,6 +38,7 @@ import java.util.Locale;
 public class TileKiln extends TileEntity implements ITickable {
 
     public static final Capability<IItemHandler> CAPABILITY = CapabilityItemHandler.ITEM_HANDLER_CAPABILITY;
+    private static final ResourceLocation KEY = new ResourceLocation(Glazed.MOD_ID, "tile_kiln");
 
     public boolean isActive = false;
     private int progress = 0;
@@ -64,6 +69,16 @@ public class TileKiln extends TileEntity implements ITickable {
     };
 
     public int getProgress() { return progress; }
+
+    public static String getKey() {
+        return KEY.toString();
+    }
+
+    @Override @Nonnull
+    public ITextComponent getDisplayName() {
+        String name = getBlockType().getUnlocalizedName() + ".name";
+        return new TextComponentTranslation(name);
+    }
 
     @Override
     public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
@@ -98,10 +113,10 @@ public class TileKiln extends TileEntity implements ITickable {
     public void update() {
         if (!Slots.getSlot(this, Slots.INPUT).isEmpty()) {
 
-            ItemStack   input = Slots.getSlot(this, Slots.INPUT),
-                        catalyst = Slots.getSlot(this, Slots.CATALYST),
-                        fuel = Slots.getSlot(this, Slots.FUEL),
-                        output = Slots.getSlot(this, Slots.OUTPUT);
+            ItemStack input = Slots.getSlot(this, Slots.INPUT);
+            ItemStack catalyst = Slots.getSlot(this, Slots.CATALYST);
+            ItemStack fuel = Slots.getSlot(this, Slots.FUEL);
+            ItemStack output = Slots.getSlot(this, Slots.OUTPUT);
 
             int remainingFuelTime = 0;
 
@@ -123,9 +138,7 @@ public class TileKiln extends TileEntity implements ITickable {
     }
 
     public enum Slots {
-
-        INPUT(34, 17), CATALYST(56, 17),
-        FUEL(45, 53), OUTPUT(116, 35);
+        INPUT(34, 17), CATALYST(56, 17), FUEL(45, 53), OUTPUT(116, 35);
 
         private final int x, y;
 

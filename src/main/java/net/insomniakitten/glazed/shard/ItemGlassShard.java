@@ -1,4 +1,4 @@
-package net.insomniakitten.glazed.glass;
+package net.insomniakitten.glazed.shard;
 
 /*
  *  Copyright 2017 InsomniaKitten
@@ -18,7 +18,8 @@ package net.insomniakitten.glazed.glass;
 
 import com.google.common.base.Equivalence.Wrapper;
 import net.insomniakitten.glazed.Glazed;
-import net.insomniakitten.glazed.RegistryManager.ShardRegistry;
+import net.insomniakitten.glazed.client.model.ModelRegistry;
+import net.insomniakitten.glazed.client.model.WrappedModel.ModelBuilder;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
@@ -30,34 +31,31 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.List;
 
-import static net.insomniakitten.glazed.RegistryManager.ShardRegistry.SHARDS;
-
 public class ItemGlassShard extends Item {
 
     public ItemGlassShard() {
         setRegistryName("shard");
         setUnlocalizedName(Glazed.MOD_ID + ".shard");
-        setCreativeTab(Glazed.TAB);
+        setCreativeTab(Glazed.CTAB);
         setHasSubtypes(true);
+        ModelRegistry.registerModel(new ModelBuilder(this).build());
     }
 
     @Override @SuppressWarnings("ConstantConditions")
     public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> items) {
         if (this.isInCreativeTab(tab)) {
-            for (Wrapper<ItemStack> eqv : SHARDS.keySet()) {
-                items.add(eqv.get());
+            for (Wrapper<ItemStack> shard : ShardRegistry.SHARDS.keySet()) {
+                items.add(shard.get());
             }
         }
     }
 
     @Override @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack stack, World world, List<String> tooltip, ITooltipFlag flag) {
-        Wrapper<ItemStack> eqv = ShardRegistry.EQV.wrap(stack);
-        if (SHARDS.containsKey(eqv)) {
-            ItemStack glass = SHARDS.get(eqv).get();
-            if (glass != null) {
-                tooltip.add(glass.getDisplayName());
-            }
+        ItemStack glassBlock = ShardRegistry.getGlassFromShard(stack);
+        if (!glassBlock.isEmpty()) {
+            tooltip.add(glassBlock.getDisplayName());
         }
     }
+
 }

@@ -13,8 +13,8 @@
 		"upper_up": "glazed:blocks/kiln/upper_up",
 		"upper_north": "glazed:blocks/kiln/upper_north",
 		"upper_south": "glazed:blocks/kiln/upper_south",
-		"upper_east": "glazed:blocks/kiln/upper_east",
 		"upper_west": "glazed:blocks/kiln/upper_west",
+		"upper_east": "glazed:blocks/kiln/upper_east",
 		"upper_edges": "glazed:blocks/kiln/upper_edges"
 	},
 	"elements": [

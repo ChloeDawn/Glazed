@@ -17,6 +17,7 @@ package net.insomniakitten.glazed.glass;
  */
 
 import net.insomniakitten.glazed.Glazed;
+import net.insomniakitten.glazed.RegistryManager;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
@@ -42,35 +43,37 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.List;
 
+@SuppressWarnings("deprecation")
 public class BlockGlass extends Block {
 
     public BlockGlass() {
         super(Material.GLASS);
         setRegistryName("glass");
         setUnlocalizedName(Glazed.MOD_ID + ".glass");
-        setCreativeTab(Glazed.TAB);
+        setCreativeTab(Glazed.CTAB);
+        RegistryManager.registerItemBlock(new ItemBlockGlass(this));
     }
 
     @Override
     public float getBlockHardness(IBlockState state, World world, BlockPos pos) {
-        return GlassBlockType.getType(state).getHardness();
+        return GlassType.get(state).getHardness();
     }
 
     @Override
     public float getExplosionResistance(World world, BlockPos pos, Entity exploder, Explosion explosion) {
-        return GlassBlockType.getType(world.getBlockState(pos)).getResistance();
+        return GlassType.get(world.getBlockState(pos)).getResistance();
     }
 
     @Override
     @SideOnly(Side.CLIENT)
     public boolean shouldSideBeRendered(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side) {
         IBlockState iblockstate = world.getBlockState(pos.offset(side));
-        return state != iblockstate;
+        return state != iblockstate && super.shouldSideBeRendered(state, world, pos, side);
     }
 
     @Override
     public SoundType getSoundType(IBlockState state, World world, BlockPos pos, Entity entity) {
-        return GlassBlockType.getType(state).getSoundType();
+        return GlassType.get(state).getSoundType();
     }
 
     @Override
@@ -90,29 +93,29 @@ public class BlockGlass extends Block {
 
     @Override
     public void getSubBlocks(CreativeTabs tab, NonNullList<ItemStack> items) {
-        for (int i = 0; i < GlassBlockType.values().length; ++i) {
+        for (int i = 0; i < GlassType.values().length; ++i) {
             items.add(new ItemStack(this, 1, i));
         }
     }
 
     @Override public int damageDropped(IBlockState state) {
-        return GlassBlockType.getType(state).ordinal();
+        return GlassType.get(state).getMetadata();
     }
 
     @Override
     public int getLightValue(IBlockState state) {
-        return GlassBlockType.getType(state).getLightLevel();
+        return GlassType.get(state).getLightLevel();
     }
 
     @Override
     public int getMetaFromState(IBlockState state) {
-        return GlassBlockType.getType(state).getMetadata();
+        return GlassType.get(state).getMetadata();
     }
 
     @Override
     public IBlockState getStateFromMeta(int meta) {
-        GlassBlockType type = GlassBlockType.getType(meta);
-        return this.getDefaultState().withProperty(GlassBlockType.getProperty(), type);
+        GlassType type = GlassType.get(meta);
+        return this.getDefaultState().withProperty(GlassType.getProperty(), type);
     }
 
     @Override
@@ -132,14 +135,14 @@ public class BlockGlass extends Block {
 
     @Override
     public boolean canRenderInLayer(IBlockState state, BlockRenderLayer layer) {
-        return layer.equals(GlassBlockType.getType(state).getRenderLayer());
+        return layer.equals(GlassType.get(state).getRenderLayer());
     }
 
     @Override
     public void getDrops(
             NonNullList<ItemStack> drops, IBlockAccess world,
             BlockPos pos, IBlockState state, int fortune) {
-        if (GlassBlockType.getType(state).dropsItem()) {
+        if (GlassType.get(state).dropsItem()) {
             super.getDrops(drops, world, pos, state, fortune);
         }
     }
@@ -151,60 +154,60 @@ public class BlockGlass extends Block {
 
     @Override
     public boolean isToolEffective(String toolType, IBlockState state) {
-        return GlassBlockType.getType(state).isHeavy() && toolType.equals("pickaxe");
+        return GlassType.get(state).isHeavy() && toolType.equals("pickaxe");
     }
 
     @Override
     public int getLightOpacity(IBlockState state) {
-        return GlassBlockType.getType(state).isOpaque() ? 255 : 0;
+        return GlassType.get(state).isOpaque() ? 255 : 0;
     }
 
     @Override
     public boolean causesSuffocation(IBlockState state) {
-        return GlassBlockType.getType(state).getResistance() >= 3000;
+        return GlassType.get(state).getResistance() >= 3000;
     }
 
     @Override
     public boolean canProvidePower(IBlockState state) {
-        return GlassBlockType.getType(state).isPowered();
+        return GlassType.get(state).isPowered();
     }
 
     @Override
     public int getStrongPower(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side) {
-        return GlassBlockType.getType(state).isPowered() ? 15 : 0;
+        return GlassType.get(state).isPowered() ? 15 : 0;
     }
 
     @Override
     public int getWeakPower(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side) {
-        return GlassBlockType.getType(state).isPowered() ? 15 : 0;
+        return GlassType.get(state).isPowered() ? 15 : 0;
     }
 
     @Override
     public void onEntityCollidedWithBlock(World world, BlockPos pos, IBlockState state, Entity entity) {
-        boolean isVoidic = GlassBlockType.getType(state).equals(GlassBlockType.VOIDIC);
-        if (!isVoidic || entity.isSneaking()) {
-            return;
+        boolean isVoidic = GlassType.get(state).equals(GlassType.VOIDIC);
+        boolean insideGlass = entity.isInsideOfMaterial(Material.GLASS);
+        if (isVoidic && !entity.isSneaking() && insideGlass) {
+            if (entity.motionY <= 0.0F)
+                entity.motionY *= 0.4D;
+            entity.motionX *= 0.4D;
+            entity.motionZ *= 0.4D;
+            entity.fallDistance = 0.0F;
         }
-        if (entity.motionY <= 0.0D) {
-            entity.motionY *= 0.4D;
-        }
-        entity.motionX *= 0.4D;
-        entity.motionZ *= 0.4D;
-        entity.fallDistance = 0.0F;
     }
 
-    @Override @SuppressWarnings("ConstantConditions")
+    @Override
     public void addCollisionBoxToList(
             IBlockState state, World world, BlockPos pos, AxisAlignedBB aabb,
             List<AxisAlignedBB> collisions, Entity entity, boolean flag) {
-        boolean isVoidic = GlassBlockType.getType(state).equals(GlassBlockType.VOIDIC);
-        if (!isVoidic || entity == null || !(entity instanceof EntityPlayer) || entity.isSneaking())
+        boolean isVoidic = GlassType.get(state).equals(GlassType.VOIDIC);
+        if (!isVoidic || entity == null || !(entity instanceof EntityPlayer) || entity.isSneaking()) {
             super.addCollisionBoxToList(state, world, pos, aabb, collisions, entity, flag);
+        }
     }
 
     @Override
     public BlockStateContainer createBlockState() {
-        return new BlockStateContainer(this, GlassBlockType.getProperty());
+        return new BlockStateContainer(this, GlassType.getProperty());
     }
 
 }

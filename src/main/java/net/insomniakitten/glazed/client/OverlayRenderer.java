@@ -18,59 +18,67 @@ package net.insomniakitten.glazed.client;
 
 import net.insomniakitten.glazed.Glazed;
 import net.insomniakitten.glazed.glass.BlockGlass;
+import net.insomniakitten.glazed.glass.GlassType;
 import net.insomniakitten.glazed.material.BlockMaterial;
-import net.insomniakitten.glazed.glass.GlassBlockType;
-import net.insomniakitten.glazed.material.MaterialBlockType;
+import net.insomniakitten.glazed.material.MaterialType;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import java.util.HashMap;
-
 @SideOnly(Side.CLIENT)
 @Mod.EventBusSubscriber(Side.CLIENT)
 public class OverlayRenderer {
 
-    public static final HashMap<GlassBlockType, ResourceLocation> GLASS = new HashMap<>();
-    public static final HashMap<MaterialBlockType, ResourceLocation> MATERIALS = new HashMap<>();
+    private static final ResourceLocation VOIDIC_OVERLAY = new ResourceLocation(
+            Glazed.MOD_ID, "textures/overlay/voided.png");
 
-    static {
-        GLASS.put(GlassBlockType.VOIDIC, new ResourceLocation(Glazed.MOD_ID, "textures/overlay/voided.png"));
-        MATERIALS.put(MaterialBlockType.SLAG, new ResourceLocation(Glazed.MOD_ID, "textures/overlay/slag.png"));
-        // TODO: Move to enums
-    }
+    private  static final ResourceLocation SLAG_OVERLAY = new ResourceLocation(
+            Glazed.MOD_ID, "textures/overlay/slag.png");
+
+    private static final BlockPos.MutableBlockPos MUTABLE = new BlockPos.MutableBlockPos();
 
     @SubscribeEvent
-    public static void onRenderOverlay(RenderGameOverlayEvent.Pre event) {
+    public static void onRenderGameOverlay(RenderGameOverlayEvent.Pre event) {
         if (event.getType().equals(RenderGameOverlayEvent.ElementType.ALL)) {
-            int w = event.getResolution().getScaledWidth(), h = event.getResolution().getScaledHeight();
-            Minecraft mc = Minecraft.getMinecraft();
-            World world = mc.player.world;
-            BlockPos pos = new BlockPos(mc.player.posX, mc.player.posY + mc.player.eyeHeight, mc.player.posZ);
-            IBlockState state = world.getBlockState(pos);
-            if (state.getBlock() instanceof BlockGlass && GLASS.containsKey(GlassBlockType.getType(state))) {
-                GlStateManager.pushMatrix();
-                GlStateManager.enableBlend();
-                mc.renderEngine.bindTexture(GLASS.get(GlassBlockType.getType(state)));
-                mc.ingameGUI.drawTexturedModalRect(0, 0, 0, 0, w, h);
-                GlStateManager.popMatrix();
+            EntityPlayer player = Minecraft.getMinecraft().player;
+
+            if (player == null || player.world == null) {
+                return;
             }
-            if (state.getBlock() instanceof BlockMaterial && MATERIALS.containsKey(MaterialBlockType.getType(state))) {
-                GlStateManager.pushMatrix();
-                GlStateManager.enableBlend();
-                mc.renderEngine.bindTexture(MATERIALS.get(MaterialBlockType.getType(state)));
-                mc.ingameGUI.drawTexturedModalRect(0, 0, 0, 0, w, h);
-                GlStateManager.popMatrix();
+
+            MUTABLE.setPos(player.posX, player.posY + 1, player.posZ);
+            IBlockState state = player.world.getBlockState(MUTABLE);
+
+            boolean isBlockGlass = state.getBlock() instanceof BlockGlass;
+            boolean isBlockMaterial = state.getBlock() instanceof BlockMaterial;
+
+            int width = event.getResolution().getScaledWidth();
+            int height = event.getResolution().getScaledHeight();
+
+            if (isBlockGlass && GlassType.get(state).equals(GlassType.VOIDIC)) {
+                drawOverlay(width, height, VOIDIC_OVERLAY);
+            }
+
+            if (isBlockMaterial && MaterialType.get(state).equals(MaterialType.SLAG)) {
+                drawOverlay(width, height, SLAG_OVERLAY);
             }
         }
+    }
+
+    public static void drawOverlay(int width, int height, ResourceLocation texture) {
+        GlStateManager.pushMatrix();
+        GlStateManager.enableBlend();
+        Minecraft.getMinecraft().renderEngine.bindTexture(texture);
+        Minecraft.getMinecraft().ingameGUI.drawTexturedModalRect(0, 0, 0, 0, width, height);
+        GlStateManager.popMatrix();
     }
 
 }

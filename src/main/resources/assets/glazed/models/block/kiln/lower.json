@@ -9,7 +9,7 @@
 		"lower_west": "glazed:blocks/kiln/lower_west",
 		"lower_east": "glazed:blocks/kiln/lower_east",
 		"lower_edges": "glazed:blocks/kiln/lower_edges",
-		"lower_north_fullbright": "#front"
+		"lower_north_overlay": "#front"
 	},
 	"elements": [ 	 
 		{
@@ -111,7 +111,7 @@
 			"to": [ 12, 10, 5 ],
 			"faces": {
 				"down": { "uv": [ 4, 11, 12, 12 ], "texture": "#lower_down", "cullface": "down" },
-				"north": { "uv": [ 4, 6, 12, 16 ], "texture": "#lower_north_fullbright" }
+				"north": { "uv": [ 4, 6, 12, 16 ], "texture": "#lower_north_overlay" }
 			}
 		}
 	]

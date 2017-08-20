@@ -16,26 +16,21 @@ package net.insomniakitten.glazed;
  *   limitations under the License.
  */
 
-import net.insomniakitten.glazed.client.GUIManager;
+import net.insomniakitten.glazed.client.ColorManager;
 import net.insomniakitten.glazed.glass.BlockGlass;
-import net.insomniakitten.glazed.glass.ItemBlockGlass;
-import net.insomniakitten.glazed.glass.ItemGlassShard;
 import net.insomniakitten.glazed.kiln.BlockKiln;
-import net.insomniakitten.glazed.kiln.ItemBlockKiln;
-import net.insomniakitten.glazed.kiln.RecipesKiln;
+import net.insomniakitten.glazed.kiln.GUIManagerKiln;
 import net.insomniakitten.glazed.material.BlockMaterial;
-import net.insomniakitten.glazed.material.ItemBlockMaterial;
+import net.insomniakitten.glazed.shard.ItemGlassShard;
+import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.init.Blocks;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
-import net.minecraftforge.fml.common.network.NetworkRegistry;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import java.util.UUID;
 
 @Mod(   modid = Glazed.MOD_ID,
         name = Glazed.MOD_NAME,
@@ -50,63 +45,47 @@ public class Glazed {
 
     public static final String MOD_ID = "glazed";
     public static final String MOD_NAME = "Glazed";
-    public static final String VERSION = "%mod_version%";
-    public static final String MC_VERSION = "%mc_version%";
+    public static final String VERSION = "%VERSION%";
+    public static final String MC_VERSION = "[1.12,1.13)";
     public static final String DEPENDENCIES = "required-after:forge@[14.21.1.2387,)";
-    public static final String CLIENT_PROXY = "net.insomniakitten.glazed.client.ClientWrapper";
-    public static final String SERVER_PROXY = "net.insomniakitten.glazed.Glazed$ProxyWrapper";
 
     public static final Logger LOGGER = LogManager.getLogger(MOD_NAME);
-    public static final CreativeTabs TAB = new CreativeTabs(Glazed.MOD_ID) {
-        @Override
-        public ItemStack getTabIconItem() {
-            return new ItemStack(Objects.BKILN);
+
+    public static final CreativeTabs CTAB = new CreativeTabs(Glazed.MOD_ID) {
+        @Override public ItemStack getTabIconItem() {
+            return new ItemStack(ModBlocks.KILN.get());
         }
     };
 
-    public static class Objects {
-        public static final BlockGlass BGLASS = new BlockGlass();
-        public static final ItemBlockGlass IGLASS = new ItemBlockGlass(BGLASS);
-        public static final BlockKiln BKILN = new BlockKiln();
-        public static final ItemBlockKiln IKILN = new ItemBlockKiln(BKILN);
-        public static final BlockMaterial BMATERIAL = new BlockMaterial();
-        public static final ItemBlockMaterial IMATERIAL = new ItemBlockMaterial(BMATERIAL);
-        public static final ItemGlassShard ISHARD = new ItemGlassShard();
-    }
-
-    @SidedProxy(clientSide = CLIENT_PROXY, serverSide = SERVER_PROXY)
-    public static ProxyWrapper proxy;
+    @SidedProxy(
+            clientSide = "net.insomniakitten.glazed.client.ColorManager$ClientWrapper",
+            serverSide = "net.insomniakitten.glazed.client.ColorManager$ServerWrapper")
+    public static ColorManager colorManager;
 
     @Mod.EventHandler
     public void onPostInit(FMLPostInitializationEvent event) {
-        NetworkRegistry.INSTANCE.registerGuiHandler(
-                Glazed.MOD_ID, new GUIManager());
-        proxy.registerColorHandler();
-        proxy.parseSpecials();
-
-        RecipesKiln.addKilnRecipe(
-                new ItemStack(Blocks.SAND, 16),
-                new ItemStack(Blocks.REDSTONE_BLOCK),
-                new ItemStack(Objects.BGLASS, 16, 3));
-
-        RecipesKiln.addKilnRecipe(
-                new ItemStack(Blocks.SAND),
-                ItemStack.EMPTY, // TODO: Figure out why this isn't working
-                new ItemStack(Blocks.GLASS));
-        // Also don't actually add this recipe, it makes everything else a nightmare to process
-        // Probably should make catalyst required (non-empty)
-
-        RecipesKiln.addKilnRecipe(
-                new ItemStack(Blocks.SAND),
-                new ItemStack(Blocks.SAND),
-                new ItemStack(Blocks.GLASS, 2));
+        colorManager.registerColorHandler();
+        GUIManagerKiln.register();
     }
 
-    public static class ProxyWrapper {
-        protected static final UUID EMPTY_UUID = new UUID(0, 0);
-        public void registerColorHandler() {}
-        public void parseSpecials() {}
-        public UUID getUUID() { return EMPTY_UUID; }
+    public enum ModBlocks {
+        GLASS(new BlockGlass()),
+        KILN(new BlockKiln()),
+        MATERIAL(new BlockMaterial()),
+        ;
+
+        private final Block block;
+        ModBlocks(Block block) { this.block = block; }
+        public Block get() { return block; }
+    }
+
+    public enum ModItems {
+        SHARD(new ItemGlassShard()),
+        ;
+
+        private final Item item;
+        ModItems(Item item) { this.item = item; }
+        public Item get() { return item; }
     }
 
 }

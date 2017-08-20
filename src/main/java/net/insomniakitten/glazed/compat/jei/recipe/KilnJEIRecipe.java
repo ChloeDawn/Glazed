@@ -39,4 +39,5 @@ public class KilnJEIRecipe implements IRecipeWrapper {
         ingredients.setInputLists(ItemStack.class, helper.expandRecipeItemStackInputs(inputs));
         ingredients.setOutput(ItemStack.class, recipe.getOutput());
     }
+
 }

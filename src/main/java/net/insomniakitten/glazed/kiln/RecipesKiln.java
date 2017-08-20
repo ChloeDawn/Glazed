@@ -64,12 +64,11 @@ public class RecipesKiln {
     public static boolean trySmelt(TileKiln tile, ItemStack input, ItemStack catalyst) {
         KilnRecipe recipe = getRecipe(input, catalyst);
         ItemStack output = Slots.getSlot(tile, Slots.OUTPUT);
-        if (recipe == null) {
+
+        if (recipe == null || (!output.isEmpty() && !output.isItemEqual(recipe.getOutput()))) {
             return false;
         }
-        if (!output.isEmpty() && !output.isItemEqual(recipe.getOutput())) {
-            return false;
-        }
+
         if (output.getCount() < output.getMaxStackSize()) {
             input.shrink(recipe.getInput().getCount());
             catalyst.shrink(recipe.getCatalyst().getCount());
@@ -117,8 +116,11 @@ public class RecipesKiln {
         }
 
         public boolean canSmelt(ItemStack input, ItemStack catalyst) {
-            return !(this.input.getCount() > input.getCount() || this.catalyst.getCount() > catalyst.getCount())
-                    && this.input.isItemEqual(input) && this.catalyst.isItemEqual(catalyst);
+            boolean inputOverflow = this.input.getCount() > input.getCount();
+            boolean catalystOverflow = this.catalyst.getCount() > catalyst.getCount();
+            boolean validInput = this.input.isItemEqual(input);
+            boolean validCatalyst = this.catalyst.isItemEqual(catalyst);
+            return !(inputOverflow || catalystOverflow) && validInput && validCatalyst;
         }
 
     }

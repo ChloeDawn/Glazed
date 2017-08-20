@@ -1,4 +1,4 @@
-package net.insomniakitten.glazed.client;
+package net.insomniakitten.glazed.kiln;
 
 /*
  *  Copyright 2017 InsomniaKitten
@@ -16,37 +16,29 @@ package net.insomniakitten.glazed.client;
  *   limitations under the License.
  */
 
-import net.insomniakitten.glazed.kiln.ContainerKiln;
-import net.insomniakitten.glazed.kiln.GuiKiln;
+import net.insomniakitten.glazed.Glazed;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.IGuiHandler;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class GUIManager implements IGuiHandler {
+public class GUIManagerKiln implements IGuiHandler {
+
+    public static void register() {
+        NetworkRegistry.INSTANCE.registerGuiHandler(Glazed.MOD_ID, new GUIManagerKiln());
+    }
 
     @Override
     public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
-        BlockPos pos = new BlockPos(x, y, z);
-        if (ID == 0) {
-            return new ContainerKiln(world.getTileEntity(pos), player);
-        }
-        else {
-            return null;
-        }
+        return ID == 0 ? new ContainerKiln(world.getTileEntity(new BlockPos(x, y, z)), player) : null;
     }
 
     @Override @SideOnly(Side.CLIENT)
     public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
-        BlockPos pos = new BlockPos(x, y, z);
-        if (ID == 0) {
-            return new GuiKiln(world.getTileEntity(pos), player);
-        }
-        else {
-            return null;
-        }
+        return ID == 0 ? new GuiKiln(world.getTileEntity(new BlockPos(x, y, z)), player) : null;
     }
 
 }

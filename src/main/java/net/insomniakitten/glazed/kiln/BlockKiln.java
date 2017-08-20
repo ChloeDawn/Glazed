@@ -17,6 +17,7 @@ package net.insomniakitten.glazed.kiln;
  */
 
 import net.insomniakitten.glazed.Glazed;
+import net.insomniakitten.glazed.RegistryManager;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyBool;
@@ -44,6 +45,7 @@ import net.minecraftforge.items.IItemHandler;
 
 import java.util.Locale;
 
+@SuppressWarnings("deprecation")
 public class BlockKiln extends Block {
 
     private static final PropertyEnum<KilnHalf> HALF = PropertyEnum.create("half", KilnHalf.class);
@@ -56,13 +58,14 @@ public class BlockKiln extends Block {
         super(Material.ROCK);
         setRegistryName("kiln");
         setUnlocalizedName(Glazed.MOD_ID + ".kiln");
-        setCreativeTab(Glazed.TAB);
+        setCreativeTab(Glazed.CTAB);
         setHardness(5.0f);
         setResistance(30.0f);
         setDefaultState(this.getDefaultState()
                 .withProperty(HALF, KilnHalf.LOWER)
                 .withProperty(FACING, EnumFacing.NORTH)
                 .withProperty(ACTIVE, false));
+        RegistryManager.registerItemBlock(new ItemBlockKiln(this));
     }
 
     @Override
@@ -122,9 +125,7 @@ public class BlockKiln extends Block {
             World world, BlockPos pos, IBlockState state,
             EntityPlayer player, EnumHand hand, EnumFacing facing,
             float hitX, float hitY, float hitZ) {
-        if (isUpper(state)) {
-            pos = pos.down();
-        }
+        if (isUpper(state)) pos = pos.down();
         if (!world.isRemote) {
             FMLNetworkHandler.openGui(player, Glazed.instance, 0, world, pos.getX(), pos.getY(), pos.getZ());
         }
@@ -147,7 +148,7 @@ public class BlockKiln extends Block {
 
     @Override @SuppressWarnings("ConstantConditions")
     public void breakBlock(World world, BlockPos pos, IBlockState state) {
-        final BlockPos tilePos = isUpper(state) ? pos.down() : pos;
+        BlockPos tilePos = isUpper(state) ? pos.down() : pos;
         Capability<IItemHandler> items = CapabilityItemHandler.ITEM_HANDLER_CAPABILITY;
         TileEntity tile = world.getTileEntity(tilePos);
 
@@ -161,8 +162,7 @@ public class BlockKiln extends Block {
             }
         }
 
-        BlockPos target = isUpper(state) ? pos.down() : pos.up();
-        world.setBlockToAir(target);
+        world.setBlockToAir(isUpper(state) ? pos.down() : pos.up());
     }
 
     @Override
@@ -172,7 +172,7 @@ public class BlockKiln extends Block {
 
     @Override
     public boolean hasTileEntity(IBlockState state) {
-        return state.getValue(HALF).equals(KilnHalf.LOWER);
+        return !isUpper(state);
     }
 
     @Override

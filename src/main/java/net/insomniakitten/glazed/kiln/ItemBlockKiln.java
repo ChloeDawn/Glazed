@@ -16,6 +16,8 @@ package net.insomniakitten.glazed.kiln;
  *   limitations under the License.
  */
 
+import net.insomniakitten.glazed.client.model.ModelRegistry;
+import net.insomniakitten.glazed.client.model.WrappedModel.ModelBuilder;
 import net.minecraft.block.Block;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
@@ -33,6 +35,7 @@ public class ItemBlockKiln extends ItemBlock {
         super(block);
         assert block.getRegistryName() != null;
         setRegistryName(block.getRegistryName());
+        ModelRegistry.registerModel(new ModelBuilder(this).build());
     }
 
     @Override @SideOnly(Side.CLIENT)

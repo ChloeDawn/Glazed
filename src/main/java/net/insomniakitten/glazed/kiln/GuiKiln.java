@@ -19,19 +19,21 @@ package net.insomniakitten.glazed.kiln;
 import net.insomniakitten.glazed.Glazed;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 
 public class GuiKiln extends GuiContainer {
 
-    private ResourceLocation texture = new ResourceLocation(
-            Glazed.MOD_ID, "textures/gui/kiln.png");
+    private TileKiln tile;
+    private EntityPlayer player;
+
+    private ResourceLocation texture = new ResourceLocation(Glazed.MOD_ID, "textures/gui/kiln.png");
 
     public GuiKiln(TileEntity tile, EntityPlayer player) {
-        super(new ContainerKiln(
-                tile, player));
+        super(new ContainerKiln(tile, player));
+        this.tile = (TileKiln) tile;
+        this.player = player;
     }
 
     @Override
@@ -43,11 +45,11 @@ public class GuiKiln extends GuiContainer {
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        String label = I18n.format("tile.glazed.kiln.name");
-        int width = this.fontRenderer.getStringWidth(label);
-        int color = 4210752;
-        this.fontRenderer.drawString(label, 88 - (width / 2), 6, color);
-        this.fontRenderer.drawString(I18n.format("container.inventory"), 8, ySize - 94, color);
+        String tileInv = tile.getDisplayName().getUnformattedText();
+        String playerInv = player.inventory.getDisplayName().getUnformattedText();
+        int width = this.fontRenderer.getStringWidth(tileInv);
+        this.fontRenderer.drawString(tileInv, 88 - (width / 2), 6, 0x404040);
+        this.fontRenderer.drawString(playerInv, 8, ySize - 94, 0x404040);
     }
 
     @Override

@@ -24,19 +24,19 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import javax.annotation.Nonnull;
 import java.util.List;
 
 public class GlassDataProvider implements IWailaDataProvider {
 
-    @Override @Nonnull @SideOnly(Side.CLIENT)
+    @Override @SideOnly(Side.CLIENT)
     public List<String> getWailaBody(
-            ItemStack stack, List<String> tooltip,
-            IWailaDataAccessor accessor, IWailaConfigHandler config) {
+            ItemStack stack, List<String> tooltip, IWailaDataAccessor accessor, IWailaConfigHandler config) {
         String key = stack.getUnlocalizedName() + ".tooltip";
+
         if (I18n.hasKey(key)) {
             tooltip.add(I18n.format(key));
         }
+
         return tooltip;
     }
 

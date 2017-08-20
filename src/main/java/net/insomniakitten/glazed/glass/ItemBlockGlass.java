@@ -16,8 +16,9 @@ package net.insomniakitten.glazed.glass;
  *   limitations under the License.
  */
 
-import net.insomniakitten.glazed.Glazed;
-import net.insomniakitten.glazed.client.ClientWrapper;
+import net.insomniakitten.glazed.client.SpecialsManager;
+import net.insomniakitten.glazed.client.model.ModelRegistry;
+import net.insomniakitten.glazed.client.model.WrappedModel.ModelBuilder;
 import net.minecraft.block.Block;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
@@ -39,23 +40,32 @@ public class ItemBlockGlass extends ItemBlock {
         assert block.getRegistryName() != null;
         setRegistryName(block.getRegistryName());
         setHasSubtypes(true);
+        registerModels();
+    }
+
+    private void registerModels() {
+        for (GlassType type : GlassType.values()) {
+            ModelBuilder builder = new ModelBuilder(this, type.getMetadata());
+            builder.addVariant("type=" + type.getName());
+            ModelRegistry.registerModel(builder.build());
+        }
     }
 
     @Override @SideOnly(Side.CLIENT)
     public String getUnlocalizedName(ItemStack stack) {
-        int meta = stack.getMetadata() % GlassBlockType.values().length;
-        String type = GlassBlockType.values()[meta].getName();
+        int meta = stack.getMetadata() % GlassType.values().length;
+        String type = GlassType.values()[meta].getName();
         return this.getBlock().getUnlocalizedName() + "." + type;
     }
 
     @Override @SideOnly(Side.CLIENT)
     public String getItemStackDisplayName(ItemStack stack) {
-        int meta = stack.getMetadata() % GlassBlockType.values().length;
-        String type = GlassBlockType.values()[meta].getName();
-        Set<Pair<UUID, String>> keys = ClientWrapper.SPECIALS.keySet();
-        Pair match = Pair.of(Glazed.proxy.getUUID(), type);
+        int meta = stack.getMetadata() % GlassType.values().length;
+        String type = GlassType.values()[meta].getName();
+        Set<Pair<UUID, String>> keys = SpecialsManager.SPECIALS.keySet();
+        Pair match = Pair.of(SpecialsManager.getUUID(), type);
         if (keys.contains(match)) {
-            return ClientWrapper.SPECIALS.get(match);
+            return SpecialsManager.SPECIALS.get(match);
         } else {
             return super.getItemStackDisplayName(stack);
         }

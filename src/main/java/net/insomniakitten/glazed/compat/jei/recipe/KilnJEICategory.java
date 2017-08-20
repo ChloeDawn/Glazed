@@ -22,20 +22,17 @@ import mezz.jei.api.gui.IDrawableAnimated.StartDirection;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.IRecipeCategory;
 import net.insomniakitten.glazed.Glazed;
+import net.insomniakitten.glazed.Glazed.ModBlocks;
+import net.insomniakitten.glazed.compat.jei.JEICompatPlugin;
+import net.insomniakitten.glazed.kiln.TileKiln.Slots;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.util.ResourceLocation;
-
-import javax.annotation.Nonnull;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentTranslation;
 
 public class KilnJEICategory implements IRecipeCategory<KilnJEIRecipe> {
 
     private static final ResourceLocation KILN_GUI = new ResourceLocation(Glazed.MOD_ID, "textures/gui/kiln.png");
-
-    public static final String ID = "glazed.kiln";
-    private static final int INPUT_SLOT = 0;
-    private static final int CATALYST_SLOT = 1;
-    private static final int OUTPUT_SLOT = 2;
 
     private final IDrawable background;
     private final IDrawableAnimated flame;
@@ -46,15 +43,15 @@ public class KilnJEICategory implements IRecipeCategory<KilnJEIRecipe> {
         final IDrawableStatic flameDrawable = guiHelper.createDrawable(KILN_GUI, 176, 0, 14, 14);
         final IDrawableStatic arrowDrawable = guiHelper.createDrawable(KILN_GUI, 176, 14, 24, 17);
 
-        this.displayName = I18n.format("tile.glazed.kiln.name");
         this.background = guiHelper.createDrawable(KILN_GUI, 33, 16, 110, 54);
         this.flame = guiHelper.createAnimatedDrawable(flameDrawable, 300, StartDirection.TOP, true);
         this.arrow = guiHelper.createAnimatedDrawable(arrowDrawable, 200, StartDirection.LEFT, false);
+        this.displayName = getName().getUnformattedText();
     }
 
     @Override
     public String getUid() {
-        return ID;
+        return JEICompatPlugin.ID;
     }
 
     @Override
@@ -75,9 +72,9 @@ public class KilnJEICategory implements IRecipeCategory<KilnJEIRecipe> {
     @Override
     public void setRecipe(IRecipeLayout recipeLayout, KilnJEIRecipe recipeWrapper, IIngredients ingredients) {
         IGuiItemStackGroup guiItemStacks = recipeLayout.getItemStacks();
-        guiItemStacks.init(INPUT_SLOT, true, 0, 0);
-        guiItemStacks.init(CATALYST_SLOT, true, 22, 0);
-        guiItemStacks.init(OUTPUT_SLOT, false, 82, 18);
+        guiItemStacks.init(Slots.INPUT.ordinal(), true, 0, 0);
+        guiItemStacks.init(Slots.CATALYST.ordinal(), true, 22, 0);
+        guiItemStacks.init(Slots.OUTPUT.ordinal(), false, 82, 18);
         guiItemStacks.set(ingredients);
     }
 
@@ -86,4 +83,10 @@ public class KilnJEICategory implements IRecipeCategory<KilnJEIRecipe> {
         flame.draw(minecraft, 12, 20);
         arrow.draw(minecraft, 46, 18);
     }
+
+    public ITextComponent getName() {
+        String name = ModBlocks.KILN.get().getUnlocalizedName() + ".name";
+        return new TextComponentTranslation(name);
+    }
+
 }

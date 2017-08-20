@@ -25,6 +25,8 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
 
+import javax.annotation.Nonnull;
+
 public class ContainerKiln extends Container {
 
     private EntityPlayer player;
@@ -57,7 +59,7 @@ public class ContainerKiln extends Container {
         }
     }
 
-    @Override
+    @Override @Nonnull
     public ItemStack transferStackInSlot(EntityPlayer player, int sourceIndex) {
         Slot holder = inventorySlots.get(sourceIndex);
         ItemStack stack = holder.getStack();
