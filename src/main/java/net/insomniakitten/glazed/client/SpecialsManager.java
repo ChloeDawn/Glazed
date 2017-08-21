@@ -48,18 +48,15 @@ public class SpecialsManager {
     @SubscribeEvent @SideOnly(Side.CLIENT)
     public static void onResourceListenerRegistry(ModelRegistryEvent event) {
         ((IReloadableResourceManager) Minecraft.getMinecraft().getResourceManager())
-                    .registerReloadListener(reloadListener -> parseSpecials());
+                    .registerReloadListener(SpecialsManager::parseSpecials);
     }
 
     @SideOnly(Side.CLIENT)
-    public static void parseSpecials() {
+    public static void parseSpecials(IResourceManager rm) {
         JsonElement specials;
 
-        try {
-            IResourceManager manager = Minecraft.getMinecraft().getResourceManager();
-            InputStreamReader reader = new InputStreamReader(manager.getResource(PATH).getInputStream());
+        try (InputStreamReader reader = new InputStreamReader(rm.getResource(PATH).getInputStream())) {
             specials = new Gson().fromJson(reader, JsonElement.class);
-            reader.close();
         } catch (Exception ignored) {
             Glazed.LOGGER.warn("Failed to parse specials.json!");
             return;
