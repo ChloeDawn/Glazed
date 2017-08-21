@@ -75,8 +75,14 @@ public class Glazed {
         ;
 
         private final Block block;
-        ModBlocks(Block block) { this.block = block; }
-        public Block get() { return block; }
+
+        ModBlocks(Block block) {
+            this.block = block;
+        }
+
+        public Block get() {
+            return block;
+        }
     }
 
     public enum ModItems {
@@ -84,8 +90,14 @@ public class Glazed {
         ;
 
         private final Item item;
-        ModItems(Item item) { this.item = item; }
-        public Item get() { return item; }
+
+        ModItems(Item item) {
+            this.item = item;
+        }
+
+        public Item get() {
+            return item;
+        }
     }
 
 }
