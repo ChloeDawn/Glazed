@@ -63,20 +63,21 @@ public class ShardRegistry {
         for (String ore : OreDictionary.getOreNames()) {
             if (ore.startsWith("blockGlass") && !ore.equals("blockGlassColorless")) {
                 for (ItemStack glass : OreDictionary.getOres(ore)) {
-                    ItemStack shard = new ItemStack(Glazed.ModItems.SHARD.get());
+                    ItemStack shard = new ItemStack(Glazed.SHARD);
                     String name = glass.getItem().getRegistryName().toString();
 
                     shard.setTagInfo("name", new NBTTagString(name));
                     shard.setTagInfo("metadata", new NBTTagInt(glass.getMetadata()));
 
                     if (!SHARDS.containsKey(EQV.wrap(shard)) && glass.getMetadata() <= 15) {
-                        Glazed.LOGGER.info("Registering glass shard for {} <{}#{}>",
+                        Glazed.Logger.info(false, "Registering glass shard for {} <{}#{}>",
                                 glass.getDisplayName(), name, glass.getMetadata());
                         SHARDS.put(EQV.wrap(shard), EQV.wrap(glass));
                     }
                 }
             }
         }
+        event.getRegistry().register(Glazed.SHARD);
     }
 
 }

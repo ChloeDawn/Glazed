@@ -16,8 +16,6 @@ package net.insomniakitten.glazed;
  *   limitations under the License.
  */
 
-import net.insomniakitten.glazed.Glazed.ModBlocks;
-import net.insomniakitten.glazed.Glazed.ModItems;
 import net.insomniakitten.glazed.kiln.TileKiln;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
@@ -45,9 +43,9 @@ public class RegistryManager {
     @SubscribeEvent
     public static void onBlockRegistry(RegistryEvent.Register<Block> event) {
         GameRegistry.registerTileEntity(TileKiln.class, TileKiln.getKey());
-        for (ModBlocks block : ModBlocks.values()) {
-            event.getRegistry().register(block.get());
-        }
+        event.getRegistry().register(Glazed.GLASS);
+        event.getRegistry().register(Glazed.KILN);
+        event.getRegistry().register(Glazed.MATERIAL);
     }
 
     @SubscribeEvent
@@ -56,9 +54,6 @@ public class RegistryManager {
             for (ItemBlock iblock : ITEM_BLOCKS) {
                 event.getRegistry().register(iblock);
             }
-        }
-        for (ModItems item : ModItems.values()) {
-            event.getRegistry().register(item.get());
         }
     }
 

@@ -22,7 +22,6 @@ import mezz.jei.api.gui.IDrawableAnimated.StartDirection;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.IRecipeCategory;
 import net.insomniakitten.glazed.Glazed;
-import net.insomniakitten.glazed.Glazed.ModBlocks;
 import net.insomniakitten.glazed.compat.jei.JEICompatPlugin;
 import net.insomniakitten.glazed.kiln.TileKiln.Slots;
 import net.minecraft.client.Minecraft;
@@ -85,7 +84,7 @@ public class KilnJEICategory implements IRecipeCategory<KilnJEIRecipe> {
     }
 
     public ITextComponent getName() {
-        String name = ModBlocks.KILN.get().getUnlocalizedName() + ".name";
+        String name = Glazed.KILN.getUnlocalizedName() + ".name";
         return new TextComponentTranslation(name);
     }
 

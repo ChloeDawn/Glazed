@@ -17,7 +17,6 @@ package net.insomniakitten.glazed.client;
  */
 
 import net.insomniakitten.glazed.Glazed;
-import net.insomniakitten.glazed.Glazed.ModBlocks;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
@@ -40,18 +39,18 @@ public class ColorManager {
     public static class ClientWrapper extends ColorManager {
         @Override @SideOnly(Side.CLIENT)
         public void registerColorHandler() {
-            Glazed.LOGGER.info("Client instance - registering color handler");
+            Glazed.Logger.info(true, "Client instance - registering color handler");
             Minecraft.getMinecraft().getBlockColors().registerBlockColorHandler(
-                    ColorManager::getBiomeColor, ModBlocks.GLASS.get());
+                    ColorManager::getBiomeColor, Glazed.GLASS);
             Minecraft.getMinecraft().getItemColors().registerItemColorHandler(
-                    ColorManager::getBiomeColor, ModBlocks.GLASS.get());
+                    ColorManager::getBiomeColor, Glazed.GLASS);
         }
     }
 
     public static class ServerWrapper extends ColorManager {
         @Override @SideOnly(Side.SERVER)
         public void registerColorHandler() {
-            Glazed.LOGGER.info("Server instance - skipping color handler registration");
+            Glazed.Logger.info(true, "Server instance - skipping color handler registration");
         }
     }
 

@@ -59,7 +59,7 @@ public class SpecialsManager {
         try (InputStreamReader reader = new InputStreamReader(rm.getResource(PATH).getInputStream())) {
             specials = new JsonParser().parse(reader);
         } catch (IOException e) {
-            Glazed.LOGGER.warn("Failed to parse specials.json!");
+            Glazed.Logger.warn(true, "Failed to parse specials.json!");
             e.printStackTrace();
             return;
         }
