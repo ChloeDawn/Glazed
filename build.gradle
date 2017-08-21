@@ -51,7 +51,7 @@ dependencies {
 processResources {
     from(sourceSets.main.resources.srcDirs) {
         include 'mcmod.info', 'pack.mcmeta'
-        expand  'build_version': modVersion,
+        expand  'mod_version': modVersion,
                 'mc_version': mcVersion
     }
 
