@@ -16,9 +16,9 @@ package net.insomniakitten.glazed.client;
  *   limitations under the License.
  */
 
-import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import net.insomniakitten.glazed.Glazed;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.IReloadableResourceManager;
@@ -57,7 +57,7 @@ public class SpecialsManager {
         JsonElement specials;
 
         try (InputStreamReader reader = new InputStreamReader(rm.getResource(PATH).getInputStream())) {
-            specials = new Gson().fromJson(reader, JsonElement.class);
+            specials = new JsonParser().parse(reader);
         } catch (IOException e) {
             Glazed.LOGGER.warn("Failed to parse specials.json!");
             e.printStackTrace();
