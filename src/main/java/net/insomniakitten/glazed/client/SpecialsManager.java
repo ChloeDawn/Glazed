@@ -32,6 +32,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.commons.lang3.tuple.Pair;
 
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
@@ -57,8 +58,9 @@ public class SpecialsManager {
 
         try (InputStreamReader reader = new InputStreamReader(rm.getResource(PATH).getInputStream())) {
             specials = new Gson().fromJson(reader, JsonElement.class);
-        } catch (Exception ignored) {
+        } catch (IOException e) {
             Glazed.LOGGER.warn("Failed to parse specials.json!");
+            e.printStackTrace();
             return;
         }
 
