@@ -17,56 +17,65 @@ package net.insomniakitten.glazed.client;
  */
 
 import net.insomniakitten.glazed.Glazed;
-import net.insomniakitten.glazed.glass.GlassType;
+import net.insomniakitten.glazed.Glazed.ModBlocks;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.ColorizerGrass;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.biome.BiomeColorHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ColorManager {
 
+    public static final String CLIENT = "net.insomniakitten.glazed.client.ColorManager$ClientWrapper";
+    public static final String SERVER = "net.insomniakitten.glazed.client.ColorManager$ServerWrapper";
+
+    private static final BlockPos.MutableBlockPos POS = new BlockPos.MutableBlockPos();
+    // Used in ColorManager#getBiomeColor(stack, tintIndex)
+
     public static class ClientWrapper extends ColorManager {
         @Override @SideOnly(Side.CLIENT)
         public void registerColorHandler() {
             Glazed.LOGGER.info("Client instance - registering color handler");
-
-            Minecraft.getMinecraft().getBlockColors().registerBlockColorHandler((state, world, pos, index) -> {
-                if (GlassType.get(state).equals(GlassType.GAIA)) {
-                    if (world != null && pos != null) {
-                        return BiomeColorHelper.getGrassColorAtPos(world, pos);
-                    }
-                    return ColorizerGrass.getGrassColor(0.5D, 1.0D);
-                }
-                return -1;
-            }, Glazed.ModBlocks.GLASS.get());
-
-            Minecraft.getMinecraft().getItemColors().registerItemColorHandler((stack, index) -> {
-                EntityPlayer player = Minecraft.getMinecraft().player;
-                GlassType type = GlassType.get(stack.getMetadata());
-                if (player != null && type.equals(GlassType.GAIA)) {
-                    if (player.world != null) {
-                        return BiomeColorHelper.getGrassColorAtPos(player.world, player.getPosition());
-                    }
-                    return ColorizerGrass.getGrassColor(0.5D, 1.0D);
-                }
-                return -1;
-            }, Item.getItemFromBlock(Glazed.ModBlocks.GLASS.get()));
+            Minecraft.getMinecraft().getBlockColors().registerBlockColorHandler(
+                    ColorManager::getBiomeColor, ModBlocks.GLASS.get());
+            Minecraft.getMinecraft().getItemColors().registerItemColorHandler(
+                    ColorManager::getBiomeColor, ModBlocks.GLASS.get());
         }
     }
 
     public static class ServerWrapper extends ColorManager {
-        @Override @SideOnly(Side.CLIENT)
+        @Override @SideOnly(Side.SERVER)
         public void registerColorHandler() {
             Glazed.LOGGER.info("Server instance - skipping color handler registration");
         }
     }
 
-    @SideOnly(Side.CLIENT)
     public void registerColorHandler() {
         // no-op
+    }
+
+    @SideOnly(Side.CLIENT)
+    private static int getBiomeColor(IBlockState state, IBlockAccess world, BlockPos pos, int tintIndex) {
+        if (tintIndex != 1) return -1;
+        if (world != null && pos != null) {
+            return BiomeColorHelper.getGrassColorAtPos(world, pos);
+        } return ColorizerGrass.getGrassColor(0.5D, 1.0D);
+    }
+
+    @SideOnly(Side.CLIENT)
+    private static int getBiomeColor(ItemStack stack, int tintIndex) {
+        if (tintIndex != 1) return -1;
+        EntityPlayer player = Minecraft.getMinecraft().player;
+        if (!stack.isEmpty() && player != null && player.world != null) {
+            POS.setPos(player.posX, player.posY, player.posZ);
+            // More accurate than EntityPlayer#getPosition
+            return BiomeColorHelper.getGrassColorAtPos(player.world, POS);
+        } return ColorizerGrass.getGrassColor(0.5D, 1.0D);
     }
 
 }

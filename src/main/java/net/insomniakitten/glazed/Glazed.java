@@ -52,14 +52,13 @@ public class Glazed {
     public static final Logger LOGGER = LogManager.getLogger(MOD_NAME);
 
     public static final CreativeTabs CTAB = new CreativeTabs(Glazed.MOD_ID) {
-        @Override public ItemStack getTabIconItem() {
+        @Override
+        public ItemStack getTabIconItem() {
             return new ItemStack(ModBlocks.KILN.get());
         }
     };
 
-    @SidedProxy(
-            clientSide = "net.insomniakitten.glazed.client.ColorManager$ClientWrapper",
-            serverSide = "net.insomniakitten.glazed.client.ColorManager$ServerWrapper")
+    @SidedProxy(clientSide = ColorManager.CLIENT, serverSide = ColorManager.SERVER)
     public static ColorManager colorManager;
 
     @Mod.EventHandler
