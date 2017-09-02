@@ -28,7 +28,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import java.util.HashSet;
 import java.util.Set;
 
-@SideOnly(Side.CLIENT)
 @Mod.EventBusSubscriber(modid = Glazed.MOD_ID, value = Side.CLIENT)
 public class ModelRegistry {
 
@@ -39,6 +38,7 @@ public class ModelRegistry {
     }
 
     @SubscribeEvent
+    @SideOnly(Side.CLIENT)
     public static void onModelRegistry(ModelRegistryEvent event) {
         OBJLoader.INSTANCE.addDomain(Glazed.MOD_ID);
         MODELS.forEach(model -> ModelLoader.setCustomModelResourceLocation(
