@@ -36,11 +36,10 @@ public class KilnDataProvider implements IWailaDataProvider {
     @Override
     @SideOnly(Side.CLIENT)
     public List<String> getWailaBody(
-            ItemStack stack, List<String> tooltip, IWailaDataAccessor accessor, IWailaConfigHandler config) {
-        BlockPos tilePos = BlockKiln.isUpper(accessor.getBlockState()) ?
-                accessor.getPosition().down() : accessor.getPosition();
+            ItemStack stack, List<String> tooltip,
+            IWailaDataAccessor accessor, IWailaConfigHandler config) {
+        BlockPos tilePos = BlockKiln.getTilePos(accessor.getBlockState(), accessor.getPosition());
         TileEntity tile = accessor.getWorld().getTileEntity(tilePos);
-
         if (tile != null) {
             for (Slots slot : Slots.values()) {
                 ItemStack item = Slots.getSlot((TileKiln) tile, slot);
@@ -51,7 +50,6 @@ public class KilnDataProvider implements IWailaDataProvider {
                 }
             }
         }
-
         return tooltip;
     }
 }
