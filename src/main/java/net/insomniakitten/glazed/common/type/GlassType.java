@@ -193,8 +193,7 @@ public enum GlassType implements IStatePropertyHolder<GlassType>, IStateEventHol
     protected static class GlassSoundType extends SoundType {
 
         public GlassSoundType(SoundType type) {
-            super(  type.getVolume(), type.getPitch(),
-                    SoundEvents.BLOCK_GLASS_BREAK,
+            super(  1.0F, 1.0F, SoundEvents.BLOCK_GLASS_BREAK,
                     type.getStepSound(), type.getPlaceSound(),
                     type.getHitSound(), type.getFallSound());
         }
