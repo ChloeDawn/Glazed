@@ -87,7 +87,7 @@ public class TileKiln extends TileEntity implements ITickable {
     @Override
     @SuppressWarnings("unchecked")
     public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
-        return capability.equals(CAPABILITY) ? (T) this.inventory : super.getCapability(capability, facing);
+        return capability.equals(CAPABILITY) ? CAPABILITY.cast(inventory) : super.getCapability(capability, facing);
     }
 
     @Override
