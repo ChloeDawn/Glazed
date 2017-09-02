@@ -177,6 +177,11 @@ public enum GlassType implements IStatePropertyHolder<GlassType>, IStateEventHol
         return true;
     }
 
+    @Override
+    public boolean isFullCube() {
+        return false;
+    }
+
     public boolean isOpaque() {
         return false;
     }
