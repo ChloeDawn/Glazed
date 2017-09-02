@@ -47,7 +47,10 @@ public class RegistryManager {
     @SubscribeEvent
     public static void onBlockRegistry(RegistryEvent.Register<Block> event) {
         GameRegistry.registerTileEntity(TileKiln.class, TileKiln.getKey());
-        event.getRegistry().registerAll(Glazed.GLASS, Glazed.KILN, Glazed.MATERIAL);
+        if (ConfigManager.glassConfig.enableFunctionalGlass) {
+            event.getRegistry().register(Glazed.GLASS);
+        }
+        event.getRegistry().registerAll(Glazed.KILN, Glazed.MATERIAL);
     }
 
     @SubscribeEvent
