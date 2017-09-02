@@ -1,4 +1,5 @@
 itemGroup.glazed=Glazed
+itemGroup.glazed.shards=Glazed: Glass Shards
 
 tile.glazed.glass.gaia.name=Gaia Glass
 tile.glazed.glass.radiant.name=Radiant Glass
@@ -23,16 +24,46 @@ tile.glazed.glass.slimy.tooltip=Extra slippery
 tile.glazed.glass.auroric.tooltip=Supremely mystical
 
 tile.glazed.kiln.name=Glass Kiln
-tile.glazed.kiln.tooltip0=Used for processing sand into glass.
-tile.glazed.kiln.tooltip1=Catalysts control the type of glass that is made.
+tile.glazed.kiln.tooltip0=Used for processing sand into glass
+tile.glazed.kiln.tooltip1=Catalysts control the type of glass that is made
+
+tile.glazed.material.kiln_bricks.name=Kiln Bricks
+tile.glazed.material.obsidian_slag.name=Obsidian Slag
+tile.glazed.material.void_crystal.name=Void Crystal
+
+item.glazed.shard.name=Glass Shard
+
+tooltip.glazed.shard.desc=- %s
+tooltip.glazed.shard.mod=Mod: %s
+tooltip.glazed.shard.invalid=Invalid shard data
+tooltip.glazed.shard.invalid.config=Re-enable anarchy mode to fix this item
+tooltip.glazed.shard.invalid.mod=Re-add the missing mod "%s" to fix this item
 
 waila.glazed.kiln.input=Input
 waila.glazed.kiln.catalyst=Catalyst
 waila.glazed.kiln.fuel=Fuel
 waila.glazed.kiln.output=Output
 
-tile.glazed.material.bricks.name=Kiln Bricks
-tile.glazed.material.slag.name=Obsidian Slag
-tile.glazed.material.crystal.name=Void Crystal
+config.glazed.glass=Glass Config
 
-item.glazed.shard.name=Glass Shard
+config.glazed.glass.enableFunctionalGlass=Enable Functional Glass
+config.glazed.glass.enableFunctionalGlass.tooltip=Determines whether functional glass should be registered. [default: true]
+
+config.glazed.kiln=Kiln Config
+
+config.glazed.kiln.processingSpeed=Processing Speed
+config.glazed.kiln.processingSpeed.tooltip=The speed at which items are processed, relative to vanilla furnace speed. [default: 1.0]
+
+config.glazed.kiln.dyedGlassRecipes=Dyed Glass Recipes
+config.glazed.kiln.dyedGlassRecipes.tooltip=Determines whether the efficient dyed glass kiln recipes should be registered. [default: true]
+
+config.glazed.shards=Shards Config
+
+config.glazed.shards.enableShards=Enable Shards
+config.glazed.shards.enableShards.tooltip=Determines whether glass shards for vanilla glass should be registered. [default: true]
+
+config.glazed.shards.anarchyMode=Anarchy Mode
+config.glazed.shards.anarchyMode.tooltip=Determines whether glass shards should be registered for every glass block in the ore dictionary. [default: false]
+
+config.glazed.shards.requireShift=Tooltip Requires Shift
+config.glazed.shards.requireShift.tooltip=Determines whether holding shift is required to display the detailed tooltip [default: true]

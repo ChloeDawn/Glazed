@@ -23,7 +23,7 @@ import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.IRecipeCategory;
 import net.insomniakitten.glazed.Glazed;
 import net.insomniakitten.glazed.compat.jei.JEICompatPlugin;
-import net.insomniakitten.glazed.kiln.TileKiln.Slots;
+import net.insomniakitten.glazed.common.kiln.TileKiln.Slots;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;

@@ -19,9 +19,9 @@ package net.insomniakitten.glazed.compat.waila.provider;
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
 import mcp.mobius.waila.api.IWailaDataProvider;
-import net.insomniakitten.glazed.kiln.BlockKiln;
-import net.insomniakitten.glazed.kiln.TileKiln;
-import net.insomniakitten.glazed.kiln.TileKiln.Slots;
+import net.insomniakitten.glazed.common.kiln.BlockKiln;
+import net.insomniakitten.glazed.common.kiln.TileKiln;
+import net.insomniakitten.glazed.common.kiln.TileKiln.Slots;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -33,7 +33,8 @@ import java.util.List;
 
 public class KilnDataProvider implements IWailaDataProvider {
 
-    @Override @SideOnly(Side.CLIENT)
+    @Override
+    @SideOnly(Side.CLIENT)
     public List<String> getWailaBody(
             ItemStack stack, List<String> tooltip, IWailaDataAccessor accessor, IWailaConfigHandler config) {
         BlockPos tilePos = BlockKiln.isUpper(accessor.getBlockState()) ?

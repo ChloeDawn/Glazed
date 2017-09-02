@@ -17,7 +17,6 @@ package net.insomniakitten.glazed.client.model;
  */
 
 import net.insomniakitten.glazed.Glazed;
-import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.client.model.obj.OBJLoader;
@@ -26,27 +25,24 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
-@Mod.EventBusSubscriber(Side.CLIENT)
+@SideOnly(Side.CLIENT)
+@Mod.EventBusSubscriber(modid = Glazed.MOD_ID, value = Side.CLIENT)
 public class ModelRegistry {
 
-    private static final List<WrappedModel> MODELS = new ArrayList<>();
+    private static final Set<WrappedModel> MODELS = new HashSet<>();
+
     public static void registerModel(WrappedModel model) {
         MODELS.add(model);
     }
 
     @SubscribeEvent
-    @SideOnly(Side.CLIENT)
     public static void onModelRegistry(ModelRegistryEvent event) {
         OBJLoader.INSTANCE.addDomain(Glazed.MOD_ID);
-        MODELS.forEach(model -> {
-            ModelResourceLocation mrl = new ModelResourceLocation(
-                    model.getResourceLocation(), model.getVariants());
-            ModelLoader.setCustomModelResourceLocation(
-                    model.getItem(), model.getMetadata(), mrl);
-        });
+        MODELS.forEach(model -> ModelLoader.setCustomModelResourceLocation(
+                model.getItem(), model.getMetadata(), model.getModelResourceLocation()));
     }
 
 }

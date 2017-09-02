@@ -1,4 +1,4 @@
-package net.insomniakitten.glazed.kiln;
+package net.insomniakitten.glazed.common.kiln;
 
 /*
  *  Copyright 2017 InsomniaKitten
@@ -20,19 +20,20 @@ import net.insomniakitten.glazed.Glazed;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.oredict.OreDictionary;
 
 import javax.annotation.Nonnull;
+import java.util.Arrays;
 import java.util.Locale;
 
 public class TileKiln extends TileEntity implements ITickable {
@@ -40,41 +41,39 @@ public class TileKiln extends TileEntity implements ITickable {
     public static final Capability<IItemHandler> CAPABILITY = CapabilityItemHandler.ITEM_HANDLER_CAPABILITY;
     private static final ResourceLocation KEY = new ResourceLocation(Glazed.MOD_ID, "tile_kiln");
 
+    private final int processTime = 160;
     public boolean isActive = false;
     private int progress = 0;
 
-    private ItemStackHandler ITEMS = new ItemStackHandler(4) {
+    private ItemStackHandler inventory = new ItemStackHandler(4) {
 
         @Override
         protected int getStackLimit(int index, ItemStack stack) {
-            if ((index == 0 && isSand(stack)) || (index == 1) || (index == 2 && isFuel(stack))) {
-                return super.getStackLimit(index, stack);
-            } else return 0;
+            return (index == 0 && isSand(stack)) || (index == 1) || (index == 2 && isFuel(stack)) ?
+                    super.getStackLimit(index, stack) : 0;
         }
 
         private boolean isSand(ItemStack stack) {
-            int[] ids = OreDictionary.getOreIDs(stack);
-            int sand = OreDictionary.getOreID("sand");
-            for (int id : ids) {
-                if (id == sand) {
-                    return true;
-                }
-            } return false;
+            return Arrays.stream(OreDictionary.getOreIDs(stack))
+                    .anyMatch(id -> id == OreDictionary.getOreID("sand"));
         }
 
         private boolean isFuel(ItemStack stack) {
-            return ForgeEventFactory.getItemBurnTime(stack) > 0;
+            return TileEntityFurnace.getItemBurnTime(stack) > 0;
         }
 
     };
-
-    public int getProgress() { return progress; }
 
     public static String getKey() {
         return KEY.toString();
     }
 
-    @Override @Nonnull
+    public int getProgress() {
+        return progress;
+    }
+
+    @Override
+    @Nonnull
     public ITextComponent getDisplayName() {
         String name = getBlockType().getUnlocalizedName() + ".name";
         return new TextComponentTranslation(name);
@@ -85,56 +84,57 @@ public class TileKiln extends TileEntity implements ITickable {
         return capability.equals(CAPABILITY) || super.hasCapability(capability, facing);
     }
 
-    @Override @SuppressWarnings("unchecked")
+    @Override
+    @SuppressWarnings("unchecked")
     public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
-        if (capability.equals(CAPABILITY)) {
-            return (T) this.ITEMS;
-        } else {
-            return super.getCapability(capability, facing);
-        }
+        return capability.equals(CAPABILITY) ? (T) this.inventory : super.getCapability(capability, facing);
     }
 
     @Override
     public final void readFromNBT(NBTTagCompound nbt) {
         super.readFromNBT(nbt);
-        this.ITEMS.deserializeNBT(nbt.getCompoundTag("contents"));
+        this.inventory.deserializeNBT(nbt.getCompoundTag("contents"));
         this.progress = nbt.hasKey("progress") ? nbt.getInteger("progress") : 0;
     }
 
-    @Override @Nonnull
+    @Override
+    @Nonnull
     public final NBTTagCompound writeToNBT(NBTTagCompound nbt) {
         super.writeToNBT(nbt);
-        nbt.setTag("contents", ITEMS.serializeNBT());
+        nbt.setTag("contents", inventory.serializeNBT());
         nbt.setInteger("progress", progress);
         return nbt;
     }
 
     @Override
     public void update() {
-        if (!Slots.getSlot(this, Slots.INPUT).isEmpty()) {
+        ItemStack input = Slots.getSlot(this, Slots.INPUT);
+        ItemStack catalyst = Slots.getSlot(this, Slots.CATALYST);
+        ItemStack fuel = Slots.getSlot(this, Slots.FUEL);
+        ItemStack output = Slots.getSlot(this, Slots.OUTPUT);
 
-            ItemStack input = Slots.getSlot(this, Slots.INPUT);
-            ItemStack catalyst = Slots.getSlot(this, Slots.CATALYST);
-            ItemStack fuel = Slots.getSlot(this, Slots.FUEL);
-            ItemStack output = Slots.getSlot(this, Slots.OUTPUT);
+        int remainingFuelTime = TileEntityFurnace.getItemBurnTime(fuel);
+        boolean canBurn = remainingFuelTime > 0;
 
-            int remainingFuelTime = 0;
-
-            if (RecipesKiln.getRecipe(input, catalyst) != null && (!fuel.isEmpty() || remainingFuelTime > 0)) {
-                isActive = RecipesKiln.trySmelt(this, input, catalyst);
-            }
-
-            if (isActive) {
-
-            }
-
-            if (!RecipesKiln.getOutput(input, catalyst).isItemEqual(output)
-                    || output.getCount() == output.getMaxStackSize()) {
-                isActive = false;
-            }
-
-            this.markDirty();
+        if (!input.isEmpty() && RecipesKiln.getRecipe(input, catalyst) != null && (!fuel.isEmpty() || canBurn)) {
+            isActive = true;
         }
+
+        if (isActive) {
+            ++progress;
+            if (canBurn && progress == processTime && RecipesKiln.trySmelt(this, input, catalyst)) {
+                progress = 0;
+            }
+            if (remainingFuelTime > 0) {
+                --remainingFuelTime;
+            }
+        }
+
+        if (!RecipesKiln.getOutput(input, catalyst).isItemEqual(output) || output.getCount() == output.getMaxStackSize()) {
+            isActive = false;
+        }
+
+        markDirty();
     }
 
     public enum Slots {
@@ -147,17 +147,24 @@ public class TileKiln extends TileEntity implements ITickable {
             this.y = y;
         }
 
-        public int getX() { return x; }
-        public int getY() { return y; }
-
-        public String getName() { return name().toLowerCase(Locale.ENGLISH); }
-
-        public static ItemStack getSlot(TileKiln tile, Slots slot){
-            return tile.ITEMS.getStackInSlot(slot.ordinal());
+        public static ItemStack getSlot(TileKiln kiln, Slots slot) {
+            return kiln.inventory.getStackInSlot(slot.ordinal());
         }
 
-        public static void setSlot(TileKiln tile, Slots slot, ItemStack stack) {
-            tile.ITEMS.setStackInSlot(slot.ordinal(), stack);
+        public static void setSlot(TileKiln kiln, Slots slot, ItemStack stack) {
+            kiln.inventory.setStackInSlot(slot.ordinal(), stack);
+        }
+
+        public int getX() {
+            return x;
+        }
+
+        public int getY() {
+            return y;
+        }
+
+        public String getName() {
+            return name().toLowerCase(Locale.ENGLISH);
         }
 
     }

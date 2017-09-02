@@ -16,35 +16,29 @@ package net.insomniakitten.glazed.client.model;
  *   limitations under the License.
  */
 
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 
-import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
 
-public class WrappedModel {
+public final class WrappedModel {
 
     private final Item item;
     private final int meta;
     private final ResourceLocation resource;
     private final String variants;
+    private final ModelResourceLocation mrl;
 
     private WrappedModel(ModelBuilder model) {
         this.item = model.item;
         this.meta = model.meta;
         this.resource = model.resource;
-        if (model.variants.size() == 1) {
-            this.variants = model.variants.get(0);
-        }
-        else {
-            StringBuilder builder = new StringBuilder();
-            for (int i = 0; i < model.variants.size(); i++) {
-                if (i != 0) {
-                    builder.append(",");
-                }
-                builder.append(model.variants.get(i));
-            }
-            this.variants = builder.toString();
-        }
+        this.variants = model.variants.stream()
+                .collect(Collectors.joining(","));
+        this.mrl = new ModelResourceLocation(this.resource, this.variants);
     }
 
     public Item getItem() {
@@ -63,11 +57,16 @@ public class WrappedModel {
         return variants;
     }
 
+    public ModelResourceLocation getModelResourceLocation() {
+        return mrl;
+    }
+
     public static class ModelBuilder {
+
         private Item item;
         private int meta;
         private ResourceLocation resource;
-        private ArrayList<String> variants = new ArrayList<>();
+        private Set<String> variants = new HashSet<>();
 
         public ModelBuilder(Item item, int meta) {
             this.item = item;

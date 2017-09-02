@@ -1,7 +1,7 @@
 {
+  "type": "minecraft:crafting_shaped",
   "result": { "item": "glazed:kiln" },
   "pattern": [ "MMM", "M M", "MMM" ],
-  "type": "minecraft:crafting_shaped",
   "key": {
     "M": { "item": "glazed:material", "data": 0 }
   }

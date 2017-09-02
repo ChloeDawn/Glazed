@@ -1,4 +1,4 @@
-package net.insomniakitten.glazed.glass;
+package net.insomniakitten.glazed.common.item;
 
 /*
  *  Copyright 2017 InsomniaKitten
@@ -16,10 +16,11 @@ package net.insomniakitten.glazed.glass;
  *   limitations under the License.
  */
 
-import net.insomniakitten.glazed.client.SpecialsManager;
 import net.insomniakitten.glazed.client.model.ModelRegistry;
+import net.insomniakitten.glazed.client.model.WrappedModel;
 import net.insomniakitten.glazed.client.model.WrappedModel.ModelBuilder;
-import net.minecraft.block.Block;
+import net.insomniakitten.glazed.common.block.BlockBase;
+import net.insomniakitten.glazed.common.util.IStatePropertyHolder;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemBlock;
@@ -27,16 +28,17 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.apache.commons.lang3.tuple.Pair;
 
+import javax.annotation.Nullable;
 import java.util.List;
-import java.util.Set;
-import java.util.UUID;
 
-public class ItemBlockGlass extends ItemBlock {
+public class ItemBlockBase<E extends Enum<E> & IStatePropertyHolder<E>> extends ItemBlock {
 
-    public ItemBlockGlass(Block block) {
+    private final E[] values;
+
+    public ItemBlockBase(BlockBase<E> block) {
         super(block);
+        this.values = block.getValues();
         assert block.getRegistryName() != null;
         setRegistryName(block.getRegistryName());
         setHasSubtypes(true);
@@ -44,35 +46,21 @@ public class ItemBlockGlass extends ItemBlock {
     }
 
     private void registerModels() {
-        for (GlassType type : GlassType.values()) {
-            ModelBuilder builder = new ModelBuilder(this, type.getMetadata());
-            builder.addVariant("type=" + type.getName());
-            ModelRegistry.registerModel(builder.build());
+        for (E value : values) {
+            WrappedModel model = new ModelBuilder(this, value.getMetadata())
+                    .addVariant("type=" + value.getName()).build();
+            ModelRegistry.registerModel(model);
         }
     }
 
-    @Override @SideOnly(Side.CLIENT)
+    @Override
     public String getUnlocalizedName(ItemStack stack) {
-        int meta = stack.getMetadata() % GlassType.values().length;
-        String type = GlassType.values()[meta].getName();
-        return this.getBlock().getUnlocalizedName() + "." + type;
+        int meta = stack.getMetadata() % values.length;
+        return this.block.getUnlocalizedName() + "." + values[meta].getName();
     }
 
     @Override @SideOnly(Side.CLIENT)
-    public String getItemStackDisplayName(ItemStack stack) {
-        int meta = stack.getMetadata() % GlassType.values().length;
-        String type = GlassType.values()[meta].getName();
-        Set<Pair<UUID, String>> keys = SpecialsManager.SPECIALS.keySet();
-        Pair match = Pair.of(SpecialsManager.getUUID(), type);
-        if (keys.contains(match)) {
-            return SpecialsManager.SPECIALS.get(match);
-        } else {
-            return super.getItemStackDisplayName(stack);
-        }
-    }
-
-    @Override @SideOnly(Side.CLIENT)
-    public void addInformation(ItemStack stack, World world, List<String> tooltip, ITooltipFlag flag) {
+    public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
         String key = stack.getUnlocalizedName() + ".tooltip";
         if (I18n.hasKey(key)) {
             tooltip.add(I18n.format(key));

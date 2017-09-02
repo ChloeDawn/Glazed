@@ -21,7 +21,7 @@ import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.IRecipeWrapper;
 import mezz.jei.api.recipe.IStackHelper;
 import net.insomniakitten.glazed.compat.jei.JEICompatPlugin;
-import net.insomniakitten.glazed.kiln.RecipesKiln;
+import net.insomniakitten.glazed.common.kiln.RecipesKiln;
 import net.minecraft.item.ItemStack;
 
 import java.util.List;
@@ -30,7 +30,9 @@ public class KilnJEIRecipe implements IRecipeWrapper {
 
     private final RecipesKiln.KilnRecipe recipe;
 
-    public KilnJEIRecipe(RecipesKiln.KilnRecipe recipe) { this.recipe = recipe; }
+    public KilnJEIRecipe(RecipesKiln.KilnRecipe recipe) {
+        this.recipe = recipe;
+    }
 
     @Override
     public void getIngredients(IIngredients ingredients) {

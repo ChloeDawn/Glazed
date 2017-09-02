@@ -1,4 +1,4 @@
-package net.insomniakitten.glazed.kiln;
+package net.insomniakitten.glazed.common.item;
 
 /*
  *  Copyright 2017 InsomniaKitten
@@ -38,7 +38,8 @@ public class ItemBlockKiln extends ItemBlock {
         ModelRegistry.registerModel(new ModelBuilder(this).build());
     }
 
-    @Override @SideOnly(Side.CLIENT)
+    @Override
+    @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack stack, World world, List<String> tooltip, ITooltipFlag flag) {
         String loc = stack.getUnlocalizedName();
         tooltip.add(I18n.format(loc + ".tooltip0"));

@@ -17,68 +17,41 @@ package net.insomniakitten.glazed.client;
  */
 
 import net.insomniakitten.glazed.Glazed;
-import net.insomniakitten.glazed.glass.BlockGlass;
-import net.insomniakitten.glazed.glass.GlassType;
-import net.insomniakitten.glazed.material.BlockMaterial;
-import net.insomniakitten.glazed.material.MaterialType;
+import net.insomniakitten.glazed.common.util.IOverlayProvider;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-@Mod.EventBusSubscriber(Side.CLIENT)
+@Mod.EventBusSubscriber(modid = Glazed.MOD_ID, value = Side.CLIENT)
 public class OverlayRenderer {
-
-    private static final ResourceLocation VOIDIC_OVERLAY = new ResourceLocation(
-            Glazed.MOD_ID, "textures/overlay/voided.png");
-
-    private  static final ResourceLocation SLAG_OVERLAY = new ResourceLocation(
-            Glazed.MOD_ID, "textures/overlay/slag.png");
-
-    private static final BlockPos.MutableBlockPos MUTABLE = new BlockPos.MutableBlockPos();
 
     @SubscribeEvent
     public static void onRenderGameOverlay(RenderGameOverlayEvent.Pre event) {
-        if (event.getType().equals(RenderGameOverlayEvent.ElementType.ALL)) {
-            EntityPlayer player = Minecraft.getMinecraft().player;
+        if (ClientHelper.isWorldLoaded() && event.getType().equals(ElementType.ALL)) {
 
-            if (player == null || player.world == null) {
-                return;
-            }
-
-            MUTABLE.setPos(player.posX, player.posY + 1, player.posZ);
-            IBlockState state = player.world.getBlockState(MUTABLE);
-
-            boolean isBlockGlass = state.getBlock() instanceof BlockGlass;
-            boolean isBlockMaterial = state.getBlock() instanceof BlockMaterial;
-
-            int width = event.getResolution().getScaledWidth();
-            int height = event.getResolution().getScaledHeight();
-
-            if (isBlockGlass && GlassType.get(state).equals(GlassType.VOIDIC)) {
-                drawOverlay(width, height, VOIDIC_OVERLAY);
-            }
-
-            if (isBlockMaterial && MaterialType.get(state).equals(MaterialType.SLAG)) {
-                drawOverlay(width, height, SLAG_OVERLAY);
+            IBlockState stateAt = ClientHelper.getWorld().getBlockState(ClientHelper.getPlayerPos().up());
+            if (stateAt.getBlock() instanceof IOverlayProvider) {
+                IOverlayProvider provider = (IOverlayProvider) stateAt.getBlock();
+                ResourceLocation overlay = provider.getOverlayTexture(stateAt);
+                if (overlay != null) {
+                    ScaledResolution res = event.getResolution();
+                    GlStateManager.enableBlend();
+                    Minecraft.getMinecraft().renderEngine.bindTexture(overlay);
+                    Minecraft.getMinecraft().ingameGUI.drawTexturedModalRect(
+                            0, 0, 0, 0, res.getScaledWidth(), res.getScaledHeight());
+                    GlStateManager.disableBlend();
+                }
             }
         }
-    }
-
-    public static void drawOverlay(int width, int height, ResourceLocation texture) {
-        GlStateManager.pushMatrix();
-        GlStateManager.enableBlend();
-        Minecraft.getMinecraft().renderEngine.bindTexture(texture);
-        Minecraft.getMinecraft().ingameGUI.drawTexturedModalRect(0, 0, 0, 0, width, height);
-        GlStateManager.popMatrix();
     }
 
 }

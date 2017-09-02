@@ -1,4 +1,4 @@
-package net.insomniakitten.glazed.kiln;
+package net.insomniakitten.glazed.common.kiln;
 
 /*
  *  Copyright 2017 InsomniaKitten
@@ -17,17 +17,17 @@ package net.insomniakitten.glazed.kiln;
  */
 
 import com.google.common.collect.ImmutableList;
-import net.insomniakitten.glazed.kiln.TileKiln.Slots;
+import net.insomniakitten.glazed.common.kiln.TileKiln.Slots;
 import net.minecraft.item.ItemStack;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 public class RecipesKiln {
 
-    private static final List<KilnRecipe> KILN_RECIPES = new ArrayList<KilnRecipe>();
+    private static final Set<KilnRecipe> KILN_RECIPES = new HashSet<>();
 
     /**
      * Registers a new Kiln recipe.
@@ -43,45 +43,35 @@ public class RecipesKiln {
 
     @Nullable
     public static KilnRecipe getRecipe(ItemStack input, ItemStack catalyst) {
-        for (KilnRecipe recipe : KILN_RECIPES) {
-            if (recipe.canSmelt(input, catalyst)) {
-                return recipe;
-            }
-        }
-        return null;
+        return KILN_RECIPES.stream()
+                .filter(recipe -> recipe.canSmelt(input, catalyst))
+                .findFirst().orElse(null);
     }
 
     @Nonnull
     public static ItemStack getOutput(ItemStack input, ItemStack catalyst) {
-        for (KilnRecipe recipe : KILN_RECIPES) {
-            if (recipe.canSmelt(input, catalyst)) {
-                return recipe.getOutput();
-            }
-        }
-        return ItemStack.EMPTY;
+        return KILN_RECIPES.stream()
+                .filter(recipe -> recipe.canSmelt(input, catalyst))
+                .findFirst().map(KilnRecipe::getOutput).orElse(ItemStack.EMPTY);
     }
 
     public static boolean trySmelt(TileKiln tile, ItemStack input, ItemStack catalyst) {
         KilnRecipe recipe = getRecipe(input, catalyst);
         ItemStack output = Slots.getSlot(tile, Slots.OUTPUT);
-
-        if (recipe == null || (!output.isEmpty() && !output.isItemEqual(recipe.getOutput()))) {
-            return false;
-        }
-
-        if (output.getCount() < output.getMaxStackSize()) {
-            input.shrink(recipe.getInput().getCount());
-            catalyst.shrink(recipe.getCatalyst().getCount());
-            if (output.isEmpty()) {
-                ItemStack stack = recipe.getOutput().copy();
-                Slots.setSlot(tile, Slots.OUTPUT, stack);
-            } else {
-                output.grow(recipe.getOutput().getCount());
+        if (recipe != null && (output.isEmpty() || output.isItemEqual(recipe.getOutput()))) {
+            if (output.getCount() < output.getMaxStackSize()) {
+                input.shrink(recipe.getInput().getCount());
+                catalyst.shrink(recipe.getCatalyst().getCount());
+                if (output.isEmpty()) {
+                    ItemStack stack = recipe.getOutput().copy();
+                    Slots.setSlot(tile, Slots.OUTPUT, stack);
+                } else {
+                    output.grow(recipe.getOutput().getCount());
+                }
+                return true;
             }
-        } else {
-            return false;
         }
-        return true;
+        return false;
     }
 
     public static ImmutableList<KilnRecipe> getRecipes() {
@@ -90,17 +80,14 @@ public class RecipesKiln {
 
     public static class KilnRecipe {
 
-        private final ItemStack input;
-        private final ItemStack catalyst;
-        private final ItemStack output;
+        private final ItemStack input, catalyst, output;
 
         public KilnRecipe(ItemStack input, ItemStack catalyst, ItemStack output) {
-            if (input.isEmpty() || output.isEmpty()) {
-                throw new IllegalArgumentException("Kiln recipe cannot have an empty ingredient!");
-            }
-            this.input = input;
-            this.catalyst = catalyst;
-            this.output = output;
+            if (!input.isEmpty() && !output.isEmpty()) {
+                this.input = input;
+                this.catalyst = catalyst;
+                this.output = output;
+            } else throw new IllegalArgumentException("Kiln recipe cannot have an empty ingredient!");
         }
 
         public ItemStack getOutput() {

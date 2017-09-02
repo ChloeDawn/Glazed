@@ -20,10 +20,10 @@ import mcp.mobius.waila.api.IWailaPlugin;
 import mcp.mobius.waila.api.IWailaRegistrar;
 import mcp.mobius.waila.api.WailaPlugin;
 import net.insomniakitten.glazed.Glazed;
+import net.insomniakitten.glazed.common.block.BlockGlass;
 import net.insomniakitten.glazed.compat.waila.provider.GlassDataProvider;
 import net.insomniakitten.glazed.compat.waila.provider.KilnDataProvider;
-import net.insomniakitten.glazed.glass.BlockGlass;
-import net.insomniakitten.glazed.kiln.BlockKiln;
+import net.insomniakitten.glazed.common.kiln.BlockKiln;
 
 @WailaPlugin(Glazed.MOD_ID)
 public class WailaCompatPlugin implements IWailaPlugin {

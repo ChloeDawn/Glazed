@@ -1,4 +1,4 @@
-package net.insomniakitten.glazed.kiln;
+package net.insomniakitten.glazed.common.kiln;
 
 /*
  *  Copyright 2017 InsomniaKitten
@@ -17,8 +17,10 @@ package net.insomniakitten.glazed.kiln;
  */
 
 import net.insomniakitten.glazed.Glazed;
-import net.insomniakitten.glazed.RegistryManager;
+import net.insomniakitten.glazed.common.RegistryManager;
+import net.insomniakitten.glazed.common.item.ItemBlockKiln;
 import net.minecraft.block.Block;
+import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.properties.PropertyDirection;
@@ -26,8 +28,8 @@ import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -44,6 +46,7 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
 import java.util.Locale;
+import java.util.Random;
 
 @SuppressWarnings("deprecation")
 public class BlockKiln extends Block {
@@ -52,13 +55,16 @@ public class BlockKiln extends Block {
     private static final PropertyDirection FACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
     private static final PropertyBool ACTIVE = PropertyBool.create("active");
 
-    private static final AxisAlignedBB AABB_UPPER = new AxisAlignedBB(0.0625, 0, 0.0625, 0.9375, 0.8125, 0.9375);
+    private static final AxisAlignedBB AABB_UPPER = new AxisAlignedBB(
+            0.0625D, 0.0000D, 0.0625D, 0.9375D, 0.8125D, 0.9375D
+    );
 
     public BlockKiln() {
         super(Material.ROCK);
         setRegistryName("kiln");
         setUnlocalizedName(Glazed.MOD_ID + ".kiln");
         setCreativeTab(Glazed.CTAB);
+        setSoundType(SoundType.STONE);
         setHardness(5.0f);
         setResistance(30.0f);
         setDefaultState(this.getDefaultState()
@@ -66,6 +72,14 @@ public class BlockKiln extends Block {
                 .withProperty(FACING, EnumFacing.NORTH)
                 .withProperty(ACTIVE, false));
         RegistryManager.registerItemBlock(new ItemBlockKiln(this));
+    }
+
+    public static boolean isUpper(IBlockState state) {
+        return state.getValue(HALF).equals(KilnHalf.UPPER);
+    }
+
+    public static BlockPos getTilePos(IBlockState state, BlockPos pos) {
+        return isUpper(state) ? pos.down() : pos;
     }
 
     @Override
@@ -92,10 +106,8 @@ public class BlockKiln extends Block {
             World world, BlockPos pos, EnumFacing facing,
             float hitX, float hitY, float hitZ, int meta,
             EntityLivingBase placer, EnumHand hand) {
-        return this.getDefaultState()
-                .withProperty(HALF, KilnHalf.LOWER)
-                .withProperty(FACING, placer.getHorizontalFacing().getOpposite())
-                .withProperty(ACTIVE, false);
+        EnumFacing opposite = placer.getHorizontalFacing().getOpposite();
+        return this.getDefaultState().withProperty(FACING, opposite);
     }
 
     @Override
@@ -122,52 +134,63 @@ public class BlockKiln extends Block {
 
     @Override
     public boolean onBlockActivated(
-            World world, BlockPos pos, IBlockState state,
-            EntityPlayer player, EnumHand hand, EnumFacing facing,
-            float hitX, float hitY, float hitZ) {
-        if (isUpper(state)) pos = pos.down();
-        if (!world.isRemote) {
-            FMLNetworkHandler.openGui(player, Glazed.instance, 0, world, pos.getX(), pos.getY(), pos.getZ());
-        }
+            World world, BlockPos pos, IBlockState state, EntityPlayer player,
+            EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
+        BlockPos tilePos = BlockKiln.getTilePos(state, pos);
+        FMLNetworkHandler.openGui(player, Glazed.instance, 0, world, tilePos.getX(), tilePos.getY(), tilePos.getZ());
         return true;
     }
 
     @Override
     public boolean canPlaceBlockAt(World world, BlockPos pos) {
-        boolean canPlaceLower = world.getBlockState(pos).getBlock().isReplaceable(world, pos);
-        boolean canPlaceUpper = world.getBlockState(pos.up()).getBlock().isReplaceable(world, pos.up());
+        Block lower = world.getBlockState(pos).getBlock();
+        Block upper = world.getBlockState(pos.up()).getBlock();
+        boolean canPlaceLower = lower.isReplaceable(world, pos);
+        boolean canPlaceUpper = upper.isReplaceable(world, pos.up());
         return canPlaceLower && canPlaceUpper;
     }
 
     @Override
-    public void onBlockPlacedBy(
-            World world, BlockPos pos, IBlockState state,
-            EntityLivingBase entity, ItemStack stack) {
+    public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase entity, ItemStack stack) {
         world.setBlockState(pos.up(), state.withProperty(HALF, KilnHalf.UPPER));
     }
 
-    @Override @SuppressWarnings("ConstantConditions")
+    @Override
     public void breakBlock(World world, BlockPos pos, IBlockState state) {
-        BlockPos tilePos = isUpper(state) ? pos.down() : pos;
+        BlockPos tilePos = BlockKiln.getTilePos(state, pos);
         Capability<IItemHandler> items = CapabilityItemHandler.ITEM_HANDLER_CAPABILITY;
         TileEntity tile = world.getTileEntity(tilePos);
-
-        if (tile.hasCapability(items, null)) {
+        if (tile != null && tile.hasCapability(items, null)) {
             IItemHandler inventory = tile.getCapability(items, null);
             if (inventory != null && world.getGameRules().getBoolean("doTileDrops")) {
+                Random rand = new Random();
                 for (int i = 0; i < inventory.getSlots(); i++) {
                     ItemStack stack = inventory.getStackInSlot(i);
-                    InventoryHelper.spawnItemStack(world, tilePos.getX(), tilePos.getY(), tilePos.getZ(), stack);
+                    float x = tilePos.getX() + (rand.nextFloat() * 1.0F);
+                    float y = tilePos.getY() + (rand.nextFloat() * 1.0F);
+                    float z = tilePos.getZ() + (rand.nextFloat() * 1.0F);
+                    while (!stack.isEmpty()) {
+                        EntityItem drop = new EntityItem(world, x, y, z, stack.splitStack(rand.nextInt(21) + 10));
+                        drop.motionX = rand.nextGaussian() * 0.05D;
+                        drop.motionY = rand.nextGaussian() * 0.07D;
+                        drop.motionZ = rand.nextGaussian() * 0.05D;
+                        world.spawnEntity(drop);
+                    }
                 }
+                world.setBlockToAir(isUpper(state) ? pos.down() : pos.up());
             }
         }
-
-        world.setBlockToAir(isUpper(state) ? pos.down() : pos.up());
     }
 
     @Override
-    public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {
+    public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess world, BlockPos pos) {
         return isUpper(state) ? AABB_UPPER : FULL_BLOCK_AABB;
+    }
+
+    @Override
+    public IBlockState getActualState(IBlockState state, IBlockAccess world, BlockPos pos) {
+        TileKiln tile = (TileKiln) world.getTileEntity(BlockKiln.getTilePos(state, pos));
+        return tile != null ? state.withProperty(ACTIVE, tile.isActive) : state;
     }
 
     @Override
@@ -185,21 +208,9 @@ public class BlockKiln extends Block {
         return new BlockStateContainer(this, HALF, FACING, ACTIVE);
     }
 
-    @Override
-    public IBlockState getActualState(IBlockState state, IBlockAccess world, BlockPos pos) {
-        if (isUpper(state)) pos = pos.down();
-        TileKiln tile = (TileKiln) world.getTileEntity(pos);
-        if (tile != null) {
-            return state.withProperty(ACTIVE, tile.isActive);
-        } else return super.getActualState(state, world, pos);
-    }
-
-    public static boolean isUpper(IBlockState state) {
-        return state.getValue(HALF).equals(KilnHalf.UPPER);
-    }
-
     private enum KilnHalf implements IStringSerializable {
         UPPER, LOWER;
+
         public String getName() {
             return name().toLowerCase(Locale.ENGLISH);
         }

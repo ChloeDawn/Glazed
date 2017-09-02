@@ -20,10 +20,10 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import net.insomniakitten.glazed.Glazed;
+import net.insomniakitten.glazed.common.util.Logger;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.IReloadableResourceManager;
 import net.minecraft.client.resources.IResourceManager;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -35,52 +35,41 @@ import org.apache.commons.lang3.tuple.Pair;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 
-@Mod.EventBusSubscriber
+@SideOnly(Side.CLIENT)
+@Mod.EventBusSubscriber(modid = Glazed.MOD_ID, value = Side.CLIENT)
 public class SpecialsManager {
 
     public static final HashMap<Pair<UUID, String>, String> SPECIALS = new HashMap<>();
 
     private static final ResourceLocation PATH = new ResourceLocation(Glazed.MOD_ID, "data/specials.json");
-    private static final UUID EMPTY_UUID = new UUID(0, 0);
 
-    @SubscribeEvent @SideOnly(Side.CLIENT)
-    public static void onResourceListenerRegistry(ModelRegistryEvent event) {
+    @SubscribeEvent
+    public static void onSpecialsResourceListenerRegistry(ModelRegistryEvent event) {
         ((IReloadableResourceManager) Minecraft.getMinecraft().getResourceManager())
-                    .registerReloadListener(SpecialsManager::parseSpecials);
+                .registerReloadListener(SpecialsManager::parseSpecials);
     }
 
-    @SideOnly(Side.CLIENT)
     public static void parseSpecials(IResourceManager rm) {
-        JsonElement specials;
+        JsonElement specialsData;
 
         try (InputStreamReader reader = new InputStreamReader(rm.getResource(PATH).getInputStream())) {
-            specials = new JsonParser().parse(reader);
-        } catch (IOException e) {
-            Glazed.Logger.warn(true, "Failed to parse specials.json!");
-            e.printStackTrace();
+            specialsData = new JsonParser().parse(reader);
+        } catch (IOException exception) {
+            Logger.error(true, "Failed to parse specials.json!");
+            exception.printStackTrace();
             return;
         }
 
         SPECIALS.clear(); // Flush before population
 
-        JsonObject json = specials.getAsJsonObject();
-        for (Map.Entry<String, JsonElement> group : json.entrySet()) {
-            JsonObject obj = group.getValue().getAsJsonObject();
-            for (Map.Entry<String, JsonElement> e : obj.entrySet()) {
-                SPECIALS.put(Pair.of(UUID.fromString(e.getKey()), group.getKey()), e.getValue().getAsString());
-            }
-        }
-    }
-
-    @SideOnly(Side.CLIENT)
-    public static UUID getUUID() {
-        EntityPlayer player = Minecraft.getMinecraft().player;
-        if (player != null) {
-            return player.getGameProfile().getId();
-        } else return EMPTY_UUID;
+        specialsData.getAsJsonObject().entrySet().forEach(group -> {
+            JsonObject object = group.getValue().getAsJsonObject();
+            object.entrySet().forEach(entry -> SPECIALS.put(Pair.of(
+                    UUID.fromString(entry.getKey()), group.getKey()),
+                    entry.getValue().getAsString()));
+        });
     }
 
 }

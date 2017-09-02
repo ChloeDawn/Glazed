@@ -1,4 +1,4 @@
-package net.insomniakitten.glazed.compat.waila.provider;
+package net.insomniakitten.glazed.common.util;
 
 /*
  *  Copyright 2017 InsomniaKitten
@@ -16,29 +16,22 @@ package net.insomniakitten.glazed.compat.waila.provider;
  *   limitations under the License.
  */
 
-import mcp.mobius.waila.api.IWailaConfigHandler;
-import mcp.mobius.waila.api.IWailaDataAccessor;
-import mcp.mobius.waila.api.IWailaDataProvider;
-import net.minecraft.client.resources.I18n;
-import net.minecraft.item.ItemStack;
+import net.minecraftforge.event.world.WorldEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import java.util.List;
+//@Mod.EventBusSubscriber(modid = Glazed.MOD_ID)
+public class MutliblockHelper {
 
-public class GlassDataProvider implements IWailaDataProvider {
+    @SubscribeEvent
+    public static void onWorldLoad(WorldEvent.Load event) {
+        // TODO
+    }
 
-    @Override
     @SideOnly(Side.CLIENT)
-    public List<String> getWailaBody(
-            ItemStack stack, List<String> tooltip, IWailaDataAccessor accessor, IWailaConfigHandler config) {
-        String key = stack.getUnlocalizedName() + ".tooltip";
-
-        if (I18n.hasKey(key)) {
-            tooltip.add(I18n.format(key));
-        }
-
-        return tooltip;
+    public static void registerBreakingListener() {
+        // TODO
     }
 
 }

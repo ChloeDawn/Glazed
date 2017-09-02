@@ -1,4 +1,4 @@
-package net.insomniakitten.glazed.kiln;
+package net.insomniakitten.glazed.common;
 
 /*
  *  Copyright 2017 InsomniaKitten
@@ -17,6 +17,8 @@ package net.insomniakitten.glazed.kiln;
  */
 
 import net.insomniakitten.glazed.Glazed;
+import net.insomniakitten.glazed.common.kiln.InventoryKiln;
+import net.insomniakitten.glazed.common.util.Logger;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -25,20 +27,22 @@ import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class GUIManagerKiln implements IGuiHandler {
+public class GuiManager implements IGuiHandler {
 
     public static void register() {
-        NetworkRegistry.INSTANCE.registerGuiHandler(Glazed.MOD_ID, new GUIManagerKiln());
+        Logger.info(false, "Registering {}", GuiManager.class.getCanonicalName());
+        NetworkRegistry.INSTANCE.registerGuiHandler(Glazed.MOD_ID, new GuiManager());
     }
 
     @Override
     public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
-        return ID == 0 ? new ContainerKiln(world.getTileEntity(new BlockPos(x, y, z)), player) : null;
+        return ID == 0 ? new InventoryKiln.KilnContainer(world.getTileEntity(new BlockPos(x, y, z)), player) : null;
     }
 
-    @Override @SideOnly(Side.CLIENT)
+    @Override
+    @SideOnly(Side.CLIENT)
     public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
-        return ID == 0 ? new GuiKiln(world.getTileEntity(new BlockPos(x, y, z)), player) : null;
+        return ID == 0 ? new InventoryKiln.KilnGui(world.getTileEntity(new BlockPos(x, y, z)), player) : null;
     }
 
 }
