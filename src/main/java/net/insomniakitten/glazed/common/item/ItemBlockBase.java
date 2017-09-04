@@ -29,7 +29,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import javax.annotation.Nullable;
 import java.util.List;
 
 public class ItemBlockBase<E extends Enum<E> & IStatePropertyHolder<E>> extends ItemBlock {
@@ -59,8 +58,9 @@ public class ItemBlockBase<E extends Enum<E> & IStatePropertyHolder<E>> extends 
         return this.block.getUnlocalizedName() + "." + values[meta].getName();
     }
 
-    @Override @SideOnly(Side.CLIENT)
-    public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void addInformation(ItemStack stack, World world, List<String> tooltip, ITooltipFlag flag) {
         String key = stack.getUnlocalizedName() + ".tooltip";
         if (I18n.hasKey(key)) {
             tooltip.add(I18n.format(key));
