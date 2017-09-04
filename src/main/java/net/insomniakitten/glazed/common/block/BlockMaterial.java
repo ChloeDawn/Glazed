@@ -59,7 +59,7 @@ public class BlockMaterial extends BlockBase<MaterialType> implements IOverlayPr
     }
 
     @Override
-    @SuppressWarnings("deprecation")
+    @Deprecated
     public void addCollisionBoxToList(
             IBlockState state, World world, BlockPos pos, AxisAlignedBB entityBox,
             List<AxisAlignedBB> collidingBoxes, Entity entity, boolean flag) {

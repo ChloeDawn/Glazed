@@ -89,7 +89,7 @@ public class BlockKiln extends Block {
     }
 
     @Override
-    @SuppressWarnings("deprecation")
+    @Deprecated
     public IBlockState getStateFromMeta(int meta) {
         KilnHalf half = KilnHalf.values()[((meta & 0b10) >> 1)];
         EnumFacing facing = EnumFacing.getHorizontal(meta >> 2);
@@ -110,13 +110,13 @@ public class BlockKiln extends Block {
     }
 
     @Override
-    @SuppressWarnings("deprecation")
+    @Deprecated
     public boolean isFullCube(IBlockState state) {
         return false;
     }
 
     @Override
-    @SuppressWarnings("deprecation")
+    @Deprecated
     public boolean isOpaqueCube(IBlockState state) {
         return false;
     }
@@ -183,12 +183,14 @@ public class BlockKiln extends Block {
         world.setBlockToAir(isUpper(state) ? pos.down() : pos.up());
     }
 
-    @Override @SuppressWarnings("deprecation")
+    @Override
+    @Deprecated
     public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess world, BlockPos pos) {
         return isUpper(state) ? AABB_UPPER : FULL_BLOCK_AABB;
     }
 
-    @Override @SuppressWarnings("deprecation")
+    @Override
+    @Deprecated
     public IBlockState getActualState(IBlockState state, IBlockAccess world, BlockPos pos) {
         TileKiln tile = (TileKiln) world.getTileEntity(BlockKiln.getTilePos(state, pos));
         return tile != null ? state.withProperty(ACTIVE, tile.isActive) : state;

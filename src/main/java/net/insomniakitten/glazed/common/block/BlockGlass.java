@@ -60,13 +60,13 @@ public class BlockGlass extends BlockBase<GlassType> implements IOverlayProvider
     }
 
     @Override
-    @SuppressWarnings("deprecation")
+    @Deprecated
     public boolean isOpaqueCube(IBlockState state) {
         return false;
     }
 
     @Override
-    @SuppressWarnings("deprecation")
+    @Deprecated
     public boolean isFullBlock(IBlockState state) {
         return false;
     }
@@ -89,7 +89,7 @@ public class BlockGlass extends BlockBase<GlassType> implements IOverlayProvider
     }
 
     @Override
-    @SuppressWarnings("deprecation")
+    @Deprecated
     public void addCollisionBoxToList(
             IBlockState state, World world, BlockPos pos, AxisAlignedBB entityBox,
             List<AxisAlignedBB> collidingBoxes, Entity entity, boolean flag) {
@@ -99,13 +99,13 @@ public class BlockGlass extends BlockBase<GlassType> implements IOverlayProvider
     }
 
     @Override
-    @SuppressWarnings("deprecation")
+    @Deprecated
     public int getStrongPower(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side) {
         return getType(state).getRedstonePower();
     }
 
     @Override
-    @SuppressWarnings("deprecation")
+    @Deprecated
     public int getWeakPower(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side) {
         return getType(state).getRedstonePower();
     }
