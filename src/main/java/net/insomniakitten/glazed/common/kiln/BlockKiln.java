@@ -46,7 +46,6 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
 import java.util.Locale;
-import java.util.Random;
 
 @SuppressWarnings("deprecation")
 public class BlockKiln extends Block {
@@ -163,23 +162,23 @@ public class BlockKiln extends Block {
         if (tile != null && tile.hasCapability(items, null)) {
             IItemHandler inventory = tile.getCapability(items, null);
             if (inventory != null && world.getGameRules().getBoolean("doTileDrops")) {
-                Random rand = new Random();
                 for (int i = 0; i < inventory.getSlots(); i++) {
                     ItemStack stack = inventory.getStackInSlot(i);
-                    float x = tilePos.getX() + (rand.nextFloat() * 1.0F);
-                    float y = tilePos.getY() + (rand.nextFloat() * 1.0F);
-                    float z = tilePos.getZ() + (rand.nextFloat() * 1.0F);
+                    float x = tilePos.getX() + (world.rand.nextFloat() * 1.0F);
+                    float y = tilePos.getY() + (world.rand.nextFloat() * 1.0F);
+                    float z = tilePos.getZ() + (world.rand.nextFloat() * 1.0F);
                     while (!stack.isEmpty()) {
-                        EntityItem drop = new EntityItem(world, x, y, z, stack.splitStack(rand.nextInt(21) + 10));
-                        drop.motionX = rand.nextGaussian() * 0.05D;
-                        drop.motionY = rand.nextGaussian() * 0.07D;
-                        drop.motionZ = rand.nextGaussian() * 0.05D;
+                        EntityItem drop = new EntityItem(world, x, y, z,
+                                stack.splitStack(world.rand.nextInt(21) + 10));
+                        drop.motionX = world.rand.nextGaussian() * 0.05D;
+                        drop.motionY = world.rand.nextGaussian() * 0.07D;
+                        drop.motionZ = world.rand.nextGaussian() * 0.05D;
                         world.spawnEntity(drop);
                     }
                 }
-                world.setBlockToAir(isUpper(state) ? pos.down() : pos.up());
             }
         }
+        world.setBlockToAir(isUpper(state) ? pos.down() : pos.up());
     }
 
     @Override
