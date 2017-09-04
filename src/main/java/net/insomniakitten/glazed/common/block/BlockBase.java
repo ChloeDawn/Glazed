@@ -41,7 +41,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-@SuppressWarnings("deprecation")
 public class BlockBase<E extends Enum<E> & IStatePropertyHolder<E>> extends Block {
 
     private final E[] values;
@@ -87,6 +86,7 @@ public class BlockBase<E extends Enum<E> & IStatePropertyHolder<E>> extends Bloc
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public IBlockState getStateFromMeta(int meta) {
         return getDefaultState().withProperty(property, getType(meta));
     }
@@ -97,6 +97,7 @@ public class BlockBase<E extends Enum<E> & IStatePropertyHolder<E>> extends Bloc
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public float getBlockHardness(IBlockState state, World world, BlockPos pos) {
         return getType(state).getHardness();
     }
@@ -108,6 +109,7 @@ public class BlockBase<E extends Enum<E> & IStatePropertyHolder<E>> extends Bloc
 
     @Override
     @SideOnly(Side.CLIENT)
+    @SuppressWarnings("deprecation")
     public boolean shouldSideBeRendered(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side) {
         return state != world.getBlockState(pos.offset(side)) && super.shouldSideBeRendered(state, world, pos, side);
     }
@@ -128,6 +130,7 @@ public class BlockBase<E extends Enum<E> & IStatePropertyHolder<E>> extends Bloc
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public Material getMaterial(IBlockState state) {
         return getType(state).getMaterial();
     }
@@ -161,6 +164,7 @@ public class BlockBase<E extends Enum<E> & IStatePropertyHolder<E>> extends Bloc
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public boolean isFullCube(IBlockState state) {
         return getType(state).isFullCube();
     }

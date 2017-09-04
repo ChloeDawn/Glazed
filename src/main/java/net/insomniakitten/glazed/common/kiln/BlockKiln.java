@@ -47,7 +47,6 @@ import net.minecraftforge.items.IItemHandler;
 
 import java.util.Locale;
 
-@SuppressWarnings("deprecation")
 public class BlockKiln extends Block {
 
     private static final PropertyEnum<KilnHalf> HALF = PropertyEnum.create("half", KilnHalf.class);
@@ -90,6 +89,7 @@ public class BlockKiln extends Block {
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public IBlockState getStateFromMeta(int meta) {
         KilnHalf half = KilnHalf.values()[((meta & 0b10) >> 1)];
         EnumFacing facing = EnumFacing.getHorizontal(meta >> 2);
@@ -110,11 +110,13 @@ public class BlockKiln extends Block {
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public boolean isFullCube(IBlockState state) {
         return false;
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public boolean isOpaqueCube(IBlockState state) {
         return false;
     }
@@ -181,12 +183,12 @@ public class BlockKiln extends Block {
         world.setBlockToAir(isUpper(state) ? pos.down() : pos.up());
     }
 
-    @Override
+    @Override @SuppressWarnings("deprecation")
     public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess world, BlockPos pos) {
         return isUpper(state) ? AABB_UPPER : FULL_BLOCK_AABB;
     }
 
-    @Override
+    @Override @SuppressWarnings("deprecation")
     public IBlockState getActualState(IBlockState state, IBlockAccess world, BlockPos pos) {
         TileKiln tile = (TileKiln) world.getTileEntity(BlockKiln.getTilePos(state, pos));
         return tile != null ? state.withProperty(ACTIVE, tile.isActive) : state;
