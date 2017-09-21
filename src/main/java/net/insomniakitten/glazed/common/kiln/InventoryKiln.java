@@ -77,9 +77,8 @@ public class InventoryKiln {
                 int kilnSlots = 3, inventorySlots = 28, hotbarSlots = 9;
                 int maxSlot = kilnSlots + inventorySlots + hotbarSlots;
                 if (sourceIndex > kilnSlots) {
-                    if (!mergeItemStack(stack, 0, 1, false)
-                            && (!mergeItemStack(stack, 2, 3, false))
-                            && (!mergeItemStack(stack, 1, 2, false))) {
+                    if (!mergeItemStack(stack, 0, 1, false) && (!mergeItemStack(stack, 2, 3, false)) &&
+                            (!mergeItemStack(stack, 1, 2, false))) {
                         return ItemStack.EMPTY;
                     }
                 } else if (!mergeItemStack(stack, kilnSlots, maxSlot, true)) {
@@ -106,7 +105,7 @@ public class InventoryKiln {
 
     @SideOnly(Side.CLIENT)
     public static class KilnGui extends GuiContainer {
-        
+
         private final ResourceLocation guiTexture = new ResourceLocation(Glazed.MOD_ID, "textures/gui/kiln.png");
 
         private TileKiln kiln;

@@ -17,8 +17,8 @@ package net.insomniakitten.glazed.common.block;
  */
 
 import net.insomniakitten.glazed.client.ClientHelper;
-import net.insomniakitten.glazed.common.RegistryManager;
 import net.insomniakitten.glazed.client.SpecialsManager;
+import net.insomniakitten.glazed.common.RegistryManager;
 import net.insomniakitten.glazed.common.item.ItemBlockBase;
 import net.insomniakitten.glazed.common.type.GlassType;
 import net.insomniakitten.glazed.common.util.IOverlayProvider;
@@ -52,17 +52,11 @@ public class BlockGlass extends BlockBase<GlassType> implements IOverlayProvider
             public String getItemStackDisplayName(ItemStack stack) {
                 String type = getType(stack.getMetadata()).getName();
                 Pair<UUID, String> match = Pair.of(ClientHelper.getPlayerUUID(), type);
-                return SpecialsManager.SPECIALS.keySet().contains(match) ?
-                        SpecialsManager.SPECIALS.get(match)
-                        : super.getItemStackDisplayName(stack);
+                return SpecialsManager.SPECIALS.keySet().contains(match)
+                       ? SpecialsManager.SPECIALS.get(match)
+                       : super.getItemStackDisplayName(stack);
             }
         });
-    }
-
-    @Override
-    @Deprecated
-    public boolean isOpaqueCube(IBlockState state) {
-        return false;
     }
 
     @Override
@@ -72,8 +66,19 @@ public class BlockGlass extends BlockBase<GlassType> implements IOverlayProvider
     }
 
     @Override
-    public int getLightOpacity(IBlockState state, IBlockAccess world, BlockPos pos) {
-        return getType(state).isOpaque() ? 255 : 0;
+    @Deprecated
+    public void addCollisionBoxToList(
+            IBlockState state, World world, BlockPos pos, AxisAlignedBB entityBox, List<AxisAlignedBB> collidingBoxes,
+            Entity entity, boolean flag) {
+        if (getType(state).canCollideWithBlock(entity, world, pos)) {
+            addCollisionBoxToList(pos, entityBox, collidingBoxes, state.getCollisionBoundingBox(world, pos));
+        }
+    }
+
+    @Override
+    @Deprecated
+    public boolean isOpaqueCube(IBlockState state) {
+        return false;
     }
 
     @Override
@@ -84,18 +89,14 @@ public class BlockGlass extends BlockBase<GlassType> implements IOverlayProvider
     }
 
     @Override
-    public void onEntityCollidedWithBlock(World world, BlockPos pos, IBlockState state, Entity entity) {
-        getType(state).onCollidedWithBlock(entity, world, pos);
+    @Deprecated
+    public int getWeakPower(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side) {
+        return getType(state).getRedstonePower();
     }
 
     @Override
-    @Deprecated
-    public void addCollisionBoxToList(
-            IBlockState state, World world, BlockPos pos, AxisAlignedBB entityBox,
-            List<AxisAlignedBB> collidingBoxes, Entity entity, boolean flag) {
-        if (getType(state).canCollideWithBlock(entity, world, pos)) {
-            addCollisionBoxToList(pos, entityBox, collidingBoxes, state.getCollisionBoundingBox(world, pos));
-        }
+    public void onEntityCollidedWithBlock(World world, BlockPos pos, IBlockState state, Entity entity) {
+        getType(state).onCollidedWithBlock(entity, world, pos);
     }
 
     @Override
@@ -105,9 +106,8 @@ public class BlockGlass extends BlockBase<GlassType> implements IOverlayProvider
     }
 
     @Override
-    @Deprecated
-    public int getWeakPower(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side) {
-        return getType(state).getRedstonePower();
+    public int getLightOpacity(IBlockState state, IBlockAccess world, BlockPos pos) {
+        return getType(state).isOpaque() ? 255 : 0;
     }
 
     @Override

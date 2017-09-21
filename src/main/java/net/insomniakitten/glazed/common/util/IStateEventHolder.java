@@ -20,7 +20,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-public interface IStateEventHolder<E extends Enum<E> & IStatePropertyHolder<E>> {
+public interface IStateEventHolder <E extends Enum<E> & IStatePropertyHolder<E>> {
 
     E getEnum();
 

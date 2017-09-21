@@ -34,7 +34,8 @@ public enum MaterialType implements IStatePropertyHolder<MaterialType>, IStateEv
 
     KILN_BRICKS(2.0f, 30.0f, "bricksKiln"),
 
-    COMPRESSED_SLIME(2.0f, 0.0f, Material.SPONGE, SoundType.SLIME, BlockRenderLayer.TRANSLUCENT, "blockSlimeCompressed") {
+    COMPRESSED_SLIME(2.0f, 0.0f, Material.SPONGE, SoundType.SLIME, BlockRenderLayer.TRANSLUCENT,
+            "blockSlimeCompressed") {
         @Override
         public void onCollidedWithBlock(Entity entity, World world, BlockPos pos) {
             if (entity.motionY < 0.0D) {
@@ -72,9 +73,7 @@ public enum MaterialType implements IStatePropertyHolder<MaterialType>, IStateEv
         }
     },
 
-    VOID_CRYSTAL(2.0f, 30.0f, Material.GLASS, SoundType.GLASS, "blockCrystalVoid"),
-
-    ;
+    VOID_CRYSTAL(2.0f, 30.0f, Material.GLASS, SoundType.GLASS, "blockCrystalVoid"),;
 
     private final float hardness;
     private final float resistance;
@@ -83,7 +82,9 @@ public enum MaterialType implements IStatePropertyHolder<MaterialType>, IStateEv
     private final BlockRenderLayer layer;
     private final String oreDict;
 
-    MaterialType(float hardness, float resistance, Material material, SoundType soundType, BlockRenderLayer layer, String oreDict) {
+    MaterialType(
+            float hardness, float resistance, Material material, SoundType soundType, BlockRenderLayer layer,
+            String oreDict) {
         this.hardness = hardness;
         this.resistance = resistance;
         this.material = material;

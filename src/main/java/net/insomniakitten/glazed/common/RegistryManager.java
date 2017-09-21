@@ -55,7 +55,7 @@ public class RegistryManager {
 
     @SubscribeEvent
     public static void onItemRegistry(RegistryEvent.Register<Item> event) {
-        event.getRegistry().registerAll(ITEM_BLOCKS.toArray(new ItemBlock[0]));
+        event.getRegistry().registerAll(ITEM_BLOCKS.toArray(new ItemBlock[ 0 ]));
     }
 
     @SubscribeEvent

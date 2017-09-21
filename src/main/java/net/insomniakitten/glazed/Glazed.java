@@ -21,8 +21,8 @@ import net.insomniakitten.glazed.common.ProxyManager;
 import net.insomniakitten.glazed.common.block.BlockGlass;
 import net.insomniakitten.glazed.common.block.BlockMaterial;
 import net.insomniakitten.glazed.common.kiln.BlockKiln;
-import net.insomniakitten.glazed.shard.ItemGlassShard;
 import net.insomniakitten.glazed.common.util.Logger;
+import net.insomniakitten.glazed.shard.ItemGlassShard;
 import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
@@ -33,49 +33,44 @@ import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 
 import java.util.function.Supplier;
 
-@Mod(   modid = Glazed.MOD_ID,
-        name = Glazed.MOD_NAME,
-        version = Glazed.VERSION,
-        acceptedMinecraftVersions = Glazed.MC_VERSION,
-        dependencies = Glazed.DEPENDENCIES)
+@Mod(modid = Glazed.MOD_ID,
+     name = Glazed.MOD_NAME,
+     version = Glazed.VERSION,
+     acceptedMinecraftVersions = Glazed.MC_VERSION,
+     dependencies = Glazed.DEPENDENCIES)
 
 public class Glazed {
-
-    @Mod.Instance(Glazed.MOD_ID)
-    public static Glazed instance;
 
     public static final String MOD_ID = "glazed";
     public static final String MOD_NAME = "Glazed";
     public static final String VERSION = "%VERSION%";
     public static final String MC_VERSION = "[1.12,1.13)";
     public static final String DEPENDENCIES = "required-after:forge@[14.21.1.2387,)";
-
     public static final Block GLASS = new BlockGlass();
     public static final Block KILN = new BlockKiln();
     public static final Block MATERIAL = new BlockMaterial();
-
     /**
      * Only access when {@link ConfigManager.ShardsConfig#enableShards} is true
      */
     public static final Supplier<Item> GLASS_SHARD = ItemGlassShard::new;
-
     public static final CreativeTabs CTAB = new CreativeTabs(Glazed.MOD_ID) {
         @Override
         public ItemStack getTabIconItem() {
             return new ItemStack(Glazed.KILN);
         }
     };
-
+    @Mod.Instance(Glazed.MOD_ID)
+    public static Glazed instance;
     @SidedProxy(clientSide = ProxyManager.CLIENT, serverSide = ProxyManager.SERVER)
     public static ProxyManager proxyManager;
+
+    public static boolean isDeobf() {
+        return Logger.DEOBF;
+    }
 
     @Mod.EventHandler
     public void onPostInit(FMLPostInitializationEvent event) {
         proxyManager.onPostInit(event);
-    }
-
-    public static boolean isDeobf() {
-        return Logger.DEOBF;
     }
 
 }

@@ -17,10 +17,10 @@ package net.insomniakitten.glazed.shard;
  */
 
 import com.google.common.base.Equivalence.Wrapper;
-import net.insomniakitten.glazed.common.ConfigManager;
 import net.insomniakitten.glazed.Glazed;
 import net.insomniakitten.glazed.client.model.ModelRegistry;
 import net.insomniakitten.glazed.client.model.WrappedModel.ModelBuilder;
+import net.insomniakitten.glazed.common.ConfigManager;
 import net.insomniakitten.glazed.shard.ShardManager.Data;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
@@ -39,7 +39,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static com.mojang.realmsclient.gui.ChatFormatting.*;
+import static com.mojang.realmsclient.gui.ChatFormatting.DARK_GRAY;
+import static com.mojang.realmsclient.gui.ChatFormatting.GRAY;
+import static com.mojang.realmsclient.gui.ChatFormatting.RED;
+import static com.mojang.realmsclient.gui.ChatFormatting.YELLOW;
 
 public class ItemGlassShard extends Item {
 
@@ -59,16 +62,6 @@ public class ItemGlassShard extends Item {
     }
 
     @Override
-    @SuppressWarnings("ConstantConditions")
-    public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> items) {
-        if (this.isInCreativeTab(tab)) {
-            for (Wrapper<ItemStack> key : Data.getShards().keySet()) {
-                items.add(key.get());
-            }
-        }
-    }
-
-    @Override
     @SideOnly(Side.CLIENT)
     @SuppressWarnings("ConstantConditions")
     public void addInformation(ItemStack stack, World world, List<String> tooltip, ITooltipFlag flag) {
@@ -76,7 +69,7 @@ public class ItemGlassShard extends Item {
 
         if (glassBlock.isEmpty()) {
             tooltip.add(RED + I18n.format("tooltip.glazed.shard.invalid"));
-            String modid = stack.getTagCompound().getString("name").split(":")[0];
+            String modid = stack.getTagCompound().getString("name").split(":")[ 0 ];
             if (!Loader.isModLoaded(modid)) {
                 tooltip.add(I18n.format("tooltip.glazed.shard.invalid.mod", modid));
             } else if (!ConfigManager.shardsConfig.anarchyMode) {
@@ -89,8 +82,7 @@ public class ItemGlassShard extends Item {
 
         if (canShowDescription()) {
             String descKey = "tooltip.glazed.shard.desc";
-            getStackTooltip(glassBlock, world, flag).stream()
-                    .map(string -> DARK_GRAY + I18n.format(descKey, string))
+            getStackTooltip(glassBlock, world, flag).stream().map(string -> DARK_GRAY + I18n.format(descKey, string))
                     .forEach(tooltip::add);
             String modKey = "tooltip.glazed.shard.mod";
             String domain = glassBlock.getItem().getRegistryName().getResourceDomain();
@@ -100,11 +92,19 @@ public class ItemGlassShard extends Item {
         }
     }
 
+    @Override
+    @SuppressWarnings("ConstantConditions")
+    public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> items) {
+        if (this.isInCreativeTab(tab)) {
+            for (Wrapper<ItemStack> key : Data.getShards().keySet()) {
+                items.add(key.get());
+            }
+        }
+    }
+
     protected boolean canShowDescription() {
-        return !ConfigManager.shardsConfig.requireShift
-                || ConfigManager.shardsConfig.requireShift
-                && (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)
-                || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT));
+        return !ConfigManager.shardsConfig.requireShift || ConfigManager.shardsConfig.requireShift &&
+                (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT));
     }
 
     @SideOnly(Side.CLIENT)

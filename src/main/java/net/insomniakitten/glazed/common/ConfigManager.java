@@ -41,8 +41,7 @@ public class ConfigManager {
     @SubscribeEvent
     public static void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent event) {
         if (event.getModID().equals(Glazed.MOD_ID)) {
-            net.minecraftforge.common.config.ConfigManager
-                    .sync(Glazed.MOD_ID, Config.Type.INSTANCE);
+            net.minecraftforge.common.config.ConfigManager.sync(Glazed.MOD_ID, Config.Type.INSTANCE);
         }
     }
 
@@ -50,7 +49,7 @@ public class ConfigManager {
 
         @Config.RequiresMcRestart
         @Config.Name("Enable Functional Glass")
-        @Config.Comment({"Determines whether functional glass should be registered. [default: true]"})
+        @Config.Comment({ "Determines whether functional glass should be registered. [default: true]" })
         @Config.LangKey("config.glazed.glass.enableFunctionalGlass")
         public boolean enableFunctionalGlass = true;
 
@@ -59,13 +58,13 @@ public class ConfigManager {
     public static class KilnConfig {
 
         @Config.Name("Processing Speed")
-        @Config.Comment({"The speed at which items are processed, relative to vanilla furnace speed. [default: 1.0]"})
+        @Config.Comment({ "The speed at which items are processed, relative to vanilla furnace speed. [default: 1.0]" })
         @Config.LangKey("config.glazed.kiln.processingSpeed")
         public float processingSpeed = 1.0f;
 
         @Config.RequiresMcRestart
         @Config.Name("Dyed Glass Recipes")
-        @Config.Comment({"Determines whether the efficient dyed glass kiln recipes should be registered. [default: true]"})
+        @Config.Comment({ "Determines whether the efficient dyed glass kiln recipes should be registered. [default: true]" })
         @Config.LangKey("config.glazed.kiln.dyedGlassRecipes")
         public boolean dyedGlassRecipes = true;
 
@@ -75,18 +74,18 @@ public class ConfigManager {
 
         @Config.RequiresMcRestart
         @Config.Name("Enable Shards")
-        @Config.Comment({"Determines whether glass shards for glass variants should be registered. [default: true]"})
+        @Config.Comment({ "Determines whether glass shards for glass variants should be registered. [default: true]" })
         @Config.LangKey("config.glazed.shards.enableShards")
         public boolean enableShards = true;
 
         @Config.RequiresMcRestart
         @Config.Name("Anarchy Mode")
-        @Config.Comment({"Determines whether glass shards should be registered for each individual glass block in the ore dictionary. [default: false]"})
+        @Config.Comment({ "Determines whether glass shards should be registered for each individual glass block in the ore dictionary. [default: false]" })
         @Config.LangKey("config.glazed.shards.anarchyMode")
         public boolean anarchyMode = false;
 
         @Config.Name("Tooltip Requires Shift")
-        @Config.Comment({"Determines whether holding shift is required to display the detailed tooltip [default: true]"})
+        @Config.Comment({ "Determines whether holding shift is required to display the detailed tooltip [default: true]" })
         @Config.LangKey("config.glazed.shards.requireShift")
         public boolean requireShift = true;
 

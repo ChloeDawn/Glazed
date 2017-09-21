@@ -31,8 +31,7 @@ public class GlassDataProvider implements IWailaDataProvider {
     @Override
     @SideOnly(Side.CLIENT)
     public List<String> getWailaBody(
-            ItemStack stack, List<String> tooltip,
-            IWailaDataAccessor accessor, IWailaConfigHandler config) {
+            ItemStack stack, List<String> tooltip, IWailaDataAccessor accessor, IWailaConfigHandler config) {
         String key = stack.getUnlocalizedName() + ".tooltip";
         if (I18n.hasKey(key)) {
             tooltip.add(I18n.format(key));

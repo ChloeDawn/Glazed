@@ -17,13 +17,17 @@ package net.insomniakitten.glazed.compat.jei.recipe;
  */
 
 import mezz.jei.api.IGuiHelper;
-import mezz.jei.api.gui.*;
+import mezz.jei.api.gui.IDrawable;
+import mezz.jei.api.gui.IDrawableAnimated;
 import mezz.jei.api.gui.IDrawableAnimated.StartDirection;
+import mezz.jei.api.gui.IDrawableStatic;
+import mezz.jei.api.gui.IGuiItemStackGroup;
+import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.IRecipeCategory;
 import net.insomniakitten.glazed.Glazed;
-import net.insomniakitten.glazed.compat.jei.JEICompatPlugin;
 import net.insomniakitten.glazed.common.kiln.TileKiln.Slots;
+import net.insomniakitten.glazed.compat.jei.JEICompatPlugin;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
@@ -69,18 +73,18 @@ public class KilnJEICategory implements IRecipeCategory<KilnJEIRecipe> {
     }
 
     @Override
+    public void drawExtras(Minecraft minecraft) {
+        flame.draw(minecraft, 12, 20);
+        arrow.draw(minecraft, 46, 18);
+    }
+
+    @Override
     public void setRecipe(IRecipeLayout recipeLayout, KilnJEIRecipe recipeWrapper, IIngredients ingredients) {
         IGuiItemStackGroup guiItemStacks = recipeLayout.getItemStacks();
         guiItemStacks.init(Slots.INPUT.ordinal(), true, 0, 0);
         guiItemStacks.init(Slots.CATALYST.ordinal(), true, 22, 0);
         guiItemStacks.init(Slots.OUTPUT.ordinal(), false, 82, 18);
         guiItemStacks.set(ingredients);
-    }
-
-    @Override
-    public void drawExtras(Minecraft minecraft) {
-        flame.draw(minecraft, 12, 20);
-        arrow.draw(minecraft, 46, 18);
     }
 
     public ITextComponent getName() {

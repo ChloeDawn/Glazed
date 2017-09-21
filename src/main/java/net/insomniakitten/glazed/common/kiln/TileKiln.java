@@ -49,13 +49,12 @@ public class TileKiln extends TileEntity implements ITickable {
 
         @Override
         protected int getStackLimit(int index, ItemStack stack) {
-            return (index == 0 && isSand(stack)) || (index == 1) || (index == 2 && isFuel(stack)) ?
-                    super.getStackLimit(index, stack) : 0;
+            return (index == 0 && isSand(stack)) || (index == 1) || (index == 2 && isFuel(stack)) ? super
+                    .getStackLimit(index, stack) : 0;
         }
 
         private boolean isSand(ItemStack stack) {
-            return Arrays.stream(OreDictionary.getOreIDs(stack))
-                    .anyMatch(id -> id == OreDictionary.getOreID("sand"));
+            return Arrays.stream(OreDictionary.getOreIDs(stack)).anyMatch(id -> id == OreDictionary.getOreID("sand"));
         }
 
         private boolean isFuel(ItemStack stack) {
@@ -70,6 +69,22 @@ public class TileKiln extends TileEntity implements ITickable {
 
     public int getProgress() {
         return progress;
+    }
+
+    @Override
+    public final void readFromNBT(NBTTagCompound nbt) {
+        super.readFromNBT(nbt);
+        this.inventory.deserializeNBT(nbt.getCompoundTag("contents"));
+        this.progress = nbt.hasKey("progress") ? nbt.getInteger("progress") : 0;
+    }
+
+    @Override
+    @Nonnull
+    public final NBTTagCompound writeToNBT(NBTTagCompound nbt) {
+        super.writeToNBT(nbt);
+        nbt.setTag("contents", inventory.serializeNBT());
+        nbt.setInteger("progress", progress);
+        return nbt;
     }
 
     @Override
@@ -88,22 +103,6 @@ public class TileKiln extends TileEntity implements ITickable {
     @SuppressWarnings("unchecked")
     public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
         return capability.equals(CAPABILITY) ? CAPABILITY.cast(inventory) : super.getCapability(capability, facing);
-    }
-
-    @Override
-    public final void readFromNBT(NBTTagCompound nbt) {
-        super.readFromNBT(nbt);
-        this.inventory.deserializeNBT(nbt.getCompoundTag("contents"));
-        this.progress = nbt.hasKey("progress") ? nbt.getInteger("progress") : 0;
-    }
-
-    @Override
-    @Nonnull
-    public final NBTTagCompound writeToNBT(NBTTagCompound nbt) {
-        super.writeToNBT(nbt);
-        nbt.setTag("contents", inventory.serializeNBT());
-        nbt.setInteger("progress", progress);
-        return nbt;
     }
 
     @Override
@@ -130,7 +129,8 @@ public class TileKiln extends TileEntity implements ITickable {
             }
         }
 
-        if (!RecipesKiln.getOutput(input, catalyst).isItemEqual(output) || output.getCount() == output.getMaxStackSize()) {
+        if (!RecipesKiln.getOutput(input, catalyst).isItemEqual(output) ||
+                output.getCount() == output.getMaxStackSize()) {
             isActive = false;
         }
 
@@ -138,7 +138,10 @@ public class TileKiln extends TileEntity implements ITickable {
     }
 
     public enum Slots {
-        INPUT(34, 17), CATALYST(56, 17), FUEL(45, 53), OUTPUT(116, 35);
+        INPUT(34, 17),
+        CATALYST(56, 17),
+        FUEL(45, 53),
+        OUTPUT(116, 35);
 
         private final int x, y;
 

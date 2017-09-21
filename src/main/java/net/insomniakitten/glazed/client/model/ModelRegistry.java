@@ -41,8 +41,8 @@ public class ModelRegistry {
     @SideOnly(Side.CLIENT)
     public static void onModelRegistry(ModelRegistryEvent event) {
         OBJLoader.INSTANCE.addDomain(Glazed.MOD_ID);
-        MODELS.forEach(model -> ModelLoader.setCustomModelResourceLocation(
-                model.getItem(), model.getMetadata(), model.getModelResourceLocation()));
+        MODELS.forEach(model -> ModelLoader.setCustomModelResourceLocation(model.getItem(), model.getMetadata(),
+                model.getModelResourceLocation()));
     }
 
 }

@@ -46,8 +46,8 @@ public class OverlayRenderer {
                     ScaledResolution res = event.getResolution();
                     GlStateManager.enableBlend();
                     Minecraft.getMinecraft().renderEngine.bindTexture(overlay);
-                    Minecraft.getMinecraft().ingameGUI.drawTexturedModalRect(
-                            0, 0, 0, 0, res.getScaledWidth(), res.getScaledHeight());
+                    Minecraft.getMinecraft().ingameGUI
+                            .drawTexturedModalRect(0, 0, 0, 0, res.getScaledWidth(), res.getScaledHeight());
                     GlStateManager.disableBlend();
                 }
             }

@@ -49,8 +49,7 @@ public class ColorHelper {
             return -1;
         } else {
             if (ClientHelper.isWorldLoaded()) {
-                return BiomeColorHelper.getGrassColorAtPos(
-                        ClientHelper.getWorld(), ClientHelper.getPlayerPos());
+                return BiomeColorHelper.getGrassColorAtPos(ClientHelper.getWorld(), ClientHelper.getPlayerPos());
             }
             return ColorizerGrass.getGrassColor(0.5D, 1.0D);
         }

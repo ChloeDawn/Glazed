@@ -49,9 +49,9 @@ public class ClientHelper {
     }
 
     public static BlockPos getPlayerPos() {
-        return isPlayerLoaded() ?
-                PLAYER_POS.setPos(getPlayer().posX, getPlayer().posY, getPlayer().posZ)
-                : BlockPos.ORIGIN;
+        return isPlayerLoaded()
+               ? PLAYER_POS.setPos(getPlayer().posX, getPlayer().posY, getPlayer().posZ)
+               : BlockPos.ORIGIN;
     }
 
     public static RayTraceResult getRayTrace() {

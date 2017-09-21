@@ -36,8 +36,7 @@ public final class WrappedModel {
         this.item = model.item;
         this.meta = model.meta;
         this.resource = model.resource;
-        this.variants = model.variants.stream()
-                .collect(Collectors.joining(","));
+        this.variants = model.variants.stream().collect(Collectors.joining(","));
         this.mrl = new ModelResourceLocation(this.resource, this.variants);
     }
 

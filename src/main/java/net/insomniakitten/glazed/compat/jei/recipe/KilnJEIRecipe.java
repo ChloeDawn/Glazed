@@ -20,8 +20,8 @@ import com.google.common.collect.Lists;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.IRecipeWrapper;
 import mezz.jei.api.recipe.IStackHelper;
-import net.insomniakitten.glazed.compat.jei.JEICompatPlugin;
 import net.insomniakitten.glazed.common.kiln.RecipesKiln;
+import net.insomniakitten.glazed.compat.jei.JEICompatPlugin;
 import net.minecraft.item.ItemStack;
 
 import java.util.List;

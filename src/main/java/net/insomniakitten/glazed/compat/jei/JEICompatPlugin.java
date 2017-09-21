@@ -16,14 +16,18 @@ package net.insomniakitten.glazed.compat.jei;
  *   limitations under the License.
  */
 
-import mezz.jei.api.*;
+import mezz.jei.api.IJeiHelpers;
+import mezz.jei.api.IModPlugin;
+import mezz.jei.api.IModRegistry;
+import mezz.jei.api.ISubtypeRegistry;
+import mezz.jei.api.JEIPlugin;
 import mezz.jei.api.recipe.IRecipeCategoryRegistration;
-import net.insomniakitten.glazed.common.ConfigManager;
 import net.insomniakitten.glazed.Glazed;
+import net.insomniakitten.glazed.common.ConfigManager;
 import net.insomniakitten.glazed.common.kiln.InventoryKiln;
+import net.insomniakitten.glazed.common.kiln.RecipesKiln;
 import net.insomniakitten.glazed.compat.jei.recipe.KilnJEICategory;
 import net.insomniakitten.glazed.compat.jei.recipe.KilnJEIRecipe;
-import net.insomniakitten.glazed.common.kiln.RecipesKiln;
 import net.minecraft.item.ItemStack;
 
 @JEIPlugin
@@ -33,12 +37,10 @@ public class JEICompatPlugin implements IModPlugin {
     public static IJeiHelpers helpers;
 
     @Override
-    public void register(IModRegistry registry) {
-        helpers = registry.getJeiHelpers();
-        registry.addRecipes(RecipesKiln.getRecipes(), ID);
-        registry.handleRecipes(RecipesKiln.KilnRecipe.class, KilnJEIRecipe::new, ID);
-        registry.addRecipeCatalyst(new ItemStack(Glazed.KILN), ID);
-        registry.addRecipeClickArea(InventoryKiln.KilnGui.class, 80, 35, 21, 14, ID);
+    public void registerItemSubtypes(ISubtypeRegistry registry) {
+        if (ConfigManager.shardsConfig.enableShards) {
+            registry.useNbtForSubtypes(Glazed.GLASS_SHARD.get());
+        }
     }
 
     @Override
@@ -47,10 +49,12 @@ public class JEICompatPlugin implements IModPlugin {
     }
 
     @Override
-    public void registerItemSubtypes(ISubtypeRegistry registry) {
-        if (ConfigManager.shardsConfig.enableShards) {
-            registry.useNbtForSubtypes(Glazed.GLASS_SHARD.get());
-        }
+    public void register(IModRegistry registry) {
+        helpers = registry.getJeiHelpers();
+        registry.addRecipes(RecipesKiln.getRecipes(), ID);
+        registry.handleRecipes(RecipesKiln.KilnRecipe.class, KilnJEIRecipe::new, ID);
+        registry.addRecipeCatalyst(new ItemStack(Glazed.KILN), ID);
+        registry.addRecipeClickArea(InventoryKiln.KilnGui.class, 80, 35, 21, 14, ID);
     }
 
 }

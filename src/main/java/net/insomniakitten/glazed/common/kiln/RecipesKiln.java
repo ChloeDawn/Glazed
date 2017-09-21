@@ -43,16 +43,13 @@ public class RecipesKiln {
 
     @Nullable
     public static KilnRecipe getRecipe(ItemStack input, ItemStack catalyst) {
-        return KILN_RECIPES.stream()
-                .filter(recipe -> recipe.canSmelt(input, catalyst))
-                .findFirst().orElse(null);
+        return KILN_RECIPES.stream().filter(recipe -> recipe.canSmelt(input, catalyst)).findFirst().orElse(null);
     }
 
     @Nonnull
     public static ItemStack getOutput(ItemStack input, ItemStack catalyst) {
-        return KILN_RECIPES.stream()
-                .filter(recipe -> recipe.canSmelt(input, catalyst))
-                .findFirst().map(KilnRecipe::getOutput).orElse(ItemStack.EMPTY);
+        return KILN_RECIPES.stream().filter(recipe -> recipe.canSmelt(input, catalyst)).findFirst()
+                .map(KilnRecipe::getOutput).orElse(ItemStack.EMPTY);
     }
 
     public static boolean trySmelt(TileKiln tile, ItemStack input, ItemStack catalyst) {

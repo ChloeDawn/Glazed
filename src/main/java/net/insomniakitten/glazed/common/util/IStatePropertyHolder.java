@@ -24,7 +24,7 @@ import net.minecraft.util.IStringSerializable;
 
 import java.util.Locale;
 
-public interface IStatePropertyHolder<E extends Enum<E> & IStringSerializable> extends IStringSerializable {
+public interface IStatePropertyHolder <E extends Enum<E> & IStringSerializable> extends IStringSerializable {
 
     E getEnum();
 

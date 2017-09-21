@@ -31,7 +31,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.List;
 
-public class ItemBlockBase<E extends Enum<E> & IStatePropertyHolder<E>> extends ItemBlock {
+public class ItemBlockBase <E extends Enum<E> & IStatePropertyHolder<E>> extends ItemBlock {
 
     private final E[] values;
 
@@ -46,8 +46,8 @@ public class ItemBlockBase<E extends Enum<E> & IStatePropertyHolder<E>> extends 
 
     private void registerModels() {
         for (E value : values) {
-            WrappedModel model = new ModelBuilder(this, value.getMetadata())
-                    .addVariant("type=" + value.getName()).build();
+            WrappedModel model = new ModelBuilder(this, value.getMetadata()).addVariant("type=" + value.getName())
+                    .build();
             ModelRegistry.registerModel(model);
         }
     }
@@ -55,7 +55,7 @@ public class ItemBlockBase<E extends Enum<E> & IStatePropertyHolder<E>> extends 
     @Override
     public String getUnlocalizedName(ItemStack stack) {
         int meta = stack.getMetadata() % values.length;
-        return this.block.getUnlocalizedName() + "." + values[meta].getName();
+        return this.block.getUnlocalizedName() + "." + values[ meta ].getName();
     }
 
     @Override

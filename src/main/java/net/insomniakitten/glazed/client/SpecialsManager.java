@@ -66,9 +66,8 @@ public class SpecialsManager {
 
         specialsData.getAsJsonObject().entrySet().forEach(group -> {
             JsonObject object = group.getValue().getAsJsonObject();
-            object.entrySet().forEach(entry -> SPECIALS.put(Pair.of(
-                    UUID.fromString(entry.getKey()), group.getKey()),
-                    entry.getValue().getAsString()));
+            object.entrySet().forEach(entry -> SPECIALS
+                    .put(Pair.of(UUID.fromString(entry.getKey()), group.getKey()), entry.getValue().getAsString()));
         });
     }
 

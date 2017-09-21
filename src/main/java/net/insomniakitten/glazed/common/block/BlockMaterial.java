@@ -41,13 +41,12 @@ public class BlockMaterial extends BlockBase<MaterialType> implements IOverlayPr
     }
 
     @Override
-    public void onLanded(World world, Entity entity) {
-        if (!entity.isSneaking()) {
-            entityPos.setPos(entity.posX, entity.posY, entity.posZ);
-            getType(world.getBlockState(entityPos.toImmutable().down()))
-                    .onCollidedWithBlock(entity, world, entityPos.toImmutable().down());
-        } else {
-            super.onLanded(world, entity);
+    @Deprecated
+    public void addCollisionBoxToList(
+            IBlockState state, World world, BlockPos pos, AxisAlignedBB entityBox, List<AxisAlignedBB> collidingBoxes,
+            Entity entity, boolean flag) {
+        if (getType(state).canCollideWithBlock(entity, world, pos)) {
+            addCollisionBoxToList(pos, entityBox, collidingBoxes, state.getCollisionBoundingBox(world, pos));
         }
     }
 
@@ -59,12 +58,13 @@ public class BlockMaterial extends BlockBase<MaterialType> implements IOverlayPr
     }
 
     @Override
-    @Deprecated
-    public void addCollisionBoxToList(
-            IBlockState state, World world, BlockPos pos, AxisAlignedBB entityBox,
-            List<AxisAlignedBB> collidingBoxes, Entity entity, boolean flag) {
-        if (getType(state).canCollideWithBlock(entity, world, pos)) {
-            addCollisionBoxToList(pos, entityBox, collidingBoxes, state.getCollisionBoundingBox(world, pos));
+    public void onLanded(World world, Entity entity) {
+        if (!entity.isSneaking()) {
+            entityPos.setPos(entity.posX, entity.posY, entity.posZ);
+            getType(world.getBlockState(entityPos.toImmutable().down()))
+                    .onCollidedWithBlock(entity, world, entityPos.toImmutable().down());
+        } else {
+            super.onLanded(world, entity);
         }
     }
 

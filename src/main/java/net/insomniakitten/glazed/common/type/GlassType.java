@@ -56,8 +56,7 @@ public enum GlassType implements IStatePropertyHolder<GlassType>, IStateEventHol
         @Override
         public void onCollidedWithBlock(Entity entity, World world, BlockPos pos) {
             if (!entity.isSneaking()) {
-                if (entity.motionY <= 0.0F)
-                    entity.motionY *= 0.4D;
+                if (entity.motionY <= 0.0F) entity.motionY *= 0.4D;
                 entity.motionX *= 0.4D;
                 entity.motionZ *= 0.4D;
                 entity.fallDistance = 0.0F;
@@ -109,6 +108,7 @@ public enum GlassType implements IStatePropertyHolder<GlassType>, IStateEventHol
         public SoundType getSoundType() {
             return new GlassSoundType(SoundType.SLIME);
         }
+
         @Override
         public void onCollidedWithBlock(Entity entity, World world, BlockPos pos) {
             entity.motionX *= 10f / entity.motionX;
@@ -116,9 +116,7 @@ public enum GlassType implements IStatePropertyHolder<GlassType>, IStateEventHol
         }
     },
 
-    AURORIC(0.3f, 10.0f, 8, BlockRenderLayer.TRANSLUCENT),
-
-    ;
+    AURORIC(0.3f, 10.0f, 8, BlockRenderLayer.TRANSLUCENT),;
 
     private final float hardness;
     private final float resistance;
@@ -163,13 +161,13 @@ public enum GlassType implements IStatePropertyHolder<GlassType>, IStateEventHol
     }
 
     @Override
-    public int getLightLevel() {
-        return lightLevel;
+    public String getOrePrefix() {
+        return "blockGlass";
     }
 
     @Override
-    public String getOrePrefix() {
-        return "blockGlass";
+    public int getLightLevel() {
+        return lightLevel;
     }
 
     @Override
@@ -193,8 +191,7 @@ public enum GlassType implements IStatePropertyHolder<GlassType>, IStateEventHol
     protected static class GlassSoundType extends SoundType {
 
         public GlassSoundType(SoundType type) {
-            super(  1.0F, 1.0F, SoundEvents.BLOCK_GLASS_BREAK,
-                    type.getStepSound(), type.getPlaceSound(),
+            super(1.0F, 1.0F, SoundEvents.BLOCK_GLASS_BREAK, type.getStepSound(), type.getPlaceSound(),
                     type.getHitSound(), type.getFallSound());
         }
 

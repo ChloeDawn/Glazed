@@ -41,7 +41,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class BlockBase<E extends Enum<E> & IStatePropertyHolder<E>> extends Block {
+public class BlockBase <E extends Enum<E> & IStatePropertyHolder<E>> extends Block {
 
     private final E[] values;
     private final PropertyEnum<E> property;
@@ -67,7 +67,7 @@ public class BlockBase<E extends Enum<E> & IStatePropertyHolder<E>> extends Bloc
     }
 
     public final E getType(int meta) {
-        return values[meta];
+        return values[ meta ];
     }
 
     public final E[] getValues() {
@@ -79,10 +79,9 @@ public class BlockBase<E extends Enum<E> & IStatePropertyHolder<E>> extends Bloc
     }
 
     @Override
-    public void getSubBlocks(CreativeTabs tab, NonNullList<ItemStack> items) {
-        for (E type : values) {
-            items.add(new ItemStack(this, 1, type.getMetadata()));
-        }
+    @Deprecated
+    public Material getMaterial(IBlockState state) {
+        return getType(state).getMaterial();
     }
 
     @Override
@@ -98,13 +97,14 @@ public class BlockBase<E extends Enum<E> & IStatePropertyHolder<E>> extends Bloc
 
     @Override
     @Deprecated
-    public float getBlockHardness(IBlockState state, World world, BlockPos pos) {
-        return getType(state).getHardness();
+    public boolean isFullCube(IBlockState state) {
+        return getType(state).isFullCube();
     }
 
     @Override
-    public float getExplosionResistance(World world, BlockPos pos, Entity entity, Explosion explosion) {
-        return getType(world.getBlockState(pos)).getResistance();
+    @Deprecated
+    public float getBlockHardness(IBlockState state, World world, BlockPos pos) {
+        return getType(state).getHardness();
     }
 
     @Override
@@ -115,8 +115,60 @@ public class BlockBase<E extends Enum<E> & IStatePropertyHolder<E>> extends Bloc
     }
 
     @Override
+    public int damageDropped(IBlockState state) {
+        return getMetaFromState(state);
+    }
+
+    @Override
+    public void getSubBlocks(CreativeTabs tab, NonNullList<ItemStack> items) {
+        for (E type : values) {
+            items.add(new ItemStack(this, 1, type.getMetadata()));
+        }
+    }
+
+    @Override
+    protected final BlockStateContainer createBlockState() {
+        return new BlockStateContainer.Builder(this).build();
+    }
+
+    @Override
+    public final BlockStateContainer getBlockState() {
+        return container;
+    }
+
+    @Override
     public int getLightValue(IBlockState state, IBlockAccess world, BlockPos pos) {
         return getType(state).getLightLevel();
+    }
+
+    @Override
+    public void getDrops(
+            NonNullList<ItemStack> drops, IBlockAccess world, BlockPos pos, IBlockState state, int fortune) {
+        if (!getType(state).requiresSilkTouch()) {
+            super.getDrops(drops, world, pos, state, fortune);
+        }
+    }
+
+    @Override
+    public boolean canSilkHarvest(World world, BlockPos pos, IBlockState state, EntityPlayer player) {
+        return getType(state).requiresSilkTouch();
+    }
+
+    @Override
+    public float getExplosionResistance(World world, BlockPos pos, Entity entity, Explosion explosion) {
+        return getType(world.getBlockState(pos)).getResistance();
+    }
+
+    @Override
+    public ItemStack getPickBlock(
+            IBlockState state, RayTraceResult target, World world, BlockPos pos, EntityPlayer player) {
+        return new ItemStack(this, 1, getMetaFromState(state));
+    }
+
+    @Override
+    public boolean isToolEffective(String type, IBlockState state) {
+        String tool = getType(state).getEffectiveTool();
+        return tool != null && tool.equals(type);
     }
 
     @Override
@@ -129,58 +181,8 @@ public class BlockBase<E extends Enum<E> & IStatePropertyHolder<E>> extends Bloc
         return getType(state).getSoundType();
     }
 
-    @Override
-    @Deprecated
-    public Material getMaterial(IBlockState state) {
-        return getType(state).getMaterial();
-    }
-
-    @Override
-    public int damageDropped(IBlockState state) {
-        return getMetaFromState(state);
-    }
-
-    @Override
-    public ItemStack getPickBlock(IBlockState state, RayTraceResult target, World world, BlockPos pos, EntityPlayer player) {
-        return new ItemStack(this, 1, getMetaFromState(state));
-    }
-
-    @Override
-    public void getDrops(NonNullList<ItemStack> drops, IBlockAccess world, BlockPos pos, IBlockState state, int fortune) {
-        if (!getType(state).requiresSilkTouch()) {
-            super.getDrops(drops, world, pos, state, fortune);
-        }
-    }
-
-    @Override
-    public boolean canSilkHarvest(World world, BlockPos pos, IBlockState state, EntityPlayer player) {
-        return getType(state).requiresSilkTouch();
-    }
-
-    @Override
-    public boolean isToolEffective(String type, IBlockState state) {
-        String tool = getType(state).getEffectiveTool();
-        return tool != null && tool.equals(type) ;
-    }
-
-    @Override
-    @Deprecated
-    public boolean isFullCube(IBlockState state) {
-        return getType(state).isFullCube();
-    }
-
     protected BlockStateContainer createStateContainer() {
         return new BlockStateContainer.Builder(this).add(property).build();
-    }
-
-    @Override
-    protected final BlockStateContainer createBlockState() {
-        return new BlockStateContainer.Builder(this).build();
-    }
-
-    @Override
-    public final BlockStateContainer getBlockState() {
-        return container;
     }
 
 }

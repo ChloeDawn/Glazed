@@ -22,8 +22,8 @@ import com.google.common.base.Stopwatch;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.google.common.collect.ImmutableMap;
-import net.insomniakitten.glazed.common.ConfigManager;
 import net.insomniakitten.glazed.Glazed;
+import net.insomniakitten.glazed.common.ConfigManager;
 import net.insomniakitten.glazed.common.util.Logger;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
@@ -70,8 +70,7 @@ public class ShardManager {
             protected int doHash(ItemStack stack) {
                 int result = stack.getItem().getRegistryName().hashCode();
                 result = 31 * result + stack.getItemDamage();
-                result = 31 * result + (stack.hasTagCompound() ?
-                        stack.getTagCompound().hashCode() : 0);
+                result = 31 * result + (stack.hasTagCompound() ? stack.getTagCompound().hashCode() : 0);
                 return result;
             }
 
@@ -108,16 +107,14 @@ public class ShardManager {
 
         private static void populateShardMaps() {
             STOPWATCH.start();
-            Arrays.stream(OreDictionary.getOreNames())
-                    .filter(ore -> ore.startsWith("blockGlass"))
-                    .forEach(ore -> {
-                        NonNullList<ItemStack> list = OreDictionary.getOres(ore);
-                        if (!ConfigManager.shardsConfig.anarchyMode) {
-                            cacheGlassBlock(list.get(0));
-                        } else {
-                            list.forEach(RegistryHandler::cacheGlassBlock);
-                        }
-                    });
+            Arrays.stream(OreDictionary.getOreNames()).filter(ore -> ore.startsWith("blockGlass")).forEach(ore -> {
+                NonNullList<ItemStack> list = OreDictionary.getOres(ore);
+                if (!ConfigManager.shardsConfig.anarchyMode) {
+                    cacheGlassBlock(list.get(0));
+                } else {
+                    list.forEach(RegistryHandler::cacheGlassBlock);
+                }
+            });
             STOPWATCH.stop();
             String msg = "Cached {} item stacks as glass shard variants in {}ms";
             Logger.info(false, msg, Data.SHARDS.size(), getElapsedTime());
@@ -130,8 +127,8 @@ public class ShardManager {
             stack.setTagInfo("metadata", new NBTTagInt(glass.getMetadata()));
             Wrapper<ItemStack> shard = Data.SHARD_EQV.wrap(stack);
             if (glass.getMetadata() != OreDictionary.WILDCARD_VALUE) {
-//                Data.SHARDS.putIfAbsent(shard, Data.SHARD_EQV.wrap(glass));
-//                Data.ORE_CACHE.putIfAbsent(shard, getShardOreName(glass));
+                //Data.SHARDS.putIfAbsent(shard, Data.SHARD_EQV.wrap(glass));
+                //Data.ORE_CACHE.putIfAbsent(shard, getShardOreName(glass));
                 Data.SHARDS.computeIfAbsent(shard, key -> Data.SHARD_EQV.wrap(glass));
                 Data.ORE_CACHE.computeIfAbsent(shard, key -> getShardOreName(glass));
                 IBlockState state = Block.getBlockFromItem(glass.getItem()).getStateFromMeta(glass.getMetadata());
@@ -185,9 +182,8 @@ public class ShardManager {
     @Mod.EventBusSubscriber
     public static class DropEventHandler {
 
-        private static final Map<IBlockState, Wrapper<ItemStack>>
-                STATIC_STATE_CACHE = new HashMap<>(),
-                DYNAMIC_STATE_CACHE = new HashMap<>();
+        private static final Map<IBlockState, Wrapper<ItemStack>> STATIC_STATE_CACHE = new HashMap<>();
+        private static final Map<IBlockState, Wrapper<ItemStack>> DYNAMIC_STATE_CACHE = new HashMap<>();
 
         @SubscribeEvent
         public static void onHarvestDrops(HarvestDropsEvent event) throws IOException {
@@ -203,8 +199,9 @@ public class ShardManager {
                 if (DYNAMIC_STATE_CACHE.containsKey(event.getState())) {
                     dropStack = DYNAMIC_STATE_CACHE.get(event.getState()).get().copy();
                 } else {
-                    ItemStack pickBlock = event.getState().getBlock().getPickBlock(
-                            event.getState(), null, event.getWorld(), event.getPos(), event.getHarvester());
+                    ItemStack pickBlock = event.getState().getBlock()
+                            .getPickBlock(event.getState(), null, event.getWorld(), event.getPos(),
+                                    event.getHarvester());
                     if (!pickBlock.isEmpty()) {
                         int[] stackOreIds = OreDictionary.getOreIDs(pickBlock);
                         for (int oreId : stackOreIds) {
@@ -251,7 +248,7 @@ public class ShardManager {
 
         @Override
         public ItemStack[] getMatchingStacks() {
-            return new ItemStack[]{shard};
+            return new ItemStack[] { shard };
         }
 
         @Override
