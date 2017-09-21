@@ -4,6 +4,6 @@
   "pattern": [ "MXM", "X X", "MXM" ],
   "key": {
     "M": { "item": "minecraft:magma_cream" },
-	"X": { "item": "minecraft:brick_block" }
+    "X": { "item": "minecraft:brick_block" }
   }
 }

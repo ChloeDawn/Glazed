@@ -1,14 +1,14 @@
 {
-    "animation": {
-        "frametime": 10,
-        "interpolate": true,
-        "frames": [ 0, 1, 2, 1 ]
-    },
-    "ctm": {
-        "ctm_version": 1,
-        "type": "CTM",
-        "layer":"TRANSLUCENT",
-        "textures": [ "glazed:blocks/glass/energetic/normal_ctm" ],
-        "extra": { "light": 10 }
-    }
+  "animation": {
+    "frametime": 10,
+    "interpolate": true,
+    "frames": [ 0, 1, 2, 1 ]
+  },
+  "ctm": {
+    "ctm_version": 1,
+    "type": "CTM",
+    "layer": "TRANSLUCENT",
+    "textures": [ "glazed:blocks/glass/energetic/normal_ctm" ],
+    "extra": { "light": 10 }
+  }
 }

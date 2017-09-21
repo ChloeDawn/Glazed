@@ -1,11 +1,11 @@
 {
-    "animation": {
-        "frametime": 10,
-        "interpolate": true
-    },
-    "ctm": {
-        "ctm_version": 1,
-		"layer": "TRANSLUCENT",
-        "extra": { "light": 10 }
-    }
+  "animation": {
+    "frametime": 10,
+    "interpolate": true
+  },
+  "ctm": {
+    "ctm_version": 1,
+    "layer": "TRANSLUCENT",
+    "extra": { "light": 10 }
+  }
 }
