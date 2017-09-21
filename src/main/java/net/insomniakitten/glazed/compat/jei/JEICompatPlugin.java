@@ -19,11 +19,9 @@ package net.insomniakitten.glazed.compat.jei;
 import mezz.jei.api.IJeiHelpers;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.IModRegistry;
-import mezz.jei.api.ISubtypeRegistry;
 import mezz.jei.api.JEIPlugin;
 import mezz.jei.api.recipe.IRecipeCategoryRegistration;
 import net.insomniakitten.glazed.Glazed;
-import net.insomniakitten.glazed.common.ConfigManager;
 import net.insomniakitten.glazed.common.kiln.InventoryKiln;
 import net.insomniakitten.glazed.common.kiln.RecipesKiln;
 import net.insomniakitten.glazed.compat.jei.recipe.KilnJEICategory;
@@ -35,13 +33,6 @@ public class JEICompatPlugin implements IModPlugin {
 
     public static final String ID = "glazed.jei.kiln";
     public static IJeiHelpers helpers;
-
-    @Override
-    public void registerItemSubtypes(ISubtypeRegistry registry) {
-        if (ConfigManager.shardsConfig.enableShards) {
-            registry.useNbtForSubtypes(Glazed.GLASS_SHARD.get());
-        }
-    }
 
     @Override
     public void registerCategories(IRecipeCategoryRegistration registry) {

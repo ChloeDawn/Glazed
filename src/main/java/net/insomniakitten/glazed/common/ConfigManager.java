@@ -34,10 +34,6 @@ public class ConfigManager {
     @Config.LangKey("config.glazed.kiln")
     public static KilnConfig kilnConfig = new KilnConfig();
 
-    @Config.Name("Shards")
-    @Config.LangKey("config.glazed.shards")
-    public static ShardsConfig shardsConfig = new ShardsConfig();
-
     @SubscribeEvent
     public static void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent event) {
         if (event.getModID().equals(Glazed.MOD_ID)) {
@@ -67,27 +63,6 @@ public class ConfigManager {
         @Config.Comment({ "Determines whether the efficient dyed glass kiln recipes should be registered. [default: true]" })
         @Config.LangKey("config.glazed.kiln.dyedGlassRecipes")
         public boolean dyedGlassRecipes = true;
-
-    }
-
-    public static class ShardsConfig {
-
-        @Config.RequiresMcRestart
-        @Config.Name("Enable Shards")
-        @Config.Comment({ "Determines whether glass shards for glass variants should be registered. [default: true]" })
-        @Config.LangKey("config.glazed.shards.enableShards")
-        public boolean enableShards = true;
-
-        @Config.RequiresMcRestart
-        @Config.Name("Anarchy Mode")
-        @Config.Comment({ "Determines whether glass shards should be registered for each individual glass block in the ore dictionary. [default: false]" })
-        @Config.LangKey("config.glazed.shards.anarchyMode")
-        public boolean anarchyMode = false;
-
-        @Config.Name("Tooltip Requires Shift")
-        @Config.Comment({ "Determines whether holding shift is required to display the detailed tooltip [default: true]" })
-        @Config.LangKey("config.glazed.shards.requireShift")
-        public boolean requireShift = true;
 
     }
 
