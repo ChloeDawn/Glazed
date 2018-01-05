@@ -16,55 +16,73 @@ package net.insomniakitten.glazed;
  *   limitations under the License.
  */
 
-import net.insomniakitten.glazed.common.ProxyManager;
-import net.insomniakitten.glazed.common.block.BlockGlass;
-import net.insomniakitten.glazed.common.block.BlockMaterial;
-import net.insomniakitten.glazed.common.kiln.BlockKiln;
-import net.insomniakitten.glazed.common.util.Logger;
+import net.insomniakitten.glazed.proxy.GlazedProxy;
 import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
+import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.registry.GameRegistry;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-@Mod(modid = Glazed.MOD_ID,
-     name = Glazed.MOD_NAME,
+@Mod(modid = Glazed.ID,
+     name = Glazed.NAME,
      version = Glazed.VERSION,
-     acceptedMinecraftVersions = Glazed.MC_VERSION,
+     acceptedMinecraftVersions = Glazed.MC_VERSIONS,
      dependencies = Glazed.DEPENDENCIES)
+public final class Glazed {
 
-public class Glazed {
-
-    public static final String MOD_ID = "glazed";
-    public static final String MOD_NAME = "Glazed";
+    public static final String ID = "glazed";
+    public static final String NAME = "Glazed";
     public static final String VERSION = "%VERSION%";
-    public static final String MC_VERSION = "[1.12,1.13)";
-    public static final String DEPENDENCIES = "required-after:forge@[14.21.1.2387,)";
-    public static final Block GLASS = new BlockGlass();
-    public static final Block KILN = new BlockKiln();
-    public static final Block MATERIAL = new BlockMaterial();
+    public static final String MC_VERSIONS = "[1.12,1.13)";
+    public static final String DEPENDENCIES = "required-after:forge@[14.21.1.2387,);after:chisel;after:tconstruct;";
 
-    public static final CreativeTabs CTAB = new CreativeTabs(Glazed.MOD_ID) {
+    public static final Logger LOGGER = LogManager.getLogger(Glazed.NAME);
+    @GameRegistry.ObjectHolder("glazed:glass")
+    public static final Block GLASS = Blocks.AIR;
+    @GameRegistry.ObjectHolder("glazed:glass_pane")
+    public static final Block GLASS_PANE = Blocks.AIR;
+    @GameRegistry.ObjectHolder("glazed:kiln")
+    public static final Block KILN = Blocks.AIR;
+    public static final CreativeTabs CTAB = new CreativeTabs(Glazed.ID) {
         @Override
         public ItemStack getTabIconItem() {
             return new ItemStack(Glazed.KILN);
         }
     };
+    @GameRegistry.ObjectHolder("glazed:material")
+    public static final Block MATERIAL = Blocks.AIR;
 
-    @Mod.Instance(Glazed.MOD_ID)
+    @GameRegistry.ObjectHolder("glazed:chisel")
+    public static final Item CHISEL = Items.AIR;
+
+    @Mod.Instance(Glazed.ID)
     public static Glazed instance;
 
-    @SidedProxy(clientSide = ProxyManager.CLIENT, serverSide = ProxyManager.SERVER)
-    public static ProxyManager proxyManager;
+    @SidedProxy(clientSide = GlazedProxy.CLIENT, serverSide = GlazedProxy.SERVER)
+    public static GlazedProxy proxy;
 
-    public static boolean isDeobf() {
-        return Logger.DEOBF;
+    @Mod.EventHandler
+    public void onPreInit(FMLPreInitializationEvent event) {
+        proxy.onPreInit(event);
+    }
+
+    @Mod.EventHandler
+    public void onInit(FMLInitializationEvent event) {
+        proxy.onInit(event);
     }
 
     @Mod.EventHandler
     public void onPostInit(FMLPostInitializationEvent event) {
-        proxyManager.onPostInit(event);
+        proxy.onPostInit(event);
     }
 
 }

@@ -1,9 +1,9 @@
 {
-  "ctm": {
-    "ctm_version": 1,
-    "type": "CTM",
-    "layer": "TRANSLUCENT",
-    "textures": [ "glazed:blocks/glass/gaia/normal_ctm" ],
-    "extra": { "light": 10 }
-  }
+    "ctm": {
+        "ctm_version": 1,
+        "type": "CTM",
+        "layer": "TRANSLUCENT",
+        "textures": [ "glazed:blocks/glass/gaia/normal_ctm" ],
+        "extra": { "light": 10, "connect_inside": true }
+    }
 }

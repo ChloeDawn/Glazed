@@ -1,0 +1,9 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "group": "glazed:glass_pane",
+    "result": { "item": "glazed:glass_pane", "data": 2, "count": 16 },
+    "pattern": [ "GGG", "GGG" ],
+    "key": {
+        "G": { "item": "glazed:glass", "data": 2 }
+    }
+}

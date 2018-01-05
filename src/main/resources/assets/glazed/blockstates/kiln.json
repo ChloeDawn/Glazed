@@ -1,20 +1,22 @@
 {
-  "forge_marker": 1,
-  "variants": {
-    "inventory": { "model": "glazed:kiln/all" },
-    "half": {
-      "upper": { "model": "glazed:kiln/upper" },
-      "lower": { "model": "glazed:kiln/lower" }
-    },
-    "facing": {
-      "north": { "y": 0 },
-      "south": { "y": 180 },
-      "east": { "y": 90 },
-      "west": { "y": 270 }
-    },
-    "active": {
-      "true": { "textures": { "front": "glazed:blocks/kiln/lower_north_active" } },
-      "false": { "textures": { "front": "glazed:blocks/kiln/lower_north" } }
+    "forge_marker": 1,
+    "variants": {
+        "inventory": { "model": "glazed:kiln/test_model" },
+        "facing": {
+            "north": { "y": 0 },
+            "east": { "y": 90 },
+            "south": { "y": 180 },
+            "west": { "y": 270 }
+        },
+        "section": {
+            "front_right_lower": { "model": "glazed:kiln/test_model" },
+            "front_left_lower": { "model": "glazed:kiln/front_left_lower" },
+            "rear_right_lower": { "model": "glazed:kiln/rear_right_lower" },
+            "rear_left_lower": { "model": "glazed:kiln/rear_left_lower" },
+            "front_right_upper": { "model": "glazed:kiln/front_right_upper" },
+            "front_left_upper": { "model": "glazed:kiln/front_left_upper" },
+            "rear_right_upper": { "model": "glazed:kiln/rear_right_upper" },
+            "rear_left_upper": { "model": "glazed:kiln/rear_left_upper" }
+        }
     }
-  }
 }

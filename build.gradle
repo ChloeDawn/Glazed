@@ -1,7 +1,7 @@
 buildscript {
     repositories {
         jcenter()
-        maven { url "https://files.minecraftforge.net/maven" }
+        maven { url 'https://files.minecraftforge.net/maven' }
     }
     dependencies {
         classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
@@ -10,10 +10,9 @@ buildscript {
 
 apply plugin: 'net.minecraftforge.gradle.forge'
 
-version = "${mcVersion}-${modVersion}"
+version = "1.12-$modVersion"
 group = 'net.insomniakitten.glazed'
 archivesBaseName = 'glazed'
-
 sourceCompatibility = 1.8
 
 repositories {
@@ -23,20 +22,18 @@ repositories {
 }
 
 dependencies {
-    deobfCompile "team.chisel.ctm:CTM:$ctmVersion:api"
-    deobfCompile "mcp.mobius.waila:Hwyla:$hwylaVersion:api"
-    deobfCompile "mezz.jei:jei_$jeiVersion:api"
-
-    runtime "team.chisel.ctm:CTM:$ctmVersion"
-    runtime "mezz.jei:jei_$jeiVersion"
-    runtime "team.chisel:Chisel:$chiselVersion"
+    deobfCompile "slimeknights.mantle:Mantle:$mantleVersion"
+    deobfCompile "slimeknights:TConstruct:$tconstructVersion"
+    deobfCompile "team.chisel:Chisel:$chiselVersion"
+    deobfCompile "team.chisel.ctm:CTM:$ctmVersion"
+    deobfCompile "mcp.mobius.waila:Hwyla:$hwylaVersion"
+    deobfCompile "mezz.jei:jei_$jeiVersion"
 }
 
 minecraft {
-    version = "${mcVersion}-${mcfVersion}"
+    version = mcfVersion
     mappings = mcpMappings
     runDir = 'run'
-
     replaceIn 'Glazed.java'
     replace '%VERSION%', modVersion
 }
@@ -44,10 +41,8 @@ minecraft {
 processResources {
     from(sourceSets.main.resources.srcDirs) {
         include 'mcmod.info', 'pack.mcmeta'
-        expand  'mod_version': modVersion,
-                'mc_version': mcVersion
+        expand 'version': modVersion
     }
-
     from(sourceSets.main.resources.srcDirs) {
         exclude 'mcmod.info', 'pack.mcmeta'
     }

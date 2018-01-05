@@ -1,5 +1,4 @@
 itemGroup.glazed=Glazed
-itemGroup.glazed.shards=Glazed: Glass Shards
 
 tile.glazed.glass.gaia.name=Gaia Glass
 tile.glazed.glass.radiant.name=Radiant Glass
@@ -11,7 +10,6 @@ tile.glazed.glass.quilted.name=Quilted Glass
 tile.glazed.glass.reinforced.name=Reinforced Glass
 tile.glazed.glass.slimy.name=Slimy Glass
 tile.glazed.glass.auroric.name=Auroric Glass
-
 tile.glazed.glass.gaia.tooltip=Blessed by nature
 tile.glazed.glass.radiant.tooltip=Glowing with warmth
 tile.glazed.glass.iridescent.tooltip=Packed with rainbows
@@ -23,47 +21,64 @@ tile.glazed.glass.reinforced.tooltip=Stronger than diamond
 tile.glazed.glass.slimy.tooltip=Extra slippery
 tile.glazed.glass.auroric.tooltip=Supremely mystical
 
+tile.glazed.glassPane.gaia.name=Gaia Glass Pane
+tile.glazed.glassPane.radiant.name=Radiant Glass Pane
+tile.glazed.glassPane.iridescent.name=Iridescent Glass Pane
+tile.glazed.glassPane.energetic.name=Energetic Glass Pane
+tile.glazed.glassPane.shadowed.name=Shadowed Glass Pane
+tile.glazed.glassPane.voidic.name=Voidic Glass Pane
+tile.glazed.glassPane.quilted.name=Quilted Glass Pane
+tile.glazed.glassPane.reinforced.name=Reinforced Glass Pane
+tile.glazed.glassPane.slimy.name=Slimy Glass Pane
+tile.glazed.glassPane.auroric.name=Auroric Glass Pane
+tile.glazed.glassPane.gaia.tooltip=Blessed by nature
+tile.glazed.glassPane.radiant.tooltip=Glowing with warmth
+tile.glazed.glassPane.iridescent.tooltip=Packed with rainbows
+tile.glazed.glassPane.energetic.tooltip=Surging with power
+tile.glazed.glassPane.shadowed.tooltip=Darker than the night
+tile.glazed.glassPane.voidic.tooltip=Infused with emptiness
+tile.glazed.glassPane.quilted.tooltip=Peacefully silent
+tile.glazed.glassPane.reinforced.tooltip=Stronger than diamond
+tile.glazed.glassPane.slimy.tooltip=Extra slippery
+tile.glazed.glassPane.auroric.tooltip=Supremely mystical
+
 tile.glazed.kiln.name=Glass Kiln
-tile.glazed.kiln.tooltip0=Used for processing sand into glass
-tile.glazed.kiln.tooltip1=Catalysts control the type of glass that is made
+tile.glazed.kiln.tooltip0=Used to process molten glass into a solid state
+tile.glazed.kiln.tooltip1=Catalysts control the glass variant that is produced
 
-tile.glazed.material.kiln_bricks.name=Kiln Bricks
-tile.glazed.material.obsidian_slag.name=Obsidian Slag
-tile.glazed.material.void_crystal.name=Void Crystal
+tile.glazed.crucible.name=Glass Crucible
+tile.glazed.crucible.tooltip=Used for creating molten glass
 
-item.glazed.shard.name=Glass Shard
+tile.glazed.material.kilnBricks.name=Kiln Bricks
+tile.glazed.material.compressedSlime.name=Compressed Slime
+tile.glazed.material.obsidianSlag.name=Obsidian Slag
 
-tooltip.glazed.shard.desc=- %s
-tooltip.glazed.shard.mod=Mod: %s
-tooltip.glazed.shard.invalid=Invalid shard data
-tooltip.glazed.shard.invalid.config=Re-enable anarchy mode to fix this item
-tooltip.glazed.shard.invalid.mod=Re-add the missing mod "%s" to fix this item
-
+item.glazed.chisel.clear.name=Glass Chisel
+item.glazed.chisel.white.name=White Stained Glass Chisel
+item.glazed.chisel.orange.name=Orange Stained Glass Chisel
+item.glazed.chisel.magenta.name=Magenta Stained Glass Chisel
+item.glazed.chisel.light_blue.name=Light Blue Stained Glass Chisel
+item.glazed.chisel.yellow.name=Yellow Stained Glass Chisel
+item.glazed.chisel.lime.name=Lime Stained Glass Chisel
+item.glazed.chisel.pink.name=Pink Stained Glass Chisel
+item.glazed.chisel.gray.name=Gray Stained Glass Chisel
+item.glazed.chisel.silver.name=Light Gray Stained Glass Chisel
+item.glazed.chisel.cyan.name=Cyan Stained Glass Chisel
+item.glazed.chisel.purple.name=Purple Stained Glass Chisel
+item.glazed.chisel.blue.name=Blue Stained Glass Chisel
+item.glazed.chisel.brown.name=Brown Stained Glass Chisel
+item.glazed.chisel.green.name=Green Stained Glass Chisel
+item.glazed.chisel.red.name=Red Stained Glass Chisel
+item.glazed.chisel.black.name=Black Stained Glass Chisel
+item.glazed.chisel.tooltip=Perfect for chiselling glass!
+    
 waila.glazed.kiln.input=Input
 waila.glazed.kiln.catalyst=Catalyst
 waila.glazed.kiln.fuel=Fuel
 waila.glazed.kiln.output=Output
 
-config.glazed.glass=Glass Config
-
-config.glazed.glass.enableFunctionalGlass=Enable Functional Glass
-config.glazed.glass.enableFunctionalGlass.tooltip=Determines whether functional glass should be registered. [default: true]
-
-config.glazed.kiln=Kiln Config
-
-config.glazed.kiln.processingSpeed=Processing Speed
-config.glazed.kiln.processingSpeed.tooltip=The speed at which items are processed, relative to vanilla furnace speed. [default: 1.0]
-
-config.glazed.kiln.dyedGlassRecipes=Dyed Glass Recipes
-config.glazed.kiln.dyedGlassRecipes.tooltip=Determines whether the efficient dyed glass kiln recipes should be registered. [default: true]
-
-config.glazed.shards=Shards Config
-
-config.glazed.shards.enableShards=Enable Shards
-config.glazed.shards.enableShards.tooltip=Determines whether glass shards for vanilla glass should be registered. [default: true]
-
-config.glazed.shards.anarchyMode=Anarchy Mode
-config.glazed.shards.anarchyMode.tooltip=Determines whether glass shards should be registered for every glass block in the ore dictionary. [default: false]
-
-config.glazed.shards.requireShift=Tooltip Requires Shift
-config.glazed.shards.requireShift.tooltip=Determines whether holding shift is required to display the detailed tooltip [default: true]
+tconstruct.glazed.material.glass.name=Glass
+tconstruct.glazed.trait.fragile.name=Fragile
+tconstruct.glazed.trait.fragile.desc=Be very careful, it could break at any moment!
+tconstruct.glazed.trait.razorSharp.name=Razor Sharp
+tconstruct.glazed.trait.razorSharp.desc=So sharp that even looking at it hurts

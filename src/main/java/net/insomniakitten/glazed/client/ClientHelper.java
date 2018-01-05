@@ -27,10 +27,12 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import java.util.UUID;
 
 @SideOnly(Side.CLIENT)
-public class ClientHelper {
+public final class ClientHelper {
 
     private static final BlockPos.MutableBlockPos PLAYER_POS = new BlockPos.MutableBlockPos();
     private static final UUID EMPTY_UUID = new UUID(0, 0);
+
+    private ClientHelper() {}
 
     public static EntityPlayer getPlayer() {
         return Minecraft.getMinecraft().player;

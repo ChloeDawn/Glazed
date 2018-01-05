@@ -1,5 +1,0 @@
-newmtl Custom/DiffuseTransparentZVertexColor (Instance)
-Kd 1 1 1
-map_Kd glazed:blocks/material/crystal
-illum 2
-

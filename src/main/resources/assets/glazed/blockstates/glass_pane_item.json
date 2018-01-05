@@ -1,0 +1,62 @@
+{
+    "forge_marker": 1,
+    "defaults": {
+        "model": "builtin/generated",
+        "transform": "forge:default-item"
+    },
+    "variants": {
+        "variant": {
+            "gaia": {
+                "textures": {
+                    "layer0": "glazed:blocks/glass/gaia/normal",
+                    "layer1": "glazed:blocks/glass/gaia/normal"
+                }
+            },
+            "radiant": {
+                "textures": {
+                    "layer0": "glazed:blocks/glass/radiant/normal"
+                }
+            },
+            "iridescent": {
+                "textures": {
+                    "layer0": "glazed:blocks/glass/iridescent/normal"
+                }
+            },
+            "energetic": {
+                "textures": {
+                    "layer0": "glazed:blocks/glass/energetic/normal"
+                }
+            },
+            "shadowed": {
+                "textures": {
+                    "layer0": "glazed:blocks/glass/shadowed/normal"
+                }
+            },
+            "voidic": {
+                "textures": {
+                    "layer0": "glazed:blocks/glass/voidic/normal"
+                }
+            },
+            "quilted": {
+                "textures": {
+                    "layer0": "glazed:blocks/glass/quilted/normal"
+                }
+            },
+            "reinforced": {
+                "textures": {
+                    "layer0": "glazed:blocks/glass/reinforced/normal"
+                }
+            },
+            "slimy": {
+                "textures": {
+                    "layer0": "glazed:blocks/glass/slimy/normal"
+                }
+            },
+            "auroric": {
+                "textures": {
+                    "layer0": "glazed:blocks/glass/auroric/normal"
+                }
+            }
+        }
+    }
+}

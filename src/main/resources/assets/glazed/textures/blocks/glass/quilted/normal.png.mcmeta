@@ -1,8 +1,9 @@
 {
-  "ctm": {
-    "ctm_version": 1,
-    "type": "CTM",
-    "layer": "CUTOUT",
-    "textures": [ "glazed:blocks/glass/quilted/normal_ctm" ]
-  }
+    "ctm": {
+        "ctm_version": 1,
+        "type": "CTM",
+        "layer": "CUTOUT",
+        "textures": [ "glazed:blocks/glass/quilted/normal_ctm" ],
+        "extra": { "connect_inside": true }
+    }
 }

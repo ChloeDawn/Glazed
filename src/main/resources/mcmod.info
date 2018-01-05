@@ -1,16 +1,10 @@
 [
-  {
-    "modid": "glazed",
-    "name": "Glazed",
-    "description": "A functional glass aesthetic.",
-    "version": "${mod_version}",
-    "mcversion": "${mc_version}",
-    "url": "",
-    "updateUrl": "",
-    "authorList": [ "InsomniaKitten" ],
-    "credits": "",
-    "logoFile": "",
-    "screenshots": [ ],
-    "dependencies": [ ]
-  }
+    {
+        "modid": "glazed",
+        "name": "Glazed",
+        "description": "A functional glass aesthetic.",
+        "version": "${version}",
+        "mcversion": "[1.12,1.13)",
+        "authorList": [ "InsomniaKitten" ]
+    }
 ]

@@ -1,0 +1,33 @@
+{
+    "forge_marker": 1,
+    "defaults": {
+        "model": "glazed:glass_pane/center_tinted",
+        "uvlock": true
+    },
+    "variants": {
+        "connect_north": {
+            "true": { "submodel": { "connect_north": { "model": "glazed:glass_pane/side_connect_tinted", "y": 0 } } },
+            "false": { "submodel": { "none_north": { "model": "glazed:glass_pane/side_none_tinted", "y": 0 } } }
+        },
+        "connect_east": {
+            "true": { "submodel": { "connect_east": { "model": "glazed:glass_pane/side_connect_tinted", "y": 90 } } },
+            "false": { "submodel": { "none_east": { "model": "glazed:glass_pane/side_none_tinted", "y": 90 } } }
+        },
+        "connect_south": {
+            "true": { "submodel": { "connect_south": { "model": "glazed:glass_pane/side_connect_tinted", "y": 180 } } },
+            "false": { "submodel": { "none_south": { "model": "glazed:glass_pane/side_none_tinted", "y": 180 } } }
+        },
+        "connect_west": {
+            "true": { "submodel": { "connect_west": { "model": "glazed:glass_pane/side_connect_tinted", "y": 270 } } },
+            "false": { "submodel": { "none_west": { "model": "glazed:glass_pane/side_none_tinted", "y": 270 } } }
+        },
+        "variant": {
+            "gaia": {
+                "textures": {
+                    "cap": "glazed:blocks/glass/gaia/normal_edge",
+                    "side": "glazed:blocks/glass/gaia/normal"
+                }
+            }
+        }
+    }
+}

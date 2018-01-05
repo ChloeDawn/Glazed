@@ -1,0 +1,81 @@
+{
+    "forge_marker": 1,
+    "defaults": {
+        "model": "glazed:glass_pane/center",
+        "uvlock": true
+    },
+    "variants": {
+        "connect_north": {
+            "true": { "submodel": { "side_connect_north": { "model": "glazed:glass_pane/side_connect", "y": 0 } } },
+            "false": { "submodel": { "side_none_north": { "model": "glazed:glass_pane/side_none", "y": 0 } } }
+        },
+        "connect_east": {
+            "true": { "submodel": { "side_connect_east": { "model": "glazed:glass_pane/side_connect", "y": 90 } } },
+            "false": { "submodel": { "side_none_east": { "model": "glazed:glass_pane/side_none", "y": 90 } } }
+        },
+        "connect_south": {
+            "true": { "submodel": { "side_connect_south": { "model": "glazed:glass_pane/side_connect", "y": 180 } } },
+            "false": { "submodel": { "side_none_south": { "model": "glazed:glass_pane/side_none", "y": 180 } } }
+        },
+        "connect_west": {
+            "true": { "submodel": { "side_connect_west": { "model": "glazed:glass_pane/side_connect", "y": 270 } } },
+            "false": { "submodel": { "side_none_west": { "model": "glazed:glass_pane/side_none", "y": 270 } } }
+        },
+        "variant": {
+            "radiant": {
+                "textures": {
+                    "cap": "glazed:blocks/glass/radiant/normal_edge",
+                    "side": "glazed:blocks/glass/radiant/normal"
+                }
+            },
+            "iridescent": {
+                "textures": {
+                    "cap": "glazed:blocks/glass/iridescent/normal_edge",
+                    "side": "glazed:blocks/glass/iridescent/normal"
+                }
+            },
+            "energetic": {
+                "textures": {
+                    "cap": "glazed:blocks/glass/energetic/normal_edge",
+                    "side": "glazed:blocks/glass/energetic/normal"
+                }
+            },
+            "shadowed": {
+                "textures": {
+                    "cap": "glazed:blocks/glass/shadowed/normal_edge",
+                    "side": "glazed:blocks/glass/shadowed/normal"
+                }
+            },
+            "voidic": {
+                "textures": {
+                    "cap": "glazed:blocks/glass/voidic/normal_edge",
+                    "side": "glazed:blocks/glass/voidic/normal"
+                }
+            },
+            "quilted": {
+                "textures": {
+                    "cap": "glazed:blocks/glass/quilted/normal_edge",
+                    "side": "glazed:blocks/glass/quilted/normal"
+                }
+            },
+            "reinforced": {
+                "textures": {
+                    "cap": "glazed:blocks/glass/reinforced/normal_edge",
+                    "side": "glazed:blocks/glass/reinforced/normal"
+                }
+            },
+            "slimy": {
+                "textures": {
+                    "cap": "glazed:blocks/glass/slimy/normal_edge",
+                    "side": "glazed:blocks/glass/slimy/normal"
+                }
+            },
+            "auroric": {
+                "textures": {
+                    "cap": "glazed:blocks/glass/auroric/normal_edge",
+                    "side": "glazed:blocks/glass/auroric/normal"
+                }
+            }
+        }
+    }
+}

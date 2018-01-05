@@ -1,0 +1,33 @@
+{
+    "forge_marker": 1,
+    "defaults": {
+        "textures": {
+            "center_down": "glazed:blocks/crucible/center_down",
+            "center_up": "glazed:blocks/crucible/center_up",
+            "side_cap": "glazed:blocks/crucible/side_cap",
+            "side_outer": "glazed:blocks/crucible/side_outer",
+            "side_inner": "glazed:blocks/crucible/side_inner",
+            "corner_cap": "glazed:blocks/crucible/corner_cap",
+            "corner_side": "glazed:blocks/crucible/corner_side"
+        }
+    },
+    "variants": {
+        "inventory": { "model": "glazed:crucible/all" },
+        "section": {
+            "center_lower": { "model": "glazed:crucible/center" },
+            "north_lower": { "model": "glazed:crucible/side" },
+            "east_lower": { "model": "glazed:crucible/side", "y": 90 },
+            "south_lower": { "model": "glazed:crucible/side", "y": 180 },
+            "west_lower": { "model": "glazed:crucible/side", "y": 270 },
+            "north_west_lower": { "model": "glazed:crucible/corner" },
+            "north_east_lower": { "model": "glazed:crucible/corner", "y": 90 },
+            "south_east_lower": { "model": "glazed:crucible/corner", "y": 180 },
+            "south_west_lower": { "model": "glazed:crucible/corner", "y": 270 },
+            "center_upper": { "model": "glazed:crucible/center_up" },
+            "north_west_upper": { "model": "glazed:crucible/corner_up" },
+            "north_east_upper": { "model": "glazed:crucible/corner_up", "y": 90 },
+            "south_east_upper": { "model": "glazed:crucible/corner_up", "y": 180 },
+            "south_west_upper": { "model": "glazed:crucible/corner_up", "y": 270 }
+        }
+    }
+}

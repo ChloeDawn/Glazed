@@ -20,9 +20,7 @@ import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 
-import java.util.HashSet;
-import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.TreeSet;
 
 public final class WrappedModel {
 
@@ -32,11 +30,11 @@ public final class WrappedModel {
     private final String variants;
     private final ModelResourceLocation mrl;
 
-    private WrappedModel(ModelBuilder model) {
+    private WrappedModel(Builder model) {
         this.item = model.item;
         this.meta = model.meta;
         this.resource = model.resource;
-        this.variants = model.variants.stream().collect(Collectors.joining(","));
+        this.variants = String.join(",", model.variants);
         this.mrl = new ModelResourceLocation(this.resource, this.variants);
     }
 
@@ -56,33 +54,33 @@ public final class WrappedModel {
         return variants;
     }
 
-    public ModelResourceLocation getModelResourceLocation() {
+    public ModelResourceLocation getMRL() {
         return mrl;
     }
 
-    public static class ModelBuilder {
+    public static final class Builder {
 
         private Item item;
         private int meta;
         private ResourceLocation resource;
-        private Set<String> variants = new HashSet<>();
+        private TreeSet<String> variants = new TreeSet<>();
 
-        public ModelBuilder(Item item, int meta) {
+        public Builder(Item item, int meta) {
             this.item = item;
             this.meta = meta;
             this.resource = item.getRegistryName();
         }
 
-        public ModelBuilder(Item item) {
+        public Builder(Item item) {
             this(item, 0);
         }
 
-        public ModelBuilder setResourceLocation(ResourceLocation resource) {
+        public Builder setResourceLocation(ResourceLocation resource) {
             this.resource = resource;
             return this;
         }
 
-        public ModelBuilder addVariant(String variant) {
+        public Builder addVariant(String variant) {
             this.variants.add(variant);
             return this;
         }

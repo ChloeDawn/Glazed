@@ -1,23 +1,18 @@
 {
-  "forge_marker": 1,
-  "defaults": { "model": "cube_all" },
-  "variants": {
-    "type": {
-      "kiln_bricks": {
-        "textures": { "all": "glazed:blocks/material/kiln_bricks" }
-      },
-      "compressed_slime": {
-        "model": "glazed:cube_multiface",
-        "textures": { "all": "glazed:blocks/material/compressed_slime" }
-      },
-      "obsidian_slag": {
-        "model": "glazed:cube_multiface",
-        "textures": { "all": "glazed:blocks/material/obsidian_slag" }
-      },
-      "void_crystal": {
-        "model": "glazed:crystal/crystal.obj",
-        "transform": "forge:default-block"
-      }
+    "forge_marker": 1,
+    "defaults": { "model": "cube_all" },
+    "variants": {
+        "variant": {
+            "kiln_bricks": {
+                "textures": { "all": "glazed:blocks/material/kiln_bricks" }
+            },
+            "compressed_slime": {
+                "textures": { "all": "glazed:blocks/material/compressed_slime" }
+            },
+            "obsidian_slag": {
+                "model": "glazed:cube_multiface",
+                "textures": { "all": "glazed:blocks/material/obsidian_slag" }
+            }
+        }
     }
-  }
 }

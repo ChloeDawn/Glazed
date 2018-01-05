@@ -1,0 +1,62 @@
+{
+    "forge_marker": 1,
+    "defaults": {
+        "model": "builtin/generated",
+        "transform": "forge:default-item"
+    },
+    "variants": {
+        "variant": {
+            "clear": {
+                "textures": { "layer0": "glazed:items/chisel/chisel_clear" }
+            },
+            "white": {
+                "textures": { "layer0": "glazed:items/chisel/chisel_white" }
+            },
+            "orange": {
+                "textures": { "layer0": "glazed:items/chisel/chisel_orange" }
+            },
+            "magenta": {
+                "textures": { "layer0": "glazed:items/chisel/chisel_magenta" }
+            },
+            "light_blue": {
+                "textures": { "layer0": "glazed:items/chisel/chisel_light_blue" }
+            },
+            "yellow": {
+                "textures": { "layer0": "glazed:items/chisel/chisel_yellow" }
+            },
+            "lime": {
+                "textures": { "layer0": "glazed:items/chisel/chisel_lime" }
+            },
+            "pink": {
+                "textures": { "layer0": "glazed:items/chisel/chisel_pink" }
+            },
+            "gray": {
+                "textures": { "layer0": "glazed:items/chisel/chisel_gray" }
+            },
+            "silver": {
+                "textures": { "layer0": "glazed:items/chisel/chisel_silver" }
+            },
+            "cyan": {
+                "textures": { "layer0": "glazed:items/chisel/chisel_cyan" }
+            },
+            "purple": {
+                "textures": { "layer0": "glazed:items/chisel/chisel_purple" }
+            },
+            "blue": {
+                "textures": { "layer0": "glazed:items/chisel/chisel_blue" }
+            },
+            "brown": {
+                "textures": { "layer0": "glazed:items/chisel/chisel_brown" }
+            },
+            "green": {
+                "textures": { "layer0": "glazed:items/chisel/chisel_green" }
+            },
+            "red": {
+                "textures": { "layer0": "glazed:items/chisel/chisel_red" }
+            },
+            "black": {
+                "textures": { "layer0": "glazed:items/chisel/chisel_black" }
+            }
+        }
+    }
+}
