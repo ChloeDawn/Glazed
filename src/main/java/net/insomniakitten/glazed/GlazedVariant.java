@@ -16,12 +16,12 @@ package net.insomniakitten.glazed;
  *   limitations under the License.
  */
 
+import com.google.common.collect.ImmutableMap;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.block.statemap.IStateMapper;
-import net.minecraft.client.renderer.block.statemap.StateMapperBase;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -59,22 +59,34 @@ public enum GlazedVariant implements IStringSerializable {
     protected static final Function<ItemStack, String> NAME_MAPPER = GlazedVariant::getName;
 
     @SideOnly(Side.CLIENT)
-    protected static final IStateMapper STATE_MAPPER = new StateMapperBase() {
-        @Override
-        @SuppressWarnings("unchecked")
-        protected ModelResourceLocation getModelResourceLocation(IBlockState state) {
-            final ResourceLocation id = Objects.requireNonNull(state.getBlock().getRegistryName());
-            return new ModelResourceLocation(
-                    Glazed.ID + ":" + getName(state) + "_" + id.getResourcePath(),
-                    state.getProperties().entrySet().stream()
-                            .filter(it -> it.getKey() != PROPERTY)
-                            .map(it -> {
-                                final IProperty key = it.getKey();
-                                return key.getName() + '=' + key.getName(it.getValue());
-                            }).collect(Collectors.joining(","))
-            );
-        }
-    };
+    @SuppressWarnings("unchecked")
+    protected static final IStateMapper STATE_MAPPER = block -> block.getBlockState().getValidStates().stream()
+            .collect(ImmutableMap.toImmutableMap(Function.identity(), state -> {
+                final ResourceLocation id = Objects.requireNonNull(state.getBlock().getRegistryName());
+                return new ModelResourceLocation(
+                        Glazed.ID + ":" + getName(state) + "_" + id.getResourcePath(),
+                        state.getProperties().entrySet().stream()
+                                .filter(it -> it.getKey() != PROPERTY)
+                                .map(it -> {
+                                    final IProperty key = it.getKey();
+                                    return key.getName() + '=' + key.getName(it.getValue());
+                                }).collect(Collectors.joining(","))
+                );
+            }));
+
+    private final float hardness;
+    private final float resistance;
+    private final int lightLevel;
+
+    GlazedVariant(float hardness, float resistance, int lightLevel) {
+        this.hardness = hardness;
+        this.resistance = resistance;
+        this.lightLevel = lightLevel;
+    }
+
+    GlazedVariant(float hardness, float resistance) {
+        this(hardness, resistance, 0);
+    }
 
     public static boolean isValid(int ordinal) {
         return ordinal >= 0 && ordinal < VARIANTS.length;
@@ -89,20 +101,6 @@ public enum GlazedVariant implements IStringSerializable {
         if (state.getPropertyKeys().contains(PROPERTY)) {
             return state.getValue(PROPERTY).getName();
         } else return "unknown";
-    }
-
-    private final float hardness;
-    private final float resistance;
-    private final int lightLevel;
-
-    GlazedVariant(float hardness, float resistance, int lightLevel) {
-        this.hardness = hardness;
-        this.resistance = resistance;
-        this.lightLevel = lightLevel;
-    }
-
-    GlazedVariant(float hardness, float resistance) {
-        this(hardness, resistance, 0);
     }
 
     public float getHardness() {
