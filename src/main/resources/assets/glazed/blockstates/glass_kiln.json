@@ -1,0 +1,21 @@
+{
+    "forge_marker": 1,
+    "defaults": { "textures": { "all": "blocks/debug" } },
+    "variants": {
+        "active": {
+            "true": { "textures": { "front": "glazed:blocks/kiln_lower_north_active" } },
+            "false": { "textures": { "front": "glazed:blocks/kiln_lower_north" } }
+        },
+        "facing": {
+            "north": { "y": 0 },
+            "south": { "y": 180 },
+            "east": { "y": 90 },
+            "west": { "y": 270 }
+        },
+        "half": {
+            "upper": { "model": "cube_all" },
+            "lower": { "model": "cube_all" }
+        },
+        "inventory": { "model": "cube_all" }
+    }
+}

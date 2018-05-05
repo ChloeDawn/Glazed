@@ -1,0 +1,9 @@
+{
+    "forge_marker": 1,
+    "variants": {
+        "normal": {
+            "model": "cube_all",
+            "textures": { "all": "glazed:blocks/kiln_bricks" }
+        }
+    }
+}

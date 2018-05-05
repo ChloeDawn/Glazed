@@ -1,9 +1,0 @@
-{
-    "ctm": {
-        "ctm_version": 1,
-        "type": "CTM",
-        "layer": "TRANSLUCENT",
-        "textures": [ "glazed:blocks/glass/voidic/normal_ctm" ],
-        "extra": { "light": 10, "connect_inside": true }
-    }
-}

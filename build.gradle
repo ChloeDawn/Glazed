@@ -1,7 +1,7 @@
 buildscript {
     repositories {
         jcenter()
-        maven { url 'https://files.minecraftforge.net/maven' }
+        maven { url = 'https://files.minecraftforge.net/maven' }
     }
     dependencies {
         classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
@@ -10,25 +10,10 @@ buildscript {
 
 apply plugin: 'net.minecraftforge.gradle.forge'
 
-version = "1.12-$modVersion"
+version = modVersion
 group = 'net.insomniakitten.glazed'
-archivesBaseName = 'glazed'
+archivesBaseName = 'Glazed'
 sourceCompatibility = 1.8
-
-repositories {
-    maven { url 'http://maven.tterrag.com' }
-    maven { url 'http://tehnut.info/maven' }
-    maven { url 'http://dvs1.progwml6.com/files/maven' }
-}
-
-dependencies {
-    deobfCompile "slimeknights.mantle:Mantle:$mantleVersion"
-    deobfCompile "slimeknights:TConstruct:$tconstructVersion"
-    deobfCompile "team.chisel:Chisel:$chiselVersion"
-    deobfCompile "team.chisel.ctm:CTM:$ctmVersion"
-    deobfCompile "mcp.mobius.waila:Hwyla:$hwylaVersion"
-    deobfCompile "mezz.jei:jei_$jeiVersion"
-}
 
 minecraft {
     version = mcfVersion
@@ -36,6 +21,23 @@ minecraft {
     runDir = 'run'
     replaceIn 'Glazed.java'
     replace '%VERSION%', modVersion
+}
+
+repositories {
+    maven { url = 'http://maven.tterrag.com' }
+    maven { url = 'http://tehnut.info/maven' }
+    maven { url = 'http://dvs1.progwml6.com/files/maven' }
+}
+
+dependencies {
+    runtime "team.chisel.ctm:CTM:$ctmVersion"
+    runtime "team.chisel:Chisel:$chiselVersion"
+    compile "mcp.mobius.waila:Hwyla:$hwylaVersion"
+    compile "mezz.jei:jei_$jeiVersion"
+}
+
+jar {
+    manifest { attributes 'FMLAT': 'glazed_at.cfg' }
 }
 
 processResources {
