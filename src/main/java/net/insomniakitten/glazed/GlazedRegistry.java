@@ -23,15 +23,13 @@ import net.insomniakitten.glazed.block.KilnBricksBlock;
 import net.insomniakitten.glazed.block.entity.GlassKilnEntity;
 import net.insomniakitten.glazed.item.BlockItem;
 import net.minecraft.block.Block;
-import net.minecraft.client.renderer.ItemMeshDefinition;
-import net.minecraft.client.renderer.block.model.ModelBakery;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.block.statemap.IStateMapper;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.model.ModelLoader;
@@ -46,8 +44,8 @@ import net.minecraftforge.registries.IForgeRegistryEntry;
 import java.util.Objects;
 
 import static net.insomniakitten.glazed.GlazedVariant.NAME_MAPPER;
-import static net.insomniakitten.glazed.GlazedVariant.STACK_MAPPER;
 import static net.insomniakitten.glazed.GlazedVariant.STATE_MAPPER;
+import static net.insomniakitten.glazed.GlazedVariant.VARIANTS;
 
 enum GlazedRegistry {
     INSTANCE;
@@ -96,10 +94,11 @@ enum GlazedRegistry {
     @SubscribeEvent
     @SideOnly(Side.CLIENT)
     protected void onModelRegistry(ModelRegistryEvent event) {
-        register(KILN_BRICKS_ITEM, "normal");
-        register(GLASS_KILN_ITEM, "inventory");
+        register(KILN_BRICKS_ITEM, () -> "normal");
+        register(GLASS_KILN_ITEM, () -> "inventory");
         register(STATE_MAPPER, GLASS_BLOCK, GLASS_PANE);
-        register(STACK_MAPPER, GLASS_BLOCK_ITEM, GLASS_PANE_ITEM);
+        register(GLASS_BLOCK_ITEM, VARIANTS);
+        register(GLASS_PANE_ITEM, VARIANTS);
     }
 
     private <V extends IForgeRegistryEntry<V>> void register(Register<V> event, V entry, String name) {
@@ -122,17 +121,12 @@ enum GlazedRegistry {
         }
     }
 
-    private void register(ItemMeshDefinition meshDefinition, Item... items) {
-        for (final Item item : items) {
-            final ResourceLocation id = Objects.requireNonNull(item.getRegistryName());
-            Glazed.LOGGER.debug("Registering item model definition for {}", id);
-            ModelLoader.setCustomMeshDefinition(item, meshDefinition);
-            ModelBakery.registerItemVariants(item, id);
-        }
-    }
-
-    private void register(Item item, String variant) {
+    private void register(Item item, IStringSerializable... variants) {
         final ResourceLocation id = Objects.requireNonNull(item.getRegistryName());
-        register((ItemStack stack) -> new ModelResourceLocation(id, variant), item);
+        for (int meta = 0, max = variants.length; meta < max; meta++) {
+            final String variant = "variant=" + variants[meta].getName();
+            Glazed.LOGGER.debug("Registering item model for {}#{} with variant \"{}\"", id, meta, variant);
+            ModelLoader.setCustomModelResourceLocation(item, meta, new ModelResourceLocation(id, variant));
+        }
     }
 }

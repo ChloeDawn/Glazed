@@ -19,7 +19,6 @@ package net.insomniakitten.glazed;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.renderer.ItemMeshDefinition;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.block.statemap.IStateMapper;
 import net.minecraft.client.renderer.block.statemap.StateMapperBase;
@@ -60,13 +59,6 @@ public enum GlazedVariant implements IStringSerializable {
     protected static final Function<ItemStack, String> NAME_MAPPER = GlazedVariant::getName;
 
     @SideOnly(Side.CLIENT)
-    protected static final ItemMeshDefinition STACK_MAPPER = stack -> {
-        final ResourceLocation id = Objects.requireNonNull(stack.getItem().getRegistryName());
-        final String name = Glazed.ID + ":" + getName(stack) + "_" + id.getResourcePath();
-        return new ModelResourceLocation(name, "inventory");
-    };
-
-    @SideOnly(Side.CLIENT)
     protected static final IStateMapper STATE_MAPPER = new StateMapperBase() {
         @Override
         @SuppressWarnings("unchecked")
@@ -84,8 +76,8 @@ public enum GlazedVariant implements IStringSerializable {
         }
     };
 
-    public static boolean isValid(int meta) {
-        return meta >= 0 && meta < VARIANTS.length;
+    public static boolean isValid(int ordinal) {
+        return ordinal >= 0 && ordinal < VARIANTS.length;
     }
 
     public static String getName(ItemStack stack) {
