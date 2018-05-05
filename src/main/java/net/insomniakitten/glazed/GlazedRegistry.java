@@ -109,7 +109,8 @@ enum GlazedRegistry {
 
     private void register(Class<? extends TileEntity> blockEntity, String name) {
         final ResourceLocation id = new ResourceLocation(Glazed.ID, name);
-        Glazed.LOGGER.debug("Registering block entity class {} with key {}", blockEntity, id);
+        final String cls = blockEntity.getClass().getSimpleName();
+        Glazed.LOGGER.debug("Registering block entity class {} with key {}", cls, id);
         GameRegistry.registerTileEntity(blockEntity, id.toString());
     }
 
