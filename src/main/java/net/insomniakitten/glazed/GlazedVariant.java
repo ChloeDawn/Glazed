@@ -84,11 +84,13 @@ public enum GlazedVariant implements IStringSerializable {
         }
     };
 
+    public static boolean isValid(int meta) {
+        return meta >= 0 && meta < VARIANTS.length;
+    }
+
     public static String getName(ItemStack stack) {
         final int meta = stack.getMetadata();
-        if (meta >= 0 && meta < VARIANTS.length) {
-            return VARIANTS[meta].getName();
-        } else return "unknown";
+        return isValid(meta) ? VARIANTS[meta].getName() : "unknown";
     }
 
     public static String getName(IBlockState state) {
