@@ -16,27 +16,18 @@ package net.insomniakitten.glazed;
  *   limitations under the License.
  */
 
-import com.google.common.collect.ImmutableMap;
-import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.renderer.block.model.ModelResourceLocation;
-import net.minecraft.client.renderer.block.statemap.IStateMapper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.IStringSerializable;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.Locale;
-import java.util.Objects;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 public enum GlazedVariant implements IStringSerializable {
     GAIA(0.3F, 1.5F),
@@ -57,22 +48,6 @@ public enum GlazedVariant implements IStringSerializable {
     );
 
     protected static final Function<ItemStack, String> NAME_MAPPER = GlazedVariant::getName;
-
-    @SideOnly(Side.CLIENT)
-    @SuppressWarnings("unchecked")
-    protected static final IStateMapper STATE_MAPPER = block -> block.getBlockState().getValidStates().stream()
-            .collect(ImmutableMap.toImmutableMap(Function.identity(), state -> {
-                final ResourceLocation id = Objects.requireNonNull(state.getBlock().getRegistryName());
-                return new ModelResourceLocation(
-                        Glazed.ID + ":" + getName(state) + "_" + id.getResourcePath(),
-                        state.getProperties().entrySet().stream()
-                                .filter(it -> it.getKey() != PROPERTY)
-                                .map(it -> {
-                                    final IProperty key = it.getKey();
-                                    return key.getName() + '=' + key.getName(it.getValue());
-                                }).collect(Collectors.joining(","))
-                );
-            }));
 
     private final float hardness;
     private final float resistance;

@@ -43,8 +43,8 @@ import net.minecraftforge.registries.IForgeRegistryEntry;
 
 import java.util.Objects;
 
+import static net.insomniakitten.glazed.GlazedClient.STATE_MAPPER;
 import static net.insomniakitten.glazed.GlazedVariant.NAME_MAPPER;
-import static net.insomniakitten.glazed.GlazedVariant.STATE_MAPPER;
 import static net.insomniakitten.glazed.GlazedVariant.VARIANTS;
 
 enum GlazedRegistry {
