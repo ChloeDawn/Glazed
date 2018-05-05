@@ -113,6 +113,7 @@ enum GlazedRegistry {
         GameRegistry.registerTileEntity(blockEntity, id.toString());
     }
 
+    @SideOnly(Side.CLIENT)
     private void register(IStateMapper stateMapper, Block... blocks) {
         for (final Block block : blocks) {
             final ResourceLocation id = Objects.requireNonNull(block.getRegistryName());
@@ -121,6 +122,7 @@ enum GlazedRegistry {
         }
     }
 
+    @SideOnly(Side.CLIENT)
     private void register(Item item, IStringSerializable... variants) {
         final ResourceLocation id = Objects.requireNonNull(item.getRegistryName());
         for (int meta = 0, max = variants.length; meta < max; meta++) {
