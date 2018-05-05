@@ -125,7 +125,7 @@ enum GlazedRegistry {
     @SideOnly(Side.CLIENT)
     private void register(Item item, IStringSerializable... variants) {
         final ResourceLocation id = Objects.requireNonNull(item.getRegistryName());
-        for (int meta = 0, max = variants.length; meta < max; meta++) {
+        for (int meta = 0; meta < variants.length; meta++) {
             final String variant = "variant=" + variants[meta].getName();
             Glazed.LOGGER.debug("Registering item model for {}#{} with variant \"{}\"", id, meta, variant);
             ModelLoader.setCustomModelResourceLocation(item, meta, new ModelResourceLocation(id, variant));
