@@ -94,8 +94,8 @@ enum GlazedRegistry {
     @SubscribeEvent
     @SideOnly(Side.CLIENT)
     protected void onModelRegistry(ModelRegistryEvent event) {
-        register(KILN_BRICKS_ITEM, () -> "normal");
-        register(GLASS_KILN_ITEM, () -> "inventory");
+        register(KILN_BRICKS_ITEM, "normal");
+        register(GLASS_KILN_ITEM, "inventory");
         register(STATE_MAPPER, GLASS_BLOCK, GLASS_PANE);
         register(GLASS_BLOCK_ITEM, VARIANTS);
         register(GLASS_PANE_ITEM, VARIANTS);
@@ -131,5 +131,12 @@ enum GlazedRegistry {
             Glazed.LOGGER.debug("Registering item model for {}#{} with variant \"{}\"", id, meta, variant);
             ModelLoader.setCustomModelResourceLocation(item, meta, new ModelResourceLocation(id, variant));
         }
+    }
+
+    @SideOnly(Side.CLIENT)
+    private void register(Item item, String variant) {
+        final ResourceLocation id = Objects.requireNonNull(item.getRegistryName());
+        Glazed.LOGGER.debug("Registering item model for {}#0 with variant \"{}\"", id, variant);
+        ModelLoader.setCustomModelResourceLocation(item, 0, new ModelResourceLocation(id, variant));
     }
 }
