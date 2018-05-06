@@ -48,7 +48,7 @@ public final class BlockItem extends ItemBlock {
     @Override
     @SideOnly(Side.CLIENT)
     public boolean canPlaceBlockOnSide(World world, BlockPos pos, EnumFacing side, EntityPlayer player, ItemStack stack) {
-        return GlazedVariant.isValid(stack.getMetadata()) && super.canPlaceBlockOnSide(world, pos, side, player, stack);
+        return (!hasSubtypes || GlazedVariant.isValid(stack.getMetadata())) && super.canPlaceBlockOnSide(world, pos, side, player, stack);
     }
 
     @Override
@@ -62,7 +62,7 @@ public final class BlockItem extends ItemBlock {
 
     @Override
     public boolean placeBlockAt(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, IBlockState newState) {
-        return GlazedVariant.isValid(stack.getMetadata()) && super.placeBlockAt(stack, player, world, pos, side, hitX, hitY, hitZ, newState);
+        return (!hasSubtypes || GlazedVariant.isValid(stack.getMetadata())) && super.placeBlockAt(stack, player, world, pos, side, hitX, hitY, hitZ, newState);
     }
 
     @Override
