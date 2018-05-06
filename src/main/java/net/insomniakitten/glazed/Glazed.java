@@ -17,8 +17,6 @@ package net.insomniakitten.glazed;
  */
 
 import net.insomniakitten.glazed.block.entity.GlassKilnEntity;
-import net.minecraft.client.resources.IReloadableResourceManager;
-import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -26,10 +24,9 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.network.IGuiHandler;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
@@ -39,7 +36,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nullable;
-import java.util.function.Consumer;
 
 @Mod(modid = Glazed.ID, name = Glazed.NAME, version = Glazed.VERSION)
 public final class Glazed {
@@ -95,36 +91,16 @@ public final class Glazed {
     protected void onPreInitialization(FMLPreInitializationEvent event) {
         NetworkRegistry.INSTANCE.registerGuiHandler(ID, GUI_HANDLER);
         MinecraftForge.EVENT_BUS.register(GlazedRegistry.INSTANCE);
+        GlazedProxy.onPreInitialization(event);
     }
 
     @Mod.EventHandler
     protected void onInitialization(FMLInitializationEvent event) {
-        ProxyImpl.eventConsumer.accept(event);
+        GlazedProxy.onInitialization(event);
     }
 
-    @SuppressWarnings("unused")
-    private static final class ProxyImpl {
-        @SidedProxy
-        private static Consumer<FMLInitializationEvent> eventConsumer = it -> {
-            throw new IllegalStateException("Sided proxy instance has not been initialized!");
-        };
-
-        @SideOnly(Side.CLIENT)
-        public static final class ClientProxy implements Consumer<FMLInitializationEvent> {
-            @Override
-            public void accept(FMLInitializationEvent event) {
-                MinecraftForge.EVENT_BUS.register(GlazedClient.INSTANCE);
-                final IResourceManager rm = FMLClientHandler.instance().getClient().getResourceManager();
-                if (rm instanceof IReloadableResourceManager) {
-                    ((IReloadableResourceManager) rm).registerReloadListener(GlazedClient.INSTANCE);
-                } else throw new IllegalStateException("Expected IReloadableResourceManager, found " + rm);
-            }
-        }
-
-        @SideOnly(Side.SERVER)
-        public static final class ServerProxy implements Consumer<FMLInitializationEvent> {
-            @Override
-            public void accept(FMLInitializationEvent event) {}
-        }
+    @Mod.EventHandler
+    protected void onPostInitialization(FMLPostInitializationEvent event) {
+        GlazedProxy.onPostInitialization(event);
     }
 }
