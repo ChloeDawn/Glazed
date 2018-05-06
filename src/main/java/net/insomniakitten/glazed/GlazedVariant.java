@@ -18,6 +18,7 @@ package net.insomniakitten.glazed;
 
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -25,6 +26,8 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.Locale;
 import java.util.function.Function;
@@ -76,6 +79,11 @@ public enum GlazedVariant implements IStringSerializable {
         if (state.getPropertyKeys().contains(PROPERTY)) {
             return state.getValue(PROPERTY).getName();
         } else return "unknown";
+    }
+
+    @SideOnly(Side.CLIENT)
+    public static String getDescription(ItemStack stack) {
+        return I18n.format("tooltip.glazed.variant." + getName(stack));
     }
 
     public float getHardness() {

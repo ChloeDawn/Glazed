@@ -19,10 +19,10 @@ package net.insomniakitten.glazed.block;
 import net.insomniakitten.glazed.Glazed;
 import net.insomniakitten.glazed.GlazedVariant;
 import net.minecraft.block.BlockGlass;
+import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
@@ -49,6 +49,7 @@ public final class GlassBlock extends BlockGlass {
     public GlassBlock() {
         super(Material.GLASS, true);
         setUnlocalizedName(Glazed.ID + ".glass_block");
+        setSoundType(SoundType.GLASS);
         setCreativeTab(Glazed.TAB);
     }
 
@@ -99,7 +100,7 @@ public final class GlassBlock extends BlockGlass {
     @Override
     @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack stack, World world, List<String> tooltip, ITooltipFlag flag) {
-        tooltip.add(I18n.format("tooltip.glazed.glass_variant." + GlazedVariant.getName(stack)));
+        tooltip.add(GlazedVariant.getDescription(stack));
     }
 
     @Override

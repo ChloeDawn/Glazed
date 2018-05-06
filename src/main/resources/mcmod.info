@@ -1,4 +1,10 @@
-[{
-    "modid": "glazed", "name": "Glazed", "description": "A functional glass aesthetic.",
-    "version": "${version}", "mcversion": "[1.12,1.13)", "authorList": [ "InsomniaKitten" ]
-}]
+[
+    {
+        "modid": "glazed",
+        "name": "Glazed",
+        "description": "A functional glass aesthetic.",
+        "version": "${version}",
+        "mcversion": "[1.12,1.13)",
+        "authorList": [ "InsomniaKitten" ]
+    }
+]

@@ -1,10 +1,14 @@
 {
     "forge_marker": 1,
-    "defaults": { "textures": { "all": "blocks/debug" } },
+    "defaults": {
+        "textures": {
+            "all": "blocks/debug"
+        }
+    },
     "variants": {
         "active": {
-            "true": { "textures": { "front": "glazed:blocks/kiln_lower_north_active" } },
-            "false": { "textures": { "front": "glazed:blocks/kiln_lower_north" } }
+            "true": {},
+            "false": {}
         },
         "facing": {
             "north": { "y": 0 },

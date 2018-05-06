@@ -3,7 +3,9 @@
     "variants": {
         "normal": {
             "model": "cube_all",
-            "textures": { "all": "glazed:blocks/kiln_bricks" }
+            "textures": {
+                "all": "glazed:blocks/kiln_bricks"
+            }
         }
     }
 }
