@@ -17,7 +17,6 @@ package net.insomniakitten.glazed;
  */
 
 import net.minecraft.block.properties.PropertyEnum;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -33,7 +32,12 @@ import java.util.Locale;
 import java.util.function.Function;
 
 public enum GlazedVariant implements IStringSerializable {
-    GAIA(0.3F, 1.5F),
+    GAIA(0.3F, 1.5F) {
+        @Override
+        protected int getColor(IBlockAccess access, BlockPos pos) {
+            return access.getBiome(pos).getFoliageColorAtPos(pos);
+        }
+    },
     RADIANT(0.3F, 1.5F, 15),
     IRIDESCENT(0.3F, 1.5F, 8),
     ENERGETIC(0.3F, 1.5F),
@@ -75,12 +79,6 @@ public enum GlazedVariant implements IStringSerializable {
         return isValid(meta) ? VARIANTS[meta].getName() : "unknown";
     }
 
-    public static String getName(IBlockState state) {
-        if (state.getPropertyKeys().contains(PROPERTY)) {
-            return state.getValue(PROPERTY).getName();
-        } else return "unknown";
-    }
-
     @SideOnly(Side.CLIENT)
     public static String getDescription(ItemStack stack) {
         return I18n.format("tooltip.glazed.variant." + getName(stack));
@@ -96,6 +94,10 @@ public enum GlazedVariant implements IStringSerializable {
 
     public int getLightLevel() {
         return lightLevel;
+    }
+
+    protected int getColor(IBlockAccess access, BlockPos pos) {
+        return 0xFFFFFFFF;
     }
 
     @Override

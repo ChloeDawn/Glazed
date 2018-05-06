@@ -1,0 +1,35 @@
+{
+    "__comment": "Copyright © InsomniaKitten 2018",
+    "forge_marker": 1,
+    "defaults": {
+        "model": "glazed:glass_pane_center",
+        "textures": {
+            "cap": "glazed:blocks/glass_slimy_edge",
+            "side": "glazed:blocks/glass_slimy"
+        },
+        "uvlock": true
+    },
+    "variants": {
+        "inventory": {
+            "model": "builtin/generated",
+            "transform": "forge:default-item",
+            "textures": { "layer0": "#side" }
+        },
+        "north": {
+            "true": { "submodel": { "north_side": { "model": "glazed:glass_pane_side" } } },
+            "false": { "submodel": { "north_none": { "model": "glazed:glass_pane_none" } } }
+        },
+        "east": {
+            "true": { "submodel": { "east_side": { "model": "glazed:glass_pane_side", "y": 90 } } },
+            "false": { "submodel": { "east_none": { "model": "glazed:glass_pane_none", "y": 90 } } }
+        },
+        "south": {
+            "true": { "submodel": { "south_side": { "model": "glazed:glass_pane_side", "y": 180 } } },
+            "false": { "submodel": { "south_none": { "model": "glazed:glass_pane_none", "y": 180 } } }
+        },
+        "west": {
+            "true": { "submodel": { "west_side": { "model": "glazed:glass_pane_side", "y": 270 } } },
+            "false": { "submodel": { "west_none": { "model": "glazed:glass_pane_none", "y": 270 } } }
+        }
+    }
+}

@@ -1,0 +1,9 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "result": { "item": "glazed:kiln_bricks", "count": 4 },
+    "pattern": [ "MBM", "B B", "MBM" ],
+    "key": {
+        "M": { "item": "minecraft:magma_cream" },
+        "B": { "item": "minecraft:brick_block" }
+    }
+}

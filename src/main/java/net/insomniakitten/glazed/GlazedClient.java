@@ -16,20 +16,37 @@ package net.insomniakitten.glazed;
  *   limitations under the License.
  */
 
+import net.insomniakitten.glazed.block.GlassKilnBlock;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockPane;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.GlStateManager.DestFactor;
+import net.minecraft.client.renderer.GlStateManager.SourceFactor;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.client.renderer.block.statemap.IStateMapper;
+import net.minecraft.client.renderer.block.statemap.StateMapperBase;
+import net.minecraft.client.renderer.color.IBlockColor;
+import net.minecraft.client.renderer.color.IItemColor;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.client.resources.IResourceManagerReloadListener;
 import net.minecraft.entity.Entity;
+import net.minecraft.item.Item;
+import net.minecraft.util.IStringSerializable;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.World;
+import net.minecraftforge.client.event.ColorHandlerEvent;
+import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
+import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
@@ -39,16 +56,54 @@ import org.lwjgl.opengl.GL11;
 import java.util.Arrays;
 import java.util.function.IntFunction;
 
-import static net.insomniakitten.glazed.GlazedRegistry.GLASS_KILN;
-import static net.insomniakitten.glazed.block.GlassKilnBlock.HALF;
-import static net.minecraft.client.renderer.GlStateManager.DestFactor.SRC_COLOR;
-import static net.minecraft.client.renderer.GlStateManager.DestFactor.ZERO;
-import static net.minecraft.client.renderer.GlStateManager.SourceFactor.DST_COLOR;
-import static net.minecraft.client.renderer.GlStateManager.SourceFactor.ONE;
+import static java.util.Objects.requireNonNull;
 
 @SideOnly(Side.CLIENT)
 enum GlazedClient implements IResourceManagerReloadListener {
     INSTANCE;
+
+    private static final IStateMapper STATE_MAPPER_BLOCK = new StateMapperBase() {
+        @Override
+        protected ModelResourceLocation getModelResourceLocation(IBlockState state) {
+            final String name = state.getValue(GlazedVariant.PROPERTY).getName() + "_glass_block";
+            return new ModelResourceLocation(new ResourceLocation(Glazed.ID, name), "normal");
+        }
+    };
+
+    private static final IStateMapper STATE_MAPPER_PANE = new StateMapperBase() {
+        @Override
+        protected ModelResourceLocation getModelResourceLocation(IBlockState state) {
+            final String east = "east=" + state.getValue(BlockPane.EAST);
+            final String north = "north=" + state.getValue(BlockPane.NORTH);
+            final String south = "south=" + state.getValue(BlockPane.SOUTH);
+            final String west = "west=" + state.getValue(BlockPane.WEST);
+            final String connections = String.join(",", east, north, south, west);
+            final String name = state.getValue(GlazedVariant.PROPERTY).getName() + "_glass_pane";
+            return new ModelResourceLocation(new ResourceLocation(Glazed.ID, name), connections);
+        }
+    };
+
+    private static final IBlockColor BLOCK_COLOR = (state, access, pos, tintIndex) -> {
+        if (tintIndex == 0 && access != null && pos != null) {
+            if (state.getProperties().containsKey(GlazedVariant.PROPERTY)) {
+                return state.getValue(GlazedVariant.PROPERTY).getColor(access, pos);
+            }
+        }
+        return 0xFFFFFFFF;
+    };
+
+    private static final IItemColor ITEM_COLOR = (stack, tintIndex) -> {
+        final int meta = stack.getMetadata();
+        if (tintIndex == 0 && GlazedVariant.isValid(meta)) {
+            final Minecraft mc = FMLClientHandler.instance().getClient();
+            if (mc.player != null && mc.player.world != null) {
+                final World world = mc.player.world;
+                final BlockPos pos = mc.player.getPosition();
+                return GlazedVariant.VARIANTS[meta].getColor(world, pos);
+            }
+        }
+        return 0xFFFFFFFF;
+    };
 
     private final TextureAtlasSprite[] destroyStageSprites = new TextureAtlasSprite[10];
 
@@ -64,6 +119,28 @@ enum GlazedClient implements IResourceManagerReloadListener {
     }
 
     @SubscribeEvent
+    protected void onModelRegistry(ModelRegistryEvent event) {
+        register(GlazedRegistry.GLASS_BLOCK, STATE_MAPPER_BLOCK);
+        register(GlazedRegistry.GLASS_PANE, STATE_MAPPER_PANE);
+        register(GlazedRegistry.KILN_BRICKS_ITEM, "normal");
+        register(GlazedRegistry.GLASS_KILN_ITEM, "inventory");
+        register(GlazedRegistry.GLASS_BLOCK_ITEM, "normal", GlazedVariant.VARIANTS);
+        register(GlazedRegistry.GLASS_PANE_ITEM, "inventory", GlazedVariant.VARIANTS);
+    }
+
+    @SubscribeEvent
+    protected void onBlockColors(ColorHandlerEvent.Block event) {
+        register(event, GlazedRegistry.GLASS_BLOCK, BLOCK_COLOR);
+        register(event, GlazedRegistry.GLASS_PANE, BLOCK_COLOR);
+    }
+
+    @SubscribeEvent
+    protected void onItemColors(ColorHandlerEvent.Item event) {
+        register(event, GlazedRegistry.GLASS_BLOCK_ITEM, ITEM_COLOR);
+        register(event, GlazedRegistry.GLASS_PANE_ITEM, ITEM_COLOR);
+    }
+
+    @SubscribeEvent
     protected void onRenderWorldLast(RenderWorldLastEvent event) {
         final Minecraft mc = FMLClientHandler.instance().getClient();
 
@@ -73,7 +150,7 @@ enum GlazedClient implements IResourceManagerReloadListener {
         final BlockPos curr = mc.playerController.currentBlock;
         final IBlockState state = mc.world.getBlockState(curr);
 
-        if (state.getBlock() != GLASS_KILN) return;
+        if (state.getBlock() != GlazedRegistry.GLASS_KILN) return;
 
         final int destroyStage = (int) (mc.playerController.curBlockDamageMP * 10.0F) - 1;
 
@@ -81,7 +158,10 @@ enum GlazedClient implements IResourceManagerReloadListener {
 
         try {
             GlStateManager.pushMatrix();
-            GlStateManager.tryBlendFuncSeparate(DST_COLOR, SRC_COLOR, ONE, ZERO);
+            GlStateManager.tryBlendFuncSeparate(
+                    SourceFactor.DST_COLOR, DestFactor.SRC_COLOR,
+                    SourceFactor.ONE, DestFactor.ZERO
+            );
             GlStateManager.enableBlend();
             GlStateManager.color(1.0F, 1.0F, 1.0F, 0.5F);
             GlStateManager.enablePolygonOffset();
@@ -93,7 +173,7 @@ enum GlazedClient implements IResourceManagerReloadListener {
             final BufferBuilder buffer = tessellator.getBuffer();
             final Vec3d vec = getPositionVector(mc.player, event.getPartialTicks());
             final TextureAtlasSprite sprite = destroyStageSprites[destroyStage];
-            final BlockPos pos = state.getValue(HALF).offset(curr);
+            final BlockPos pos = state.getValue(GlassKilnBlock.HALF).offset(curr);
 
             buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
             buffer.setTranslation(-vec.x, -vec.y, -vec.z);
@@ -122,5 +202,41 @@ enum GlazedClient implements IResourceManagerReloadListener {
         final double posY = lastY + ((entity.posY - lastY) * partialTicks);
         final double posZ = lastZ + ((entity.posZ - lastZ) * partialTicks);
         return new Vec3d(posX, posY, posZ);
+    }
+
+    private void register(Block block, IStateMapper stateMapper) {
+        final ResourceLocation id = requireNonNull(block.getRegistryName());
+        Glazed.LOGGER.debug("Registering state mapper for {}", id);
+        ModelLoader.setCustomStateMapper(block, stateMapper);
+    }
+
+    private void register(Item item, String variant) {
+        final ResourceLocation id = requireNonNull(item.getRegistryName());
+        Glazed.LOGGER.debug("Registering item model for {}#0 with variant \"{}\"", id, variant);
+        ModelLoader.setCustomModelResourceLocation(item, 0, new ModelResourceLocation(id, variant));
+    }
+
+    private void register(Item item, String variant, IStringSerializable... variants) {
+        final ResourceLocation id = requireNonNull(item.getRegistryName());
+        for (int meta = 0; meta < variants.length; meta++) {
+            final String path = variants[meta].getName() + "_" + id.getResourcePath();
+            final ResourceLocation model = new ResourceLocation(Glazed.ID, path);
+            Glazed.LOGGER.debug("Registering item model for {}#{} to {}#{}", id, meta, model, variant);
+            ModelLoader.setCustomModelResourceLocation(item, meta, new ModelResourceLocation(model, variant));
+        }
+    }
+
+    private void register(ColorHandlerEvent.Item event, Item item, IItemColor color) {
+        final String cls = requireNonNull(color).getClass().getSimpleName();
+        final ResourceLocation id = requireNonNull(item.getRegistryName());
+        Glazed.LOGGER.debug("Registering item color instance {} for {}", cls, id);
+        event.getItemColors().registerItemColorHandler(color, item);
+    }
+
+    private void register(ColorHandlerEvent.Block event, Block block, IBlockColor color) {
+        final String cls = requireNonNull(color).getClass().getSimpleName();
+        final ResourceLocation id = requireNonNull(block.getRegistryName());
+        Glazed.LOGGER.debug("Registering block color instance {} for {}", cls, id);
+        event.getBlockColors().registerBlockColorHandler(color, block);
     }
 }

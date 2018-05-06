@@ -70,8 +70,12 @@ final class GlazedProxy {
         @SideOnly(Side.CLIENT)
         final class Client implements EventConsumer {
             @Override
-            public void accept(FMLInitializationEvent event) {
+            public void accept(FMLPreInitializationEvent event) {
                 MinecraftForge.EVENT_BUS.register(GlazedClient.INSTANCE);
+            }
+
+            @Override
+            public void accept(FMLInitializationEvent event) {
                 final IResourceManager rm = FMLClientHandler.instance().getClient().getResourceManager();
                 if (rm instanceof IReloadableResourceManager) {
                     ((IReloadableResourceManager) rm).registerReloadListener(GlazedClient.INSTANCE);

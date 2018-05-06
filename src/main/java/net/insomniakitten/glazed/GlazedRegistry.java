@@ -23,27 +23,18 @@ import net.insomniakitten.glazed.block.KilnBricksBlock;
 import net.insomniakitten.glazed.block.entity.GlassKilnEntity;
 import net.insomniakitten.glazed.item.BlockItem;
 import net.minecraft.block.Block;
-import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.client.event.ModelRegistryEvent;
-import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.event.RegistryEvent.Register;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry.ObjectHolder;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 
-import java.util.Objects;
-
 import static net.insomniakitten.glazed.GlazedVariant.NAME_MAPPER;
-import static net.insomniakitten.glazed.GlazedVariant.VARIANTS;
 
 enum GlazedRegistry {
     INSTANCE;
@@ -89,15 +80,6 @@ enum GlazedRegistry {
         register(event, new BlockItem(GLASS_PANE, NAME_MAPPER), "glass_pane");
     }
 
-    @SubscribeEvent
-    @SideOnly(Side.CLIENT)
-    protected void onModelRegistry(ModelRegistryEvent event) {
-        register(KILN_BRICKS_ITEM, "normal");
-        register(GLASS_KILN_ITEM, "inventory");
-        register(GLASS_BLOCK_ITEM, VARIANTS);
-        register(GLASS_PANE_ITEM, VARIANTS);
-    }
-
     private <V extends IForgeRegistryEntry<V>> void register(Register<V> event, V entry, String name) {
         final ResourceLocation id = new ResourceLocation(Glazed.ID, name);
         Glazed.LOGGER.debug("Registering entry {} to registry {}", id, event.getName());
@@ -109,22 +91,5 @@ enum GlazedRegistry {
         final String cls = blockEntity.getClass().getSimpleName();
         Glazed.LOGGER.debug("Registering block entity class {} with key {}", cls, id);
         GameRegistry.registerTileEntity(blockEntity, id.toString());
-    }
-
-    @SideOnly(Side.CLIENT)
-    private void register(Item item, String variant) {
-        final ResourceLocation id = Objects.requireNonNull(item.getRegistryName());
-        Glazed.LOGGER.debug("Registering item model for {}#0 with variant \"{}\"", id, variant);
-        ModelLoader.setCustomModelResourceLocation(item, 0, new ModelResourceLocation(id, variant));
-    }
-
-    @SideOnly(Side.CLIENT)
-    private void register(Item item, IStringSerializable... variants) {
-        final ResourceLocation id = Objects.requireNonNull(item.getRegistryName());
-        for (int meta = 0; meta < variants.length; meta++) {
-            final String variant = "variant=" + variants[meta].getName();
-            Glazed.LOGGER.debug("Registering item model for {}#{} with variant \"{}\"", id, meta, variant);
-            ModelLoader.setCustomModelResourceLocation(item, meta, new ModelResourceLocation(id, variant));
-        }
     }
 }

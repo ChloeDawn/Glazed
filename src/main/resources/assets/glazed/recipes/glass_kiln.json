@@ -1,0 +1,8 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "result": { "item": "glazed:glass_kiln" },
+    "pattern": [ "BBB", "B B", "BBB" ],
+    "key": {
+        "B": { "item": "glazed:kiln_bricks" }
+    }
+}
