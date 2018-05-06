@@ -57,12 +57,17 @@ public final class GlassKilnBlock extends Block {
         setResistance(30.0F);
     }
 
+    private static boolean canReplace(IBlockAccess access, BlockPos pos) {
+        final IBlockState state = access.getBlockState(pos);
+        return state.getBlock().isReplaceable(access, pos);
+    }
+
     @Override
     @Deprecated
     public IBlockState getStateFromMeta(int meta) {
-        boolean active = (meta & 1) != 0;
-        Half half = Half.values()[((meta & 2) >> 1)];
-        EnumFacing facing = EnumFacing.getHorizontal(meta >> 2);
+        final boolean active = (meta & 1) != 0;
+        final Half half = Half.values()[((meta & 2) >> 1)];
+        final EnumFacing facing = EnumFacing.getHorizontal(meta >> 2);
         return this.getDefaultState()
                 .withProperty(ACTIVE, active)
                 .withProperty(HALF, half)
@@ -87,7 +92,7 @@ public final class GlassKilnBlock extends Block {
     @Deprecated
     @SideOnly(Side.CLIENT)
     public AxisAlignedBB getSelectedBoundingBox(IBlockState state, World worldIn, BlockPos pos) {
-        return state.getValue(HALF).selectionBox.offset(pos);
+        return state.getValue(HALF).aabb.offset(pos);
     }
 
     @Override
@@ -106,21 +111,12 @@ public final class GlassKilnBlock extends Block {
 
     @Override
     public boolean canPlaceBlockAt(World world, BlockPos pos) {
-        if (world.getBlockState(pos).getBlock().isReplaceable(world, pos)) {
-            final BlockPos up = pos.up();
-            if (world.getBlockState(up).getBlock().isReplaceable(world, up)) {
-                return true;
-            } else {
-                final BlockPos down = pos.down();
-                return world.getBlockState(down).getBlock().isReplaceable(world, down);
-            }
-        }
-        return false;
+        return canReplace(world, pos) && (canReplace(world, pos.down()) || canReplace(world, pos.up()));
     }
 
     @Override
     public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase entity, ItemStack stack) {
-        world.setBlockState(state.getValue(HALF) == Half.LOWER ? pos.up() : pos.down(), state.cycleProperty(HALF));
+        world.setBlockState(state.getValue(HALF).offset(pos), state.cycleProperty(HALF));
     }
 
     @Override
@@ -134,8 +130,8 @@ public final class GlassKilnBlock extends Block {
     }
 
     @Override
-    public boolean doesSideBlockRendering(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing face) {
-        return state.getValue(HALF) == Half.LOWER && face != EnumFacing.DOWN && face != state.getValue(FACING);
+    public boolean doesSideBlockRendering(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side) {
+        return state.getValue(HALF) == Half.LOWER && side != EnumFacing.DOWN && side != state.getValue(FACING);
     }
 
     @Override
@@ -150,26 +146,33 @@ public final class GlassKilnBlock extends Block {
 
     @Override
     public IBlockState getStateForPlacement(World world, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer, EnumHand hand) {
-        Half half = world.getBlockState(pos.down()).getBlock().isReplaceable(world, pos.down()) ? Half.UPPER : Half.LOWER;
-        return getDefaultState().withProperty(HALF, half).withProperty(FACING, placer.getHorizontalFacing().getOpposite());
+        return getDefaultState().withProperty(HALF, Half.fromPosition(world, pos)).withProperty(FACING, placer.getHorizontalFacing().getOpposite());
     }
 
     public enum Half implements IStringSerializable {
         LOWER(new AxisAlignedBB(0.0D, 0.0D, 0.0D, 1.0D, 2.0D, 1.0D)),
         UPPER(new AxisAlignedBB(0.0D, -1.0D, 0.0D, 1.0D, 1.0D, 1.0D));
 
-        private final AxisAlignedBB selectionBox;
+        private final AxisAlignedBB aabb;
 
-        Half(AxisAlignedBB selectionBox) {
-            this.selectionBox = selectionBox;
+        Half(AxisAlignedBB aabb) {
+            this.aabb = aabb;
         }
 
-        public boolean isLower() {
-            return this == LOWER;
+        private static Half fromPosition(IBlockAccess access, BlockPos pos) {
+            if (canReplace(access, pos.up())) {
+                return LOWER;
+            } else if (canReplace(access, pos.down())) {
+                return UPPER;
+            } else throw new IllegalArgumentException("Cannot determine Half from position " + pos);
         }
 
-        public boolean isUpper() {
-            return this == UPPER;
+        public BlockPos offset(BlockPos pos) {
+            switch (this) {
+                case LOWER: return pos.up();
+                case UPPER: return pos.down();
+            }
+            throw new IllegalArgumentException("Unrecognized enum constant " + toString());
         }
 
         @Override
