@@ -48,9 +48,6 @@ public final class GlassKilnBlock extends Block {
     public static final PropertyDirection FACING = PropertyDirection.create("facing", Plane.HORIZONTAL);
     public static final PropertyEnum<Half> HALF = PropertyEnum.create("half", Half.class);
 
-    public static final AxisAlignedBB AABB_LOWER = new AxisAlignedBB(0.0D, 0.0D, 0.0D, 1.0D, 2.0D, 1.0D);
-    public static final AxisAlignedBB AABB_UPPER = new AxisAlignedBB(0.0D, -1.0D, 0.0D, 1.0D, 1.0D, 1.0D);
-
     public GlassKilnBlock() {
         super(Material.ROCK, MapColor.ADOBE);
         setUnlocalizedName(Glazed.ID + ".glass_kiln");
@@ -90,7 +87,7 @@ public final class GlassKilnBlock extends Block {
     @Deprecated
     @SideOnly(Side.CLIENT)
     public AxisAlignedBB getSelectedBoundingBox(IBlockState state, World worldIn, BlockPos pos) {
-        return state.getValue(HALF) == Half.UPPER ? AABB_UPPER : AABB_LOWER;
+        return state.getValue(HALF).selectionBox.offset(pos);
     }
 
     @Override
@@ -158,7 +155,14 @@ public final class GlassKilnBlock extends Block {
     }
 
     public enum Half implements IStringSerializable {
-        LOWER, UPPER;
+        LOWER(new AxisAlignedBB(0.0D, 0.0D, 0.0D, 1.0D, 2.0D, 1.0D)),
+        UPPER(new AxisAlignedBB(0.0D, -1.0D, 0.0D, 1.0D, 1.0D, 1.0D));
+
+        private final AxisAlignedBB selectionBox;
+
+        Half(AxisAlignedBB selectionBox) {
+            this.selectionBox = selectionBox;
+        }
 
         public boolean isLower() {
             return this == LOWER;
