@@ -45,7 +45,7 @@ public final class Glazed {
 
     public static final Logger LOGGER = LogManager.getLogger(ID);
 
-    public static final CreativeTabs TAB = new CreativeTabs(Glazed.ID) {
+    public static final CreativeTabs TAB = new CreativeTabs(ID) {
         @Override
         @SideOnly(Side.CLIENT)
         public String getTranslatedTabLabel() {
