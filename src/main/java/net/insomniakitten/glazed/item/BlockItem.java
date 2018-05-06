@@ -16,7 +16,6 @@ package net.insomniakitten.glazed.item;
  *   limitations under the License.
  */
 
-import net.insomniakitten.glazed.GlazedVariant;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
@@ -30,25 +29,38 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
 import java.util.function.Function;
+import java.util.function.IntPredicate;
 
 public final class BlockItem extends ItemBlock {
+    private static final IntPredicate ZERO = meta -> meta == 0;
+
     @Nullable
     private final Function<ItemStack, String> suffixFunction;
+    private final IntPredicate metaPredicate;
 
-    public BlockItem(Block block, @Nullable Function<ItemStack, String> suffixFunction) {
+    public BlockItem(Block block, IntPredicate metaPredicate, @Nullable Function<ItemStack, String> suffixFunction) {
         super(block);
+        this.metaPredicate = metaPredicate;
         this.suffixFunction = suffixFunction;
         setHasSubtypes(suffixFunction != null);
     }
 
+    public BlockItem(Block block, @Nullable Function<ItemStack, String> suffixFunction) {
+        this(block, ZERO, suffixFunction);
+    }
+
+    public BlockItem(Block block, IntPredicate metaPredicate) {
+        this(block, metaPredicate, null);
+    }
+
     public BlockItem(Block block) {
-        this(block, null);
+        this(block, ZERO, null);
     }
 
     @Override
     @SideOnly(Side.CLIENT)
     public boolean canPlaceBlockOnSide(World world, BlockPos pos, EnumFacing side, EntityPlayer player, ItemStack stack) {
-        return (!hasSubtypes || GlazedVariant.isValid(stack.getMetadata())) && super.canPlaceBlockOnSide(world, pos, side, player, stack);
+        return metaPredicate.test(stack.getMetadata()) && super.canPlaceBlockOnSide(world, pos, side, player, stack);
     }
 
     @Override
@@ -62,7 +74,7 @@ public final class BlockItem extends ItemBlock {
 
     @Override
     public boolean placeBlockAt(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, IBlockState newState) {
-        return (!hasSubtypes || GlazedVariant.isValid(stack.getMetadata())) && super.placeBlockAt(stack, player, world, pos, side, hitX, hitY, hitZ, newState);
+        return metaPredicate.test(stack.getMetadata()) && super.placeBlockAt(stack, player, world, pos, side, hitX, hitY, hitZ, newState);
     }
 
     @Override
