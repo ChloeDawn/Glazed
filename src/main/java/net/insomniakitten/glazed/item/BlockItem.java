@@ -28,57 +28,67 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
-import java.util.function.Function;
-import java.util.function.IntPredicate;
 
 public final class BlockItem extends ItemBlock {
-    private static final IntPredicate ZERO = meta -> meta == 0;
-
     @Nullable
-    private final Function<ItemStack, String> suffixFunction;
-    private final IntPredicate metaPredicate;
+    private final NameSuffix suffix;
+    private final MetaFilter metaFilter;
 
-    public BlockItem(Block block, IntPredicate metaPredicate, @Nullable Function<ItemStack, String> suffixFunction) {
+    public BlockItem(Block block, MetaFilter metaFilter, @Nullable NameSuffix suffix) {
         super(block);
-        this.metaPredicate = metaPredicate;
-        this.suffixFunction = suffixFunction;
-        setHasSubtypes(suffixFunction != null);
+        this.metaFilter = metaFilter;
+        this.suffix = suffix;
+        setHasSubtypes(suffix != null);
     }
 
-    public BlockItem(Block block, @Nullable Function<ItemStack, String> suffixFunction) {
-        this(block, ZERO, suffixFunction);
+    public BlockItem(Block block, @Nullable NameSuffix suffix) {
+        this(block, MetaFilter.ANY, suffix);
     }
 
-    public BlockItem(Block block, IntPredicate metaPredicate) {
-        this(block, metaPredicate, null);
+    public BlockItem(Block block, MetaFilter metaFilter) {
+        this(block, metaFilter, null);
     }
 
     public BlockItem(Block block) {
-        this(block, ZERO, null);
+        this(block, MetaFilter.ANY, null);
     }
 
     @Override
     @SideOnly(Side.CLIENT)
     public boolean canPlaceBlockOnSide(World world, BlockPos pos, EnumFacing side, EntityPlayer player, ItemStack stack) {
-        return metaPredicate.test(stack.getMetadata()) && super.canPlaceBlockOnSide(world, pos, side, player, stack);
+        return metaFilter.check(stack.getMetadata()) && super.canPlaceBlockOnSide(world, pos, side, player, stack);
     }
 
     @Override
     public String getUnlocalizedName(ItemStack stack) {
         String name = block.getUnlocalizedName();
-        if (suffixFunction != null) {
-            name += "." + suffixFunction.apply(stack);
+        if (suffix != null) {
+            name += "." + suffix.apply(stack);
         }
         return name;
     }
 
     @Override
     public boolean placeBlockAt(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, IBlockState newState) {
-        return metaPredicate.test(stack.getMetadata()) && super.placeBlockAt(stack, player, world, pos, side, hitX, hitY, hitZ, newState);
+        return metaFilter.check(stack) && super.placeBlockAt(stack, player, world, pos, side, hitX, hitY, hitZ, newState);
     }
 
     @Override
     public int getMetadata(int damage) {
         return hasSubtypes ? damage : 0;
+    }
+
+    public interface MetaFilter {
+        MetaFilter ANY = meta -> true;
+
+        boolean check(int meta);
+
+        default boolean check(ItemStack stack) {
+            return check(stack.getMetadata());
+        }
+    }
+
+    public interface NameSuffix {
+        String apply(ItemStack stack);
     }
 }

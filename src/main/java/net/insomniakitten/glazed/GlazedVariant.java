@@ -29,7 +29,6 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.Locale;
-import java.util.function.Function;
 
 public enum GlazedVariant implements IStringSerializable {
     GAIA(0.3F, 1.5F) {
@@ -53,8 +52,6 @@ public enum GlazedVariant implements IStringSerializable {
     public static final PropertyEnum<GlazedVariant> PROPERTY = PropertyEnum.create(
             "variant", GlazedVariant.class
     );
-
-    protected static final Function<ItemStack, String> NAME_MAPPER = GlazedVariant::getName;
 
     private final float hardness;
     private final float resistance;

@@ -74,8 +74,8 @@ enum GlazedRegistry {
     protected void onItemRegistry(Register<Item> event) {
         register(event, new BlockItem(KILN_BRICKS), "kiln_bricks");
         register(event, new BlockItem(GLASS_KILN), "glass_kiln");
-        register(event, new BlockItem(GLASS_BLOCK, GlazedVariant::isValid, GlazedVariant.NAME_MAPPER), "glass_block");
-        register(event, new BlockItem(GLASS_PANE, GlazedVariant::isValid, GlazedVariant.NAME_MAPPER), "glass_pane");
+        register(event, new BlockItem(GLASS_BLOCK, GlazedVariant::isValid, GlazedVariant::getName), "glass_block");
+        register(event, new BlockItem(GLASS_PANE, GlazedVariant::isValid, GlazedVariant::getName), "glass_pane");
     }
 
     private <V extends IForgeRegistryEntry<V>> void register(Register<V> event, V entry, String name) {
