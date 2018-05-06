@@ -87,6 +87,13 @@ public final class Glazed {
         }
     };
 
+    @Mod.Instance
+    private static Glazed instance = null;
+
+    public static Glazed getInstance() {
+        return instance;
+    }
+
     @Mod.EventHandler
     protected void onPreInitialization(FMLPreInitializationEvent event) {
         NetworkRegistry.INSTANCE.registerGuiHandler(ID, GUI_HANDLER);
