@@ -28,6 +28,8 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
+import java.util.function.Function;
+import java.util.function.IntPredicate;
 
 public final class BlockItem extends ItemBlock {
     @Nullable
@@ -56,7 +58,7 @@ public final class BlockItem extends ItemBlock {
     @Override
     @SideOnly(Side.CLIENT)
     public boolean canPlaceBlockOnSide(World world, BlockPos pos, EnumFacing side, EntityPlayer player, ItemStack stack) {
-        return metaFilter.check(stack.getMetadata()) && super.canPlaceBlockOnSide(world, pos, side, player, stack);
+        return metaFilter.test(stack.getMetadata()) && super.canPlaceBlockOnSide(world, pos, side, player, stack);
     }
 
     @Override
@@ -70,7 +72,7 @@ public final class BlockItem extends ItemBlock {
 
     @Override
     public boolean placeBlockAt(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, IBlockState newState) {
-        return metaFilter.check(stack) && super.placeBlockAt(stack, player, world, pos, side, hitX, hitY, hitZ, newState);
+        return metaFilter.test(stack) && super.placeBlockAt(stack, player, world, pos, side, hitX, hitY, hitZ, newState);
     }
 
     @Override
@@ -78,17 +80,17 @@ public final class BlockItem extends ItemBlock {
         return hasSubtypes ? damage : 0;
     }
 
-    public interface MetaFilter {
+    public interface MetaFilter extends IntPredicate {
         MetaFilter ANY = meta -> true;
 
-        boolean check(int meta);
+        boolean test(int meta);
 
-        default boolean check(ItemStack stack) {
-            return check(stack.getMetadata());
+        default boolean test(ItemStack stack) {
+            return test(stack.getMetadata());
         }
     }
 
-    public interface NameSuffix {
+    public interface NameSuffix extends Function<ItemStack, String> {
         String apply(ItemStack stack);
     }
 }
