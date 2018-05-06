@@ -16,22 +16,17 @@ package net.insomniakitten.glazed;
  *   limitations under the License.
  */
 
-import com.google.common.collect.ImmutableMap;
-import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.block.model.ModelResourceLocation;
-import net.minecraft.client.renderer.block.statemap.IStateMapper;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.client.resources.IResourceManagerReloadListener;
 import net.minecraft.entity.Entity;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
@@ -42,12 +37,9 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
 
 import java.util.Arrays;
-import java.util.Objects;
-import java.util.function.Function;
 import java.util.function.IntFunction;
-import java.util.stream.Collectors;
 
-import static net.insomniakitten.glazed.GlazedRegistry.*;
+import static net.insomniakitten.glazed.GlazedRegistry.GLASS_KILN;
 import static net.insomniakitten.glazed.block.GlassKilnBlock.HALF;
 import static net.minecraft.client.renderer.GlStateManager.DestFactor.SRC_COLOR;
 import static net.minecraft.client.renderer.GlStateManager.DestFactor.ZERO;
@@ -57,21 +49,6 @@ import static net.minecraft.client.renderer.GlStateManager.SourceFactor.ONE;
 @SideOnly(Side.CLIENT)
 enum GlazedClient implements IResourceManagerReloadListener {
     INSTANCE;
-
-    @SuppressWarnings("unchecked")
-    protected static final IStateMapper STATE_MAPPER = block -> block.getBlockState().getValidStates().stream()
-            .collect(ImmutableMap.toImmutableMap(Function.identity(), state -> {
-                final ResourceLocation id = Objects.requireNonNull(state.getBlock().getRegistryName());
-                return new ModelResourceLocation(
-                        Glazed.ID + ":" + GlazedVariant.getName(state) + "_" + id.getResourcePath(),
-                        state.getProperties().entrySet().stream()
-                                .filter(it -> it.getKey() != GlazedVariant.PROPERTY)
-                                .map(it -> {
-                                    final IProperty key = it.getKey();
-                                    return key.getName() + '=' + key.getName(it.getValue());
-                                }).collect(Collectors.joining(","))
-                );
-            }));
 
     private final TextureAtlasSprite[] destroyStageSprites = new TextureAtlasSprite[10];
 

@@ -24,7 +24,6 @@ import net.insomniakitten.glazed.block.entity.GlassKilnEntity;
 import net.insomniakitten.glazed.item.BlockItem;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
-import net.minecraft.client.renderer.block.statemap.IStateMapper;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
@@ -43,7 +42,6 @@ import net.minecraftforge.registries.IForgeRegistryEntry;
 
 import java.util.Objects;
 
-import static net.insomniakitten.glazed.GlazedClient.STATE_MAPPER;
 import static net.insomniakitten.glazed.GlazedVariant.NAME_MAPPER;
 import static net.insomniakitten.glazed.GlazedVariant.VARIANTS;
 
@@ -96,7 +94,6 @@ enum GlazedRegistry {
     protected void onModelRegistry(ModelRegistryEvent event) {
         register(KILN_BRICKS_ITEM, "normal");
         register(GLASS_KILN_ITEM, "inventory");
-        register(STATE_MAPPER, GLASS_BLOCK, GLASS_PANE);
         register(GLASS_BLOCK_ITEM, VARIANTS);
         register(GLASS_PANE_ITEM, VARIANTS);
     }
@@ -115,12 +112,10 @@ enum GlazedRegistry {
     }
 
     @SideOnly(Side.CLIENT)
-    private void register(IStateMapper stateMapper, Block... blocks) {
-        for (final Block block : blocks) {
-            final ResourceLocation id = Objects.requireNonNull(block.getRegistryName());
-            Glazed.LOGGER.debug("Registering block state mapper for {}", id);
-            ModelLoader.setCustomStateMapper(block, stateMapper);
-        }
+    private void register(Item item, String variant) {
+        final ResourceLocation id = Objects.requireNonNull(item.getRegistryName());
+        Glazed.LOGGER.debug("Registering item model for {}#0 with variant \"{}\"", id, variant);
+        ModelLoader.setCustomModelResourceLocation(item, 0, new ModelResourceLocation(id, variant));
     }
 
     @SideOnly(Side.CLIENT)
@@ -131,12 +126,5 @@ enum GlazedRegistry {
             Glazed.LOGGER.debug("Registering item model for {}#{} with variant \"{}\"", id, meta, variant);
             ModelLoader.setCustomModelResourceLocation(item, meta, new ModelResourceLocation(id, variant));
         }
-    }
-
-    @SideOnly(Side.CLIENT)
-    private void register(Item item, String variant) {
-        final ResourceLocation id = Objects.requireNonNull(item.getRegistryName());
-        Glazed.LOGGER.debug("Registering item model for {}#0 with variant \"{}\"", id, variant);
-        ModelLoader.setCustomModelResourceLocation(item, 0, new ModelResourceLocation(id, variant));
     }
 }
