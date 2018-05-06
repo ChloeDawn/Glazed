@@ -65,7 +65,7 @@ public final class BlockItem extends ItemBlock {
     public String getUnlocalizedName(ItemStack stack) {
         String name = block.getUnlocalizedName();
         if (suffix != null) {
-            name += "." + suffix.apply(stack);
+            name += suffix.delimiter(stack) + suffix.apply(stack);
         }
         return name;
     }
@@ -92,5 +92,9 @@ public final class BlockItem extends ItemBlock {
 
     public interface NameSuffix extends Function<ItemStack, String> {
         String apply(ItemStack stack);
+
+        default Character delimiter(ItemStack stack) {
+            return '.';
+        }
     }
 }
