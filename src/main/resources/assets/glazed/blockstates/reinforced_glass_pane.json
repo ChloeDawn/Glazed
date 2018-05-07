@@ -4,8 +4,8 @@
     "defaults": {
         "model": "glazed:glass_pane_center",
         "textures": {
-            "cap": "glazed:blocks/glass_reinforced_edge",
-            "side": "glazed:blocks/glass_reinforced"
+            "cap": "glazed:blocks/glass_pane_reinforced_edge",
+            "side": "glazed:blocks/glass_pane_reinforced"
         },
         "uvlock": true
     },

@@ -29,6 +29,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.BlockRenderLayer;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
@@ -50,16 +51,6 @@ public final class GlassPaneBlock extends BlockPane {
         setUnlocalizedName(Glazed.ID + ".glass_pane");
         setSoundType(SoundType.GLASS);
         setCreativeTab(Glazed.TAB);
-    }
-
-    @Override
-    public int getMetaFromState(IBlockState state) {
-        return state.getValue(PROPERTY).ordinal();
-    }
-
-    @Override
-    protected BlockStateContainer createBlockState() {
-        return new BlockStateContainer(this, NORTH, EAST, WEST, SOUTH, PROPERTY);
     }
 
     @Override
@@ -93,6 +84,15 @@ public final class GlassPaneBlock extends BlockPane {
     }
 
     @Override
+    public boolean doesSideBlockRendering(IBlockState state, IBlockAccess access, BlockPos pos, EnumFacing side) {
+        final BlockPos offset = pos.offset(side);
+        final IBlockState other = access.getBlockState(offset);
+        if (side.getAxis().isVertical()) {
+            return state.getActualState(access, pos) == other.getActualState(access, offset);
+        } else return other.getBlock() == this;
+    }
+
+    @Override
     public float getExplosionResistance(World world, BlockPos pos, @Nullable Entity exploder, Explosion explosion) {
         return world.getBlockState(pos).getValue(PROPERTY).getResistance();
     }
@@ -110,5 +110,21 @@ public final class GlassPaneBlock extends BlockPane {
     @Override
     public SoundType getSoundType(IBlockState state, World world, BlockPos pos, @Nullable Entity entity) {
         return state.getValue(PROPERTY).getSoundType();
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public boolean shouldSideBeRendered(IBlockState state, IBlockAccess access, BlockPos pos, EnumFacing side) {
+        return !doesSideBlockRendering(state, access, pos, side);
+    }
+
+    @Override
+    public int getMetaFromState(IBlockState state) {
+        return state.getValue(PROPERTY).ordinal();
+    }
+
+    @Override
+    protected BlockStateContainer createBlockState() {
+        return new BlockStateContainer(this, NORTH, EAST, WEST, SOUTH, PROPERTY);
     }
 }

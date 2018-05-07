@@ -18,8 +18,8 @@
             "west": { "y": 270 }
         },
         "half": {
-            "upper": { "model": "cube_all" },
-            "lower": { "model": "cube_all" }
+            "lower": { "model": "glazed:glass_kiln_lower" },
+            "upper": { "model": "glazed:glass_kiln_upper" }
         },
         "inventory": { "model": "cube_all" }
     }

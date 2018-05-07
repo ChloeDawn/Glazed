@@ -4,8 +4,8 @@
     "defaults": {
         "model": "glazed:glass_pane_center",
         "textures": {
-            "cap": "glazed:blocks/glass_auroric_edge",
-            "side": "glazed:blocks/glass_auroric"
+            "cap": "glazed:blocks/glass_pane_auroric_edge",
+            "side": "glazed:blocks/glass_pane_auroric"
         },
         "uvlock": true
     },

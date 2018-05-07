@@ -4,7 +4,7 @@
     "variants": {
         "normal": {
             "model": "glazed:glass_block",
-            "textures": { "all": "glazed:blocks/glass_auroric" }
+            "textures": { "all": "glazed:blocks/glass_block_auroric" }
         }
     }
 }

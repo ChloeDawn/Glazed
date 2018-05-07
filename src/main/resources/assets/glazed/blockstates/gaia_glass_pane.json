@@ -4,8 +4,8 @@
     "defaults": {
         "model": "glazed:glass_pane_center",
         "textures": {
-            "cap": "glazed:blocks/glass_gaia_edge",
-            "side": "glazed:blocks/glass_gaia"
+            "cap": "glazed:blocks/glass_pane_gaia_edge",
+            "side": "glazed:blocks/glass_pane_gaia"
         },
         "uvlock": true
     },

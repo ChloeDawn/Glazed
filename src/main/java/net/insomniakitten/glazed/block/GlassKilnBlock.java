@@ -39,7 +39,6 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.network.internal.FMLNetworkHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -61,15 +60,14 @@ public final class GlassKilnBlock extends Block {
     }
 
     private static boolean canReplace(IBlockAccess access, BlockPos pos) {
-        final IBlockState state = access.getBlockState(pos);
-        return state.getBlock().isReplaceable(access, pos);
+        return access.getBlockState(pos).getBlock().isReplaceable(access, pos);
     }
 
     @Override
     @Deprecated
     public IBlockState getStateFromMeta(int meta) {
         final boolean active = (meta & 1) != 0;
-        final Half half = Half.values()[((meta & 2) >> 1)];
+        final Half half = Half.VALUES[((meta & 2) >> 1)];
         final EnumFacing facing = EnumFacing.getHorizontal(meta >> 2);
         return this.getDefaultState()
                 .withProperty(ACTIVE, active)
@@ -126,13 +124,14 @@ public final class GlassKilnBlock extends Block {
 
     @Override
     public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
-        FMLNetworkHandler.openGui(player, Glazed.getInstance(), 0, world, pos.getX(), state.getValue(HALF) == Half.UPPER ? pos.down().getY() : pos.getY(), pos.getZ());
+        final BlockPos offset = state.getValue(HALF).offsetToTileEntity(pos);
+        player.openGui(Glazed.getInstance(), 0, world, offset.getX(), offset.getY(), offset.getZ());
         return true;
     }
 
     @Override
     public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase entity, ItemStack stack) {
-        world.setBlockState(state.getValue(HALF).offset(pos), state.cycleProperty(HALF));
+        world.setBlockState(state.getValue(HALF).offsetToOtherHalf(pos), state.cycleProperty(HALF));
     }
 
     @Override
@@ -175,6 +174,8 @@ public final class GlassKilnBlock extends Block {
             this.aabb = aabb;
         }
 
+        public static final Half[] VALUES = values();
+
         private static Half fromPosition(IBlockAccess access, BlockPos pos) {
             if (canReplace(access, pos.up())) {
                 return LOWER;
@@ -183,14 +184,16 @@ public final class GlassKilnBlock extends Block {
             } else throw new IllegalArgumentException("Cannot determine Half from position " + pos);
         }
 
-        public BlockPos offset(BlockPos pos) {
-            switch (this) {
-                case LOWER:
-                    return pos.up();
-                case UPPER:
-                    return pos.down();
-            }
-            throw new IllegalArgumentException("Unrecognized enum constant " + toString());
+        private BlockPos offsetToTileEntity(BlockPos pos) {
+            return this == UPPER ? pos.down() : pos;
+        }
+
+        public BlockPos offsetToOtherHalf(BlockPos pos) {
+            if (this == Half.LOWER) {
+                return pos.up();
+            } else if (this == Half.UPPER) {
+                return pos.down();
+            } else throw new IllegalArgumentException("Unrecognized enum constant " + toString());
         }
 
         @Override

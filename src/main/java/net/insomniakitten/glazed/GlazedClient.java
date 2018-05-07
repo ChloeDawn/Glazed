@@ -168,7 +168,7 @@ enum GlazedClient implements IResourceManagerReloadListener {
             final BufferBuilder buffer = tessellator.getBuffer();
             final Vec3d vec = getPositionVector(mc.player, event.getPartialTicks());
             final TextureAtlasSprite sprite = destroyStageSprites[destroyStage];
-            final BlockPos pos = state.getValue(GlassKilnBlock.HALF).offset(curr);
+            final BlockPos pos = state.getValue(GlassKilnBlock.HALF).offsetToOtherHalf(curr);
 
             buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
             buffer.setTranslation(-vec.x, -vec.y, -vec.z);
