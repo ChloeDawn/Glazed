@@ -84,8 +84,8 @@ public final class GlassKilnBlock extends Block {
         return active | half | facing;
     }
 
-    @Deprecated
     @Override
+    @Deprecated
     public IBlockState getActualState(IBlockState state, IBlockAccess access, BlockPos pos) {
         final TileEntity te = access.getTileEntity(pos);
         return state.withProperty(ACTIVE, te instanceof GlassKilnEntity && ((GlassKilnEntity) te).isActive());
@@ -100,7 +100,7 @@ public final class GlassKilnBlock extends Block {
     @Override
     @Deprecated
     @SideOnly(Side.CLIENT)
-    public AxisAlignedBB getSelectedBoundingBox(IBlockState state, World worldIn, BlockPos pos) {
+    public AxisAlignedBB getSelectedBoundingBox(IBlockState state, World world, BlockPos pos) {
         return state.getValue(HALF).aabb.offset(pos);
     }
 
@@ -140,12 +140,12 @@ public final class GlassKilnBlock extends Block {
     }
 
     @Override
-    public int getLightValue(IBlockState state, IBlockAccess world, BlockPos pos) {
+    public int getLightValue(IBlockState state, IBlockAccess access, BlockPos pos) {
         return state.getValue(ACTIVE) ? 8 : 0;
     }
 
     @Override
-    public boolean doesSideBlockRendering(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side) {
+    public boolean doesSideBlockRendering(IBlockState state, IBlockAccess access, BlockPos pos, EnumFacing side) {
         return state.getValue(HALF) == Half.LOWER && side != EnumFacing.DOWN && side != state.getValue(FACING);
     }
 
