@@ -53,7 +53,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
 
 import java.util.Arrays;
-import java.util.function.IntFunction;
 
 import static java.util.Objects.requireNonNull;
 import static net.minecraft.client.renderer.GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA;
@@ -80,10 +79,10 @@ enum GlazedClient implements IResourceManagerReloadListener {
         protected ModelResourceLocation getModelResourceLocation(IBlockState state) {
             final String name = state.getValue(GlazedVariant.PROPERTY).getName() + "_glass_pane";
             return new ModelResourceLocation(new ResourceLocation(Glazed.ID, name), String.join(",",
-                    "east="  + state.getValue(BlockPane.EAST),
+                    "east=" + state.getValue(BlockPane.EAST),
                     "north=" + state.getValue(BlockPane.NORTH),
                     "south=" + state.getValue(BlockPane.SOUTH),
-                    "west="  + state.getValue(BlockPane.WEST)
+                    "west=" + state.getValue(BlockPane.WEST)
             ));
         }
     };
@@ -110,15 +109,12 @@ enum GlazedClient implements IResourceManagerReloadListener {
 
     private final TextureAtlasSprite[] destroyStageSprites = new TextureAtlasSprite[10];
 
-    private final IntFunction<TextureAtlasSprite> spriteIntFunction = index ->
-            FMLClientHandler.instance().getClient().getTextureMapBlocks().getAtlasSprite(
-                    "minecraft:blocks/destroy_stage_" + index
-            );
-
     @Override
     public void onResourceManagerReload(IResourceManager rm) {
         Glazed.LOGGER.debug("Reloading destroy stage sprite cache");
-        Arrays.setAll(destroyStageSprites, spriteIntFunction);
+        Arrays.setAll(destroyStageSprites, i -> FMLClientHandler.instance().getClient()
+                .getTextureMapBlocks().getAtlasSprite("minecraft:blocks/destroy_stage_" + i)
+        );
     }
 
     @SubscribeEvent
