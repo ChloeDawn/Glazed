@@ -210,7 +210,7 @@ enum GlazedClient implements IResourceManagerReloadListener {
 
     private void register(Item item, String variant) {
         final ResourceLocation id = requireNonNull(item.getRegistryName());
-        Glazed.LOGGER.debug("Registering item model for {}#0 with variant \"{}\"", id, variant);
+        Glazed.LOGGER.debug("Registering item model for {}#0 to {}#{}", id, id, variant);
         ModelLoader.setCustomModelResourceLocation(item, 0, new ModelResourceLocation(id, variant));
     }
 
