@@ -125,7 +125,7 @@ public final class GlassKilnBlock extends Block {
 
     @Override
     public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
-        FMLNetworkHandler.openGui(player, Glazed.getInstance(), 0, world, pos.getX(), pos.getY(), pos.getZ());
+        FMLNetworkHandler.openGui(player, Glazed.getInstance(), 0, world, pos.getX(), state.getValue(HALF) == Half.UPPER ? pos.down().getY() : pos.getY(), pos.getZ());
         return true;
     }
 
