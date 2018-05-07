@@ -52,6 +52,7 @@ public final class GlassKilnBlock extends Block {
 
     public GlassKilnBlock() {
         super(Material.ROCK, MapColor.ADOBE);
+        setDefaultState(getDefaultState().withProperty(ACTIVE, false));
         setUnlocalizedName(Glazed.ID + ".glass_kiln");
         setCreativeTab(Glazed.TAB);
         setSoundType(SoundType.STONE);
