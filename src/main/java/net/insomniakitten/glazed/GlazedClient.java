@@ -23,8 +23,6 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.GlStateManager.DestFactor;
-import net.minecraft.client.renderer.GlStateManager.SourceFactor;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.block.statemap.IStateMapper;
@@ -57,6 +55,12 @@ import java.util.Arrays;
 import java.util.function.IntFunction;
 
 import static java.util.Objects.requireNonNull;
+import static net.minecraft.client.renderer.GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA;
+import static net.minecraft.client.renderer.GlStateManager.DestFactor.SRC_COLOR;
+import static net.minecraft.client.renderer.GlStateManager.DestFactor.ZERO;
+import static net.minecraft.client.renderer.GlStateManager.SourceFactor.DST_COLOR;
+import static net.minecraft.client.renderer.GlStateManager.SourceFactor.ONE;
+import static net.minecraft.client.renderer.GlStateManager.SourceFactor.SRC_ALPHA;
 
 @SideOnly(Side.CLIENT)
 enum GlazedClient implements IResourceManagerReloadListener {
@@ -156,10 +160,7 @@ enum GlazedClient implements IResourceManagerReloadListener {
 
         try {
             GlStateManager.pushMatrix();
-            GlStateManager.tryBlendFuncSeparate(
-                    SourceFactor.DST_COLOR, DestFactor.SRC_COLOR,
-                    SourceFactor.ONE, DestFactor.ZERO
-            );
+            GlStateManager.tryBlendFuncSeparate(DST_COLOR, SRC_COLOR, ONE, ZERO);
             GlStateManager.enableBlend();
             GlStateManager.color(1.0F, 1.0F, 1.0F, 0.5F);
             GlStateManager.enablePolygonOffset();
@@ -185,6 +186,7 @@ enum GlazedClient implements IResourceManagerReloadListener {
         } catch (Exception e) {
             Glazed.LOGGER.error("Caught exception whilst rendering destroy stage quads", e);
         } finally {
+            GlStateManager.tryBlendFuncSeparate(SRC_ALPHA, ONE_MINUS_SRC_ALPHA, ONE, ZERO);
             GlStateManager.doPolygonOffset(0.0F, 0.0F);
             GlStateManager.disablePolygonOffset();
             GlStateManager.depthMask(true);
