@@ -183,7 +183,7 @@ enum GlazedClient implements IResourceManagerReloadListener {
             buffer.setTranslation(0.0D, 0.0D, 0.0D);
             tessellator.draw();
         } catch (Exception e) {
-            Glazed.LOGGER.error("Caught exception whilst rendering destroy stage quads", e);
+            throw new RuntimeException("Encountered exception whilst rendering destroy stage quads", e);
         } finally {
             GlStateManager.tryBlendFuncSeparate(SRC_ALPHA, ONE_MINUS_SRC_ALPHA, ONE, ZERO);
             GlStateManager.doPolygonOffset(0.0F, 0.0F);
