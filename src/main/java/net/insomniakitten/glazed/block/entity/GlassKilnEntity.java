@@ -20,6 +20,12 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ITickable;
 
 public final class GlassKilnEntity extends TileEntity implements ITickable {
+    private boolean isActive = false;
+
+    public boolean isActive() {
+        return isActive;
+    }
+
     @Override
     public void update() {
 

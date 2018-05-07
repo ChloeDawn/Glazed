@@ -84,6 +84,13 @@ public final class GlassKilnBlock extends Block {
         return active | half | facing;
     }
 
+    @Deprecated
+    @Override
+    public IBlockState getActualState(IBlockState state, IBlockAccess access, BlockPos pos) {
+        final TileEntity te = access.getTileEntity(pos);
+        return state.withProperty(ACTIVE, te instanceof GlassKilnEntity && ((GlassKilnEntity) te).isActive());
+    }
+
     @Override
     @Deprecated
     public boolean isFullCube(IBlockState state) {
@@ -177,8 +184,10 @@ public final class GlassKilnBlock extends Block {
 
         public BlockPos offset(BlockPos pos) {
             switch (this) {
-                case LOWER: return pos.up();
-                case UPPER: return pos.down();
+                case LOWER:
+                    return pos.up();
+                case UPPER:
+                    return pos.down();
             }
             throw new IllegalArgumentException("Unrecognized enum constant " + toString());
         }
