@@ -112,8 +112,8 @@ enum GlazedClient implements IResourceManagerReloadListener {
     @Override
     public void onResourceManagerReload(IResourceManager rm) {
         Glazed.LOGGER.debug("Reloading destroy stage sprite cache");
-        Arrays.setAll(destroyStageSprites, i -> FMLClientHandler.instance().getClient()
-                .getTextureMapBlocks().getAtlasSprite("minecraft:blocks/destroy_stage_" + i)
+        Arrays.setAll(destroyStageSprites, i -> ModelLoader.defaultTextureGetter()
+                .apply(new ResourceLocation("minecraft:blocks/destroy_stage_" + i))
         );
     }
 
