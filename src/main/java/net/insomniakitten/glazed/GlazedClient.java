@@ -21,6 +21,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockPane;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.PlayerControllerMP;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
@@ -145,16 +146,16 @@ enum GlazedClient implements IResourceManagerReloadListener {
     @SubscribeEvent
     protected void onRenderWorldLast(RenderWorldLastEvent event) {
         final Minecraft mc = FMLClientHandler.instance().getClient();
+        final PlayerControllerMP controller = mc.playerController;
 
-        if (mc.playerController == null) return;
-        if (!mc.playerController.getIsHittingBlock()) return;
+        if (controller == null || !controller.getIsHittingBlock()) return;
 
-        final BlockPos curr = mc.playerController.currentBlock;
+        final BlockPos curr = controller.currentBlock;
         final IBlockState state = mc.world.getBlockState(curr);
 
         if (state.getBlock() != GlazedRegistry.GLASS_KILN) return;
 
-        final int destroyStage = (int) (mc.playerController.curBlockDamageMP * 10.0F) - 1;
+        final int destroyStage = (int) (controller.curBlockDamageMP * 10.0F) - 1;
 
         if (destroyStage < 0 || destroyStage > 10) return;
 
