@@ -73,21 +73,19 @@ enum GlazedClient implements IResourceManagerReloadListener {
     private static final IStateMapper STATE_MAPPER_PANE = new StateMapperBase() {
         @Override
         protected ModelResourceLocation getModelResourceLocation(IBlockState state) {
-            final String east = "east=" + state.getValue(BlockPane.EAST);
-            final String north = "north=" + state.getValue(BlockPane.NORTH);
-            final String south = "south=" + state.getValue(BlockPane.SOUTH);
-            final String west = "west=" + state.getValue(BlockPane.WEST);
-            final String connections = String.join(",", east, north, south, west);
             final String name = state.getValue(GlazedVariant.PROPERTY).getName() + "_glass_pane";
-            return new ModelResourceLocation(new ResourceLocation(Glazed.ID, name), connections);
+            return new ModelResourceLocation(new ResourceLocation(Glazed.ID, name), String.join(",",
+                    "east="  + state.getValue(BlockPane.EAST),
+                    "north=" + state.getValue(BlockPane.NORTH),
+                    "south=" + state.getValue(BlockPane.SOUTH),
+                    "west="  + state.getValue(BlockPane.WEST)
+            ));
         }
     };
 
     private static final IBlockColor BLOCK_COLOR = (state, access, pos, tintIndex) -> {
         if (tintIndex == 0 && access != null && pos != null) {
-            if (state.getProperties().containsKey(GlazedVariant.PROPERTY)) {
-                return state.getValue(GlazedVariant.PROPERTY).getColor(access, pos);
-            }
+            return state.getValue(GlazedVariant.PROPERTY).getColor(access, pos);
         }
         return 0xFFFFFFFF;
     };
