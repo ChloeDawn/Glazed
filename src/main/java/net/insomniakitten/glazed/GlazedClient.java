@@ -159,7 +159,6 @@ enum GlazedClient implements IResourceManagerReloadListener {
         if (destroyStage < 0 || destroyStage > 10) return;
 
         try {
-            GlStateManager.pushMatrix();
             GlStateManager.tryBlendFuncSeparate(DST_COLOR, SRC_COLOR, ONE, ZERO);
             GlStateManager.enableBlend();
             GlStateManager.color(1.0F, 1.0F, 1.0F, 0.5F);
@@ -190,7 +189,6 @@ enum GlazedClient implements IResourceManagerReloadListener {
             GlStateManager.doPolygonOffset(0.0F, 0.0F);
             GlStateManager.disablePolygonOffset();
             GlStateManager.depthMask(true);
-            GlStateManager.popMatrix();
         }
     }
 
