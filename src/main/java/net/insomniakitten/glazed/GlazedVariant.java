@@ -23,6 +23,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.math.BlockPos;
@@ -32,19 +33,22 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.Locale;
 
+import static net.minecraft.util.BlockRenderLayer.CUTOUT;
+import static net.minecraft.util.BlockRenderLayer.TRANSLUCENT;
+
 public enum GlazedVariant implements IStringSerializable {
-    GAIA(0.3F, 1.5F) {
+    GAIA(TRANSLUCENT, 0.3F, 1.5F) {
         @Override
         protected int getColor(IBlockAccess access, BlockPos pos) {
             return access.getBiome(pos).getFoliageColorAtPos(pos);
         }
     },
-    RADIANT(0.3F, 1.5F, 15),
-    IRIDESCENT(0.3F, 1.5F, 8),
-    ENERGETIC(0.3F, 1.5F),
-    SHADOWED(0.3F, 1.5F),
-    VOIDIC(0.3F, 1.5F),
-    QUILTED(0.3F, 1.5F) {
+    RADIANT(TRANSLUCENT, 0.3F, 1.5F, 15),
+    IRIDESCENT(CUTOUT, 0.3F, 1.5F, 8),
+    ENERGETIC(TRANSLUCENT, 0.3F, 1.5F),
+    SHADOWED(TRANSLUCENT, 0.3F, 1.5F),
+    VOIDIC(TRANSLUCENT, 0.3F, 1.5F),
+    QUILTED(CUTOUT, 0.3F, 1.5F) {
         private final SoundType soundTypeQuilted = new SoundType(
                 1.0F, 1.0F,
                 SoundEvents.BLOCK_GLASS_BREAK,
@@ -59,13 +63,13 @@ public enum GlazedVariant implements IStringSerializable {
             return soundTypeQuilted;
         }
     },
-    REINFORCED(0.3F, 1.5F) {
+    REINFORCED(CUTOUT, 0.3F, 1.5F) {
         @Override
         public SoundType getSoundType() {
             return SoundType.METAL;
         }
     },
-    SLIMY(0.3F, 1.5F) {
+    SLIMY(TRANSLUCENT, 0.3F, 1.5F) {
         private final SoundType soundTypeSlimy = new SoundType(
                 1.0F, 1.0F,
                 SoundEvents.BLOCK_GLASS_BREAK,
@@ -80,7 +84,7 @@ public enum GlazedVariant implements IStringSerializable {
             return soundTypeSlimy;
         }
     },
-    AURORIC(0.3F, 1.5F, 10);
+    AURORIC(TRANSLUCENT, 0.3F, 1.5F, 10);
 
     public static final GlazedVariant[] VARIANTS = values();
 
@@ -88,18 +92,20 @@ public enum GlazedVariant implements IStringSerializable {
             "variant", GlazedVariant.class
     );
 
+    private final BlockRenderLayer layer;
     private final float hardness;
     private final float resistance;
     private final int lightLevel;
 
-    GlazedVariant(float hardness, float resistance, int lightLevel) {
+    GlazedVariant(BlockRenderLayer layer, float hardness, float resistance, int lightLevel) {
+        this.layer = layer;
         this.hardness = hardness;
         this.resistance = resistance;
         this.lightLevel = lightLevel;
     }
 
-    GlazedVariant(float hardness, float resistance) {
-        this(hardness, resistance, 0);
+    GlazedVariant(BlockRenderLayer layer, float hardness, float resistance) {
+        this(layer, hardness, resistance, 0);
     }
 
     public static boolean isValid(int ordinal) {
@@ -114,6 +120,10 @@ public enum GlazedVariant implements IStringSerializable {
     @SideOnly(Side.CLIENT)
     public static String getDescription(ItemStack stack) {
         return I18n.format("tooltip.glazed.variant." + getName(stack));
+    }
+
+    public BlockRenderLayer getRenderLayer() {
+        return layer;
     }
 
     public float getHardness() {

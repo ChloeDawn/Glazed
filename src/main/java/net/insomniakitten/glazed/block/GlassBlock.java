@@ -28,6 +28,7 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.NonNullList;
@@ -122,6 +123,11 @@ public final class GlassBlock extends BlockGlass {
     @Override
     public ItemStack getPickBlock(IBlockState state, RayTraceResult target, World world, BlockPos pos, EntityPlayer player) {
         return new ItemStack(this, 1, state.getValue(PROPERTY).ordinal());
+    }
+
+    @Override
+    public boolean canRenderInLayer(IBlockState state, BlockRenderLayer layer) {
+        return state.getValue(PROPERTY).getRenderLayer() == layer;
     }
 
     @Override
