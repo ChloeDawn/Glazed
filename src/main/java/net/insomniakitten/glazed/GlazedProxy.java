@@ -27,63 +27,41 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import java.util.function.Function;
+import java.util.Objects;
 
-final class GlazedProxy {
-    private static final String CLIENT = "net.insomniakitten.glazed.GlazedProxy$EventConsumer$Client";
-    private static final String SERVER = "net.insomniakitten.glazed.GlazedProxy$EventConsumer$Server";
+public final class GlazedProxy {
+    public static final String CLIENT = "net.insomniakitten.glazed.GlazedProxy$ClientImpl";
+    public static final String SERVER = "net.insomniakitten.glazed.GlazedProxy$Impl";
 
     @SidedProxy(modId = Glazed.ID, clientSide = CLIENT, serverSide = SERVER)
-    private static EventConsumer consumerProxy = null;
-
-    private static final Function<String, EventConsumer> EVENT_CONSUMER = type -> {
-        if (consumerProxy == null) {
-            throw new IllegalStateException("EventConsumer proxy instance has not been initialized!");
-        } else {
-            Glazed.LOGGER.debug("Delegating {} to EventConsumer proxy instance", type);
-            return consumerProxy;
-        }
-    };
+    private static Impl instance = null;
 
     private GlazedProxy() {}
 
-    protected static void onPreInitialization(FMLPreInitializationEvent event) {
-        EVENT_CONSUMER.apply(event.getEventType()).accept(event);
+    protected static Impl getInstance() {
+        return Objects.requireNonNull(instance, "Proxy instance has not been initialized!");
     }
 
-    protected static void onInitialization(FMLInitializationEvent event) {
-        EVENT_CONSUMER.apply(event.getEventType()).accept(event);
+    protected interface Impl {
+        default void onPreInitialization(FMLPreInitializationEvent event) {}
+        default void onInitialization(FMLInitializationEvent event) {}
+        default void onPostInitialization(FMLPostInitializationEvent event) {}
     }
 
-    protected static void onPostInitialization(FMLPostInitializationEvent event) {
-        EVENT_CONSUMER.apply(event.getEventType()).accept(event);
-    }
-
+    @SideOnly(Side.CLIENT)
     @SuppressWarnings("unused")
-    private interface EventConsumer {
-        default void accept(FMLPreInitializationEvent event) {}
-
-        default void accept(FMLInitializationEvent event) {}
-
-        default void accept(FMLPostInitializationEvent event) {}
-
-        @SideOnly(Side.CLIENT)
-        final class Client implements EventConsumer {
-            @Override
-            public void accept(FMLPreInitializationEvent event) {
-                MinecraftForge.EVENT_BUS.register(GlazedClient.INSTANCE);
-            }
-
-            @Override
-            public void accept(FMLInitializationEvent event) {
-                final IResourceManager rm = FMLClientHandler.instance().getClient().getResourceManager();
-                if (rm instanceof IReloadableResourceManager) {
-                    ((IReloadableResourceManager) rm).registerReloadListener(GlazedClient.INSTANCE);
-                } else throw new IllegalStateException("Expected IReloadableResourceManager, found " + rm);
-            }
+    public static final class ClientImpl implements Impl {
+        @Override
+        public void onPreInitialization(FMLPreInitializationEvent event) {
+            MinecraftForge.EVENT_BUS.register(GlazedClient.INSTANCE);
         }
 
-        @SideOnly(Side.SERVER)
-        final class Server implements EventConsumer {}
+        @Override
+        public void onInitialization(FMLInitializationEvent event) {
+            final IResourceManager rm = FMLClientHandler.instance().getClient().getResourceManager();
+            if (rm instanceof IReloadableResourceManager) {
+                ((IReloadableResourceManager) rm).registerReloadListener(GlazedClient.INSTANCE);
+            } else throw new IllegalStateException("Expected IReloadableResourceManager, found " + rm);
+        }
     }
 }

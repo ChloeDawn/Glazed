@@ -98,16 +98,16 @@ public final class Glazed {
     protected void onPreInitialization(FMLPreInitializationEvent event) {
         NetworkRegistry.INSTANCE.registerGuiHandler(ID, GUI_HANDLER);
         MinecraftForge.EVENT_BUS.register(GlazedRegistry.INSTANCE);
-        GlazedProxy.onPreInitialization(event);
+        GlazedProxy.getInstance().onPreInitialization(event);
     }
 
     @Mod.EventHandler
     protected void onInitialization(FMLInitializationEvent event) {
-        GlazedProxy.onInitialization(event);
+        GlazedProxy.getInstance().onInitialization(event);
     }
 
     @Mod.EventHandler
     protected void onPostInitialization(FMLPostInitializationEvent event) {
-        GlazedProxy.onPostInitialization(event);
+        GlazedProxy.getInstance().onPostInitialization(event);
     }
 }
