@@ -125,6 +125,11 @@ public final class GlassBlock extends BlockGlass {
     }
 
     @Override
+    public SoundType getSoundType(IBlockState state, World world, BlockPos pos, @Nullable Entity entity) {
+        return state.getValue(PROPERTY).getSoundType();
+    }
+
+    @Override
     @SideOnly(Side.CLIENT)
     public boolean shouldSideBeRendered(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side) {
         return !doesSideBlockRendering(state, world, pos, side);

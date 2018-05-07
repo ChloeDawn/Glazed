@@ -100,4 +100,9 @@ public final class GlassPaneBlock extends BlockPane {
     public ItemStack getPickBlock(IBlockState state, RayTraceResult target, World world, BlockPos pos, EntityPlayer player) {
         return new ItemStack(this, 1, state.getValue(PROPERTY).ordinal());
     }
+
+    @Override
+    public SoundType getSoundType(IBlockState state, World world, BlockPos pos, @Nullable Entity entity) {
+        return state.getValue(PROPERTY).getSoundType();
+    }
 }

@@ -16,10 +16,12 @@ package net.insomniakitten.glazed;
  *   limitations under the License.
  */
 
+import net.minecraft.block.SoundType;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.IStringSerializable;
@@ -42,9 +44,42 @@ public enum GlazedVariant implements IStringSerializable {
     ENERGETIC(0.3F, 1.5F),
     SHADOWED(0.3F, 1.5F),
     VOIDIC(0.3F, 1.5F),
-    QUILTED(0.3F, 1.5F),
-    REINFORCED(0.3F, 1.5F),
-    SLIMY(0.3F, 1.5F),
+    QUILTED(0.3F, 1.5F) {
+        private final SoundType soundTypeQuilted = new SoundType(
+                1.0F, 1.0F,
+                SoundEvents.BLOCK_GLASS_BREAK,
+                SoundEvents.BLOCK_CLOTH_STEP,
+                SoundEvents.BLOCK_CLOTH_PLACE,
+                SoundEvents.BLOCK_CLOTH_HIT,
+                SoundEvents.BLOCK_CLOTH_FALL
+        );
+
+        @Override
+        public SoundType getSoundType() {
+            return soundTypeQuilted;
+        }
+    },
+    REINFORCED(0.3F, 1.5F) {
+        @Override
+        public SoundType getSoundType() {
+            return SoundType.METAL;
+        }
+    },
+    SLIMY(0.3F, 1.5F) {
+        private final SoundType soundTypeSlimy = new SoundType(
+                1.0F, 1.0F,
+                SoundEvents.BLOCK_GLASS_BREAK,
+                SoundEvents.BLOCK_SLIME_STEP,
+                SoundEvents.BLOCK_GLASS_PLACE,
+                SoundEvents.BLOCK_SLIME_HIT,
+                SoundEvents.BLOCK_SLIME_FALL
+        );
+
+        @Override
+        public SoundType getSoundType() {
+            return soundTypeSlimy;
+        }
+    },
     AURORIC(0.3F, 1.5F, 10);
 
     public static final GlazedVariant[] VARIANTS = values();
@@ -91,6 +126,10 @@ public enum GlazedVariant implements IStringSerializable {
 
     public int getLightLevel() {
         return lightLevel;
+    }
+
+    public SoundType getSoundType() {
+        return SoundType.GLASS;
     }
 
     protected int getColor(IBlockAccess access, BlockPos pos) {
