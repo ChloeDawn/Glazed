@@ -43,11 +43,17 @@ public enum GlazedVariant implements IStringSerializable {
             return access.getBiome(pos).getFoliageColorAtPos(pos);
         }
     },
+
     RADIANT(TRANSLUCENT, 0.3F, 1.5F, 15),
+
     IRIDESCENT(CUTOUT, 0.3F, 1.5F, 8),
+
     ENERGETIC(TRANSLUCENT, 0.3F, 1.5F),
+
     SHADOWED(TRANSLUCENT, 0.3F, 1.5F),
+
     VOIDIC(TRANSLUCENT, 0.3F, 1.5F),
+
     QUILTED(CUTOUT, 0.3F, 1.5F) {
         private final SoundType soundTypeQuilted = new SoundType(
                 1.0F, 1.0F,
@@ -63,12 +69,14 @@ public enum GlazedVariant implements IStringSerializable {
             return soundTypeQuilted;
         }
     },
+
     REINFORCED(CUTOUT, 0.3F, 1.5F) {
         @Override
         public SoundType getSoundType() {
             return SoundType.METAL;
         }
     },
+
     SLIMY(TRANSLUCENT, 0.3F, 1.5F) {
         private final SoundType soundTypeSlimy = new SoundType(
                 1.0F, 1.0F,
@@ -84,6 +92,7 @@ public enum GlazedVariant implements IStringSerializable {
             return soundTypeSlimy;
         }
     },
+
     AURORIC(TRANSLUCENT, 0.3F, 1.5F, 10);
 
     public static final GlazedVariant[] VARIANTS = values();
