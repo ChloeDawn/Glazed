@@ -29,6 +29,7 @@ import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -37,12 +38,18 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.items.IItemHandler;
 
+import javax.annotation.Nullable;
 import java.util.Locale;
+
+import static java.util.Objects.requireNonNull;
+import static net.minecraftforge.items.CapabilityItemHandler.ITEM_HANDLER_CAPABILITY;
 
 public final class GlassKilnBlock extends Block {
     public static final PropertyBool ACTIVE = PropertyBool.create("active");
@@ -63,6 +70,27 @@ public final class GlassKilnBlock extends Block {
         return access.getBlockState(pos).getBlock().isReplaceable(access, pos);
     }
 
+    public static int calcRedstoneFromInventory(@Nullable IInventory inv) {
+        if (inv == null) {
+            return 0;
+        } else {
+            int i = 0;
+            float f = 0.0F;
+
+            for (int j = 0; j < inv.getSizeInventory(); ++j) {
+                ItemStack itemstack = inv.getStackInSlot(j);
+
+                if (!itemstack.isEmpty()) {
+                    f += (float) itemstack.getCount() / (float) Math.min(inv.getInventoryStackLimit(), itemstack.getMaxStackSize());
+                    ++i;
+                }
+            }
+
+            f = f / (float) inv.getSizeInventory();
+            return MathHelper.floor(f * 14.0F) + (i > 0 ? 1 : 0);
+        }
+    }
+
     @Override
     @Deprecated
     public IBlockState getStateFromMeta(int meta) {
@@ -77,9 +105,9 @@ public final class GlassKilnBlock extends Block {
 
     @Override
     public int getMetaFromState(IBlockState state) {
-        int active = state.getValue(ACTIVE) ? 1 : 0;
-        int half = state.getValue(HALF).ordinal() << 1;
-        int facing = state.getValue(FACING).getHorizontalIndex() << 2;
+        final int active = state.getValue(ACTIVE) ? 1 : 0;
+        final int half = state.getValue(HALF).ordinal() << 1;
+        final int facing = state.getValue(FACING).getHorizontalIndex() << 2;
         return active | half | facing;
     }
 
@@ -100,7 +128,7 @@ public final class GlassKilnBlock extends Block {
     @Deprecated
     @SideOnly(Side.CLIENT)
     public AxisAlignedBB getSelectedBoundingBox(IBlockState state, World world, BlockPos pos) {
-        return state.getValue(HALF).aabb.offset(pos);
+        return state.getValue(HALF).boundingBox.offset(pos);
     }
 
     @Override
@@ -112,6 +140,13 @@ public final class GlassKilnBlock extends Block {
     @Override
     public void breakBlock(World world, BlockPos pos, IBlockState state) {
         if (hasTileEntity(state)) {
+            final TileEntity te = world.getTileEntity(pos);
+            if (te instanceof GlassKilnEntity && te.hasCapability(ITEM_HANDLER_CAPABILITY, null)) {
+                final IItemHandler items = te.getCapability(ITEM_HANDLER_CAPABILITY, null);
+                for (int slot = 0; slot < requireNonNull(items).getSlots(); ++slot) {
+                    spawnAsEntity(world, pos, items.getStackInSlot(slot));
+                }
+            }
             world.removeTileEntity(pos);
             world.destroyBlock(pos.up(), false);
         } else world.destroyBlock(pos.down(), false);
@@ -132,6 +167,36 @@ public final class GlassKilnBlock extends Block {
     @Override
     public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase entity, ItemStack stack) {
         world.setBlockState(state.getValue(HALF).offsetToOtherHalf(pos), state.cycleProperty(HALF));
+    }
+
+    @Override
+    @Deprecated
+    public boolean hasComparatorInputOverride(IBlockState state) {
+        return true;
+    }
+
+    @Override
+    @Deprecated
+    public int getComparatorInputOverride(IBlockState state, World world, BlockPos pos) {
+        final TileEntity te = world.getTileEntity(state.getValue(HALF).offsetToTileEntity(pos));
+        if (te instanceof GlassKilnEntity && te.hasCapability(ITEM_HANDLER_CAPABILITY, null)) {
+            final IItemHandler items = te.getCapability(ITEM_HANDLER_CAPABILITY, null);
+            final int slots = requireNonNull(items).getSlots();
+
+            int total = 0;
+            float out = 0.0F;
+
+            for (int slot = 0; slot < slots; ++slot) {
+                ItemStack stack = items.getStackInSlot(slot);
+                if (!stack.isEmpty()) {
+                    out += stack.getCount() / Math.min(items.getSlotLimit(slot), stack.getMaxStackSize());
+                    ++total;
+                }
+            }
+
+            return MathHelper.floor((out / (float) slots) * 14.0F) + (total > 0 ? 1 : 0);
+        }
+        return 0;
     }
 
     @Override
@@ -168,13 +233,13 @@ public final class GlassKilnBlock extends Block {
         LOWER(new AxisAlignedBB(0.0D, 0.0D, 0.0D, 1.0D, 2.0D, 1.0D)),
         UPPER(new AxisAlignedBB(0.0D, -1.0D, 0.0D, 1.0D, 1.0D, 1.0D));
 
-        private final AxisAlignedBB aabb;
-
-        Half(AxisAlignedBB aabb) {
-            this.aabb = aabb;
-        }
-
         public static final Half[] VALUES = values();
+
+        private final AxisAlignedBB boundingBox;
+
+        Half(AxisAlignedBB boundingBox) {
+            this.boundingBox = boundingBox;
+        }
 
         private static Half fromPosition(IBlockAccess access, BlockPos pos) {
             if (canReplace(access, pos.up())) {

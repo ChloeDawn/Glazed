@@ -17,6 +17,8 @@ package net.insomniakitten.glazed;
  */
 
 import net.insomniakitten.glazed.block.entity.GlassKilnEntity;
+import net.insomniakitten.glazed.gui.GlassKilnContainer;
+import net.insomniakitten.glazed.gui.GlassKilnGui;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -64,10 +66,10 @@ public final class Glazed {
         @Nullable
         public Object getServerGuiElement(int id, EntityPlayer player, World world, int x, int y, int z) {
             final BlockPos pos;
-            final TileEntity tile;
+            final TileEntity te;
             if (id == 0 && world.isValid(pos = new BlockPos(x, y, z))) {
-                if ((tile = world.getTileEntity(pos)) instanceof GlassKilnEntity) {
-                    throw new UnsupportedOperationException("Kiln container not yet implemented");
+                if ((te = world.getTileEntity(pos)) instanceof GlassKilnEntity) {
+                    return new GlassKilnContainer(te, player);
                 }
             }
             return null;
@@ -77,10 +79,10 @@ public final class Glazed {
         @Nullable
         public Object getClientGuiElement(int id, EntityPlayer player, World world, int x, int y, int z) {
             final BlockPos pos;
-            final TileEntity tile;
+            final TileEntity te;
             if (id == 0 && world.isValid(pos = new BlockPos(x, y, z))) {
-                if ((tile = world.getTileEntity(pos)) instanceof GlassKilnEntity) {
-                    throw new UnsupportedOperationException("Kiln GUI not yet implemented");
+                if ((te = world.getTileEntity(pos)) instanceof GlassKilnEntity) {
+                    return new GlassKilnGui(te, player);
                 }
             }
             return null;
