@@ -66,8 +66,7 @@ public final class Glazed {
         public void displayAllRelevantItems(NonNullList<ItemStack> list) {
             list.add(new ItemStack(GlazedRegistry.GLASS_KILN_ITEM));
             list.add(new ItemStack(GlazedRegistry.KILN_BRICKS_ITEM));
-            for (GlazedVariant variant : GlazedVariant.VARIANTS) {
-                final int meta = variant.ordinal();
+            for (int meta = 0; meta < GlazedVariant.VARIANTS.length; meta++) {
                 list.add(new ItemStack(GlazedRegistry.GLASS_BLOCK_ITEM, 1, meta));
                 list.add(new ItemStack(GlazedRegistry.GLASS_PANE_ITEM, 1, meta));
             }
