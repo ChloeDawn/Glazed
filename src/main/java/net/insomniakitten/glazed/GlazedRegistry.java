@@ -21,11 +21,12 @@ import net.insomniakitten.glazed.block.GlassKilnBlock;
 import net.insomniakitten.glazed.block.GlassPaneBlock;
 import net.insomniakitten.glazed.block.KilnBricksBlock;
 import net.insomniakitten.glazed.block.entity.GlassKilnEntity;
-import net.insomniakitten.glazed.item.BlockItem;
+import net.insomniakitten.glazed.item.VariantBlockItem;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.event.RegistryEvent.Register;
@@ -72,10 +73,10 @@ enum GlazedRegistry {
 
     @SubscribeEvent
     protected void onItemRegistry(Register<Item> event) {
-        register(event, new BlockItem(KILN_BRICKS), "kiln_bricks");
-        register(event, new BlockItem(GLASS_KILN), "glass_kiln");
-        register(event, new BlockItem(GLASS_BLOCK, GlazedVariant::isValid, GlazedVariant::getName), "glass_block");
-        register(event, new BlockItem(GLASS_PANE, GlazedVariant::isValid, GlazedVariant::getName), "glass_pane");
+        register(event, new ItemBlock(KILN_BRICKS), "kiln_bricks");
+        register(event, new ItemBlock(GLASS_KILN), "glass_kiln");
+        register(event, new VariantBlockItem(GLASS_BLOCK), "glass_block");
+        register(event, new VariantBlockItem(GLASS_PANE), "glass_pane");
     }
 
     private <V extends IForgeRegistryEntry<V>> void register(Register<V> event, V entry, String name) {
