@@ -18,12 +18,11 @@ package net.insomniakitten.glazed.block;
 
 import net.insomniakitten.glazed.Glazed;
 import net.insomniakitten.glazed.block.entity.GlassKilnEntity;
-import net.minecraft.block.Block;
+import net.minecraft.block.BlockHorizontal;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyBool;
-import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
@@ -33,7 +32,6 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumFacing.Plane;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -51,9 +49,8 @@ import java.util.Locale;
 import static java.util.Objects.requireNonNull;
 import static net.minecraftforge.items.CapabilityItemHandler.ITEM_HANDLER_CAPABILITY;
 
-public final class GlassKilnBlock extends Block {
+public final class GlassKilnBlock extends BlockHorizontal {
     public static final PropertyBool ACTIVE = PropertyBool.create("active");
-    public static final PropertyDirection FACING = PropertyDirection.create("facing", Plane.HORIZONTAL);
     public static final PropertyEnum<Half> HALF = PropertyEnum.create("half", Half.class);
 
     public GlassKilnBlock() {
