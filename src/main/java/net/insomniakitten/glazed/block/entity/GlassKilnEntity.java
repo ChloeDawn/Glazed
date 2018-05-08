@@ -41,7 +41,6 @@ import javax.annotation.Nullable;
 import static net.minecraftforge.items.CapabilityItemHandler.ITEM_HANDLER_CAPABILITY;
 
 public final class GlassKilnEntity extends TileEntity implements ITickable {
-    private static final int PACKET_ID = GlassKilnEntity.class.hashCode();
     private static final String NBT_KEY_ACTIVE = "active";
     private static final String NBT_KEY_ITEMS = "items";
 
@@ -104,7 +103,7 @@ public final class GlassKilnEntity extends TileEntity implements ITickable {
 
     @Override
     public SPacketUpdateTileEntity getUpdatePacket() {
-        return new SPacketUpdateTileEntity(getPos(), PACKET_ID, getUpdateTag());
+        return new SPacketUpdateTileEntity(getPos(), -1, getUpdateTag());
     }
 
     @Override
