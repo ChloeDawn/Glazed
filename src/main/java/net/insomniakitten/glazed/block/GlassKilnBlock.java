@@ -42,6 +42,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.ItemHandlerHelper;
 
 import javax.annotation.Nullable;
 import java.util.Locale;
@@ -178,22 +179,9 @@ public final class GlassKilnBlock extends BlockHorizontal {
         final TileEntity te = world.getTileEntity(state.getValue(HALF).offsetToTileEntity(pos));
         if (te instanceof GlassKilnEntity && te.hasCapability(ITEM_HANDLER_CAPABILITY, null)) {
             final IItemHandler items = te.getCapability(ITEM_HANDLER_CAPABILITY, null);
-            final int slots = requireNonNull(items).getSlots();
-
-            int total = 0;
-            float out = 0.0F;
-
-            for (int slot = 0; slot < slots; ++slot) {
-                ItemStack stack = items.getStackInSlot(slot);
-                if (!stack.isEmpty()) {
-                    out += stack.getCount() / Math.min(items.getSlotLimit(slot), stack.getMaxStackSize());
-                    ++total;
-                }
-            }
-
-            return MathHelper.floor((out / (float) slots) * 14.0F) + (total > 0 ? 1 : 0);
+            return ItemHandlerHelper.calcRedstoneFromInventory(requireNonNull(items));
         }
-        return 0;
+        return super.getComparatorInputOverride(state, world, pos);
     }
 
     @Override
