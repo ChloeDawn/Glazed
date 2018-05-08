@@ -16,6 +16,7 @@ package net.insomniakitten.glazed.block.entity;
  *   limitations under the License.
  */
 
+import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
@@ -24,11 +25,14 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.oredict.OreDictionary;
 
@@ -70,6 +74,18 @@ public final class GlassKilnEntity extends TileEntity implements ITickable {
 
     public boolean isActive() {
         return active;
+    }
+
+    public void dropItems(World world, BlockPos pos) {
+        final int size = items.getSlots();
+        for (int i = 0; i < size; i++) {
+            final ItemStack stack = items.getStackInSlot(i);
+            Block.spawnAsEntity(world, pos, stack);
+        }
+    }
+
+    public int getComparatorOutput() {
+        return ItemHandlerHelper.calcRedstoneFromInventory(items);
     }
 
     @Override
