@@ -137,7 +137,8 @@ public final class GlassBlock extends BlockGlass {
 
     @Override
     @SideOnly(Side.CLIENT)
-    public boolean shouldSideBeRendered(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side) {
-        return !doesSideBlockRendering(state, world, pos, side);
+    public boolean shouldSideBeRendered(IBlockState state, IBlockAccess access, BlockPos pos, EnumFacing side) {
+        final BlockPos offset = pos.offset(side);
+        return !access.getBlockState(offset).doesSideBlockRendering(access, offset, side.getOpposite());
     }
 }

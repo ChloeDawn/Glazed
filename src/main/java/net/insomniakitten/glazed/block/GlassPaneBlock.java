@@ -115,7 +115,8 @@ public final class GlassPaneBlock extends BlockPane {
     @Override
     @SideOnly(Side.CLIENT)
     public boolean shouldSideBeRendered(IBlockState state, IBlockAccess access, BlockPos pos, EnumFacing side) {
-        return !doesSideBlockRendering(state, access, pos, side);
+        final BlockPos offset = pos.offset(side);
+        return !access.getBlockState(offset).doesSideBlockRendering(access, offset, side.getOpposite());
     }
 
     @Override
