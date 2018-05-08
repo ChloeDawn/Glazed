@@ -66,6 +66,18 @@ public final class GlassPaneBlock extends BlockPane {
     }
 
     @Override
+    @Deprecated
+    public int getWeakPower(IBlockState state, IBlockAccess access, BlockPos pos, EnumFacing side) {
+        return state.getValue(PROPERTY).getRedstoneLevel();
+    }
+
+    @Override
+    @Deprecated
+    public boolean canProvidePower(IBlockState state) {
+        return state.getValue(PROPERTY).getRedstoneLevel() > 0;
+    }
+
+    @Override
     public void getSubBlocks(CreativeTabs tab, NonNullList<ItemStack> items) {
         for (GlazedVariant variant : VARIANTS) {
             items.add(new ItemStack(this, 1, variant.ordinal()));
@@ -95,6 +107,11 @@ public final class GlassPaneBlock extends BlockPane {
     @Override
     public float getExplosionResistance(World world, BlockPos pos, @Nullable Entity exploder, Explosion explosion) {
         return world.getBlockState(pos).getValue(PROPERTY).getResistance();
+    }
+
+    @Override
+    public boolean canConnectRedstone(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side) {
+        return false; // Glass panes won't touch the adjacent dust block
     }
 
     @Override

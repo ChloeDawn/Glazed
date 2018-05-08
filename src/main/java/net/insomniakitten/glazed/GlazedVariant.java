@@ -48,7 +48,12 @@ public enum GlazedVariant implements IStringSerializable {
 
     IRIDESCENT(CUTOUT, 0.3F, 1.5F, 8),
 
-    ENERGETIC(TRANSLUCENT, 0.3F, 1.5F),
+    ENERGETIC(TRANSLUCENT, 0.3F, 1.5F) {
+        @Override
+        public int getRedstoneLevel() {
+            return 15;
+        }
+    },
 
     SHADOWED(TRANSLUCENT, 0.3F, 1.5F),
 
@@ -145,6 +150,10 @@ public enum GlazedVariant implements IStringSerializable {
 
     public int getLightLevel() {
         return lightLevel;
+    }
+
+    public int getRedstoneLevel() {
+        return 0;
     }
 
     public SoundType getSoundType() {

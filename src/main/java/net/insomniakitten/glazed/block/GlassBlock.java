@@ -82,6 +82,18 @@ public final class GlassBlock extends BlockGlass {
     }
 
     @Override
+    @Deprecated
+    public int getWeakPower(IBlockState state, IBlockAccess access, BlockPos pos, EnumFacing side) {
+        return state.getValue(PROPERTY).getRedstoneLevel();
+    }
+
+    @Override
+    @Deprecated
+    public boolean canProvidePower(IBlockState state) {
+        return state.getValue(PROPERTY).getRedstoneLevel() > 0;
+    }
+
+    @Override
     public void onEntityCollidedWithBlock(World world, BlockPos pos, IBlockState state, Entity entity) {
         state.getValue(PROPERTY).onEntityCollide(world, pos, entity);
     }
