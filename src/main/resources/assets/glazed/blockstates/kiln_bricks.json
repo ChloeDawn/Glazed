@@ -5,6 +5,7 @@
         "normal": {
             "model": "cube_all",
             "textures": {
+                "particle": "glazed:blocks/kiln_bricks_particle",
                 "all": "glazed:blocks/kiln_bricks"
             }
         }
