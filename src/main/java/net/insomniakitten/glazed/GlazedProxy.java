@@ -16,6 +16,7 @@ package net.insomniakitten.glazed;
  *   limitations under the License.
  */
 
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.IReloadableResourceManager;
 import net.minecraft.client.resources.IResourceManager;
 import net.minecraftforge.common.MinecraftForge;
@@ -38,14 +39,20 @@ public final class GlazedProxy {
 
     private GlazedProxy() {}
 
-    protected static Impl getInstance() {
+    public static Impl getInstance() {
         return Objects.requireNonNull(instance, "Proxy instance has not been initialized!");
     }
 
-    protected interface Impl {
+    public interface Impl {
         default void onPreInitialization(FMLPreInitializationEvent event) {}
+
         default void onInitialization(FMLInitializationEvent event) {}
+
         default void onPostInitialization(FMLPostInitializationEvent event) {}
+
+        default boolean isCtrlKeyDown() {
+            return false;
+        }
     }
 
     @SideOnly(Side.CLIENT)
@@ -62,6 +69,11 @@ public final class GlazedProxy {
             if (rm instanceof IReloadableResourceManager) {
                 ((IReloadableResourceManager) rm).registerReloadListener(GlazedClient.INSTANCE);
             } else throw new IllegalStateException("Expected IReloadableResourceManager, found " + rm);
+        }
+
+        @Override
+        public boolean isCtrlKeyDown() {
+            return GuiScreen.isCtrlKeyDown();
         }
     }
 }

@@ -19,6 +19,8 @@ package net.insomniakitten.glazed.block.entity;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.NBTTagString;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
@@ -49,10 +51,14 @@ public final class GlassKilnEntity extends TileEntity implements ITickable {
         protected int getStackLimit(int slot, ItemStack stack) {
             final int limit = super.getStackLimit(slot, stack);
             switch (slot) {
-                case 0: return isSand(stack) ? limit : 0;
-                case 1: return limit;
-                case 2: return isFuel(stack) ? limit : 0;
-                default: return 0;
+                case 0:
+                    return isSand(stack) ? limit : 0;
+                case 1:
+                    return limit;
+                case 2:
+                    return isFuel(stack) ? limit : 0;
+                default:
+                    return 0;
             }
         }
 
@@ -76,15 +82,26 @@ public final class GlassKilnEntity extends TileEntity implements ITickable {
     }
 
     public void dropItems(World world, BlockPos pos) {
-        final int size = items.getSlots();
-        for (int i = 0; i < size; i++) {
-            final ItemStack stack = items.getStackInSlot(i);
-            Block.spawnAsEntity(world, pos, stack);
+        if (!world.isRemote && world.getGameRules().getBoolean("doTileDrops")) {
+            for (int i = 0; i < items.getSlots(); i++) {
+                final ItemStack stack = items.getStackInSlot(i);
+                Block.spawnAsEntity(world, pos, stack);
+            }
         }
     }
 
     public int getComparatorOutput() {
         return ItemHandlerHelper.calcRedstoneFromInventory(items);
+    }
+
+    public void serializeToStack(ItemStack stack) {
+        // Minecraft#getMinecraft#storeTEInStack // func_184119_a
+        stack.setTagInfo("BlockEntityTag", writeToNBT(new NBTTagCompound()));
+        final NBTTagCompound display = new NBTTagCompound();
+        final NBTTagList lore = new NBTTagList();
+        lore.appendTag(new NBTTagString("(+NBT)"));
+        display.setTag("Lore", lore);
+        stack.setTagInfo("display", display);
     }
 
     @Override

@@ -17,6 +17,7 @@ package net.insomniakitten.glazed.block;
  */
 
 import net.insomniakitten.glazed.Glazed;
+import net.insomniakitten.glazed.GlazedProxy;
 import net.insomniakitten.glazed.block.entity.GlassKilnEntity;
 import net.minecraft.block.BlockHorizontal;
 import net.minecraft.block.SoundType;
@@ -35,6 +36,7 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
@@ -125,7 +127,7 @@ public final class GlassKilnBlock extends BlockHorizontal {
 
     @Override
     public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
-        final BlockPos offset = state.getValue(HALF).offsetToTileEntity(pos);
+        final BlockPos offset = state.getValue(HALF).offsetToEntity(pos);
         player.openGui(Glazed.getInstance(), 0, world, offset.getX(), offset.getY(), offset.getZ());
         return true;
     }
@@ -144,7 +146,7 @@ public final class GlassKilnBlock extends BlockHorizontal {
     @Override
     @Deprecated
     public int getComparatorInputOverride(IBlockState state, World world, BlockPos pos) {
-        final TileEntity te = world.getTileEntity(state.getValue(HALF).offsetToTileEntity(pos));
+        final TileEntity te = world.getTileEntity(state.getValue(HALF).offsetToEntity(pos));
         return te instanceof GlassKilnEntity ? ((GlassKilnEntity) te).getComparatorOutput() : 0;
     }
 
@@ -174,6 +176,18 @@ public final class GlassKilnBlock extends BlockHorizontal {
     }
 
     @Override
+    public ItemStack getPickBlock(IBlockState state, RayTraceResult target, World world, BlockPos pos, EntityPlayer player) {
+        final ItemStack stack = super.getPickBlock(state, target, world, pos, player);
+        if (world.isRemote && player.capabilities.isCreativeMode && state.getValue(HALF) == Half.UPPER && GlazedProxy.getInstance().isCtrlKeyDown()) {
+            final TileEntity entity = world.getTileEntity(pos.down());
+            if (entity instanceof GlassKilnEntity) {
+                ((GlassKilnEntity) entity).serializeToStack(stack);
+            }
+        }
+        return stack;
+    }
+
+    @Override
     public IBlockState getStateForPlacement(World world, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer, EnumHand hand) {
         return getDefaultState().withProperty(HALF, Half.fromPosition(world, pos)).withProperty(FACING, placer.getHorizontalFacing().getOpposite());
     }
@@ -198,7 +212,7 @@ public final class GlassKilnBlock extends BlockHorizontal {
             } else throw new IllegalArgumentException("Cannot determine Half from position " + pos);
         }
 
-        private BlockPos offsetToTileEntity(BlockPos pos) {
+        private BlockPos offsetToEntity(BlockPos pos) {
             return this == UPPER ? pos.down() : pos;
         }
 
