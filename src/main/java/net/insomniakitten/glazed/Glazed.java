@@ -40,12 +40,21 @@ import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nullable;
 
-@Mod(modid = Glazed.ID, name = Glazed.NAME, version = Glazed.VERSION,
-     acceptedMinecraftVersions = "[1.12,1.13)")
+@Mod(
+        modid = Glazed.ID,
+        name = Glazed.NAME,
+        version = Glazed.VERSION,
+        dependencies = Glazed.DEPENDENCIES,
+        acceptedMinecraftVersions = Glazed.MC_VERSION
+)
 public final class Glazed {
     public static final String ID = "glazed";
     public static final String NAME = "Glazed";
     public static final String VERSION = "%VERSION%";
+    public static final String DEPENDENCIES =
+            "required-after:ctm@[MC1.12-0.3.0.14,);" +
+            "required-after:forge@[1.12.2-14.23.3.2678,);";
+    public static final String MC_VERSION = "[1.12,1.13)";
 
     public static final Logger LOGGER = LogManager.getLogger(ID);
 
