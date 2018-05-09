@@ -40,7 +40,8 @@ import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nullable;
 
-@Mod(modid = Glazed.ID, name = Glazed.NAME, version = Glazed.VERSION)
+@Mod(modid = Glazed.ID, name = Glazed.NAME, version = Glazed.VERSION,
+     acceptedMinecraftVersions = "[1.12,1.13)")
 public final class Glazed {
     public static final String ID = "glazed";
     public static final String NAME = "Glazed";
