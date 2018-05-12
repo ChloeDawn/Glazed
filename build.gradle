@@ -5,10 +5,12 @@ buildscript {
     }
     dependencies {
         classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
+        classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.2.41'
     }
 }
 
 apply plugin: 'net.minecraftforge.gradle.forge'
+apply plugin: 'kotlin'
 
 version = modVersion
 group = 'net.insomniakitten.glazed'
@@ -19,17 +21,20 @@ minecraft {
     version = mcfVersion
     mappings = mcpMappings
     runDir = 'run'
-    replaceIn 'Glazed.java'
+    replaceIn 'Glazed.kt'
     replace '%VERSION%', modVersion
 }
 
 repositories {
+    jcenter()
+    maven { url = 'https://maven.shadowfacts.net' }
     maven { url = 'http://maven.tterrag.com' }
     maven { url = 'http://tehnut.info/maven' }
     maven { url = 'http://dvs1.progwml6.com/files/maven' }
 }
 
 dependencies {
+    compile "net.shadowfacts:Forgelin:$flVersion"
     runtime "team.chisel.ctm:CTM:$ctmVersion"
     runtime "team.chisel:Chisel:$chiselVersion"
     compile "mcp.mobius.waila:Hwyla:$hwylaVersion"

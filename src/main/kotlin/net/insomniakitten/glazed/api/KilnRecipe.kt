@@ -1,4 +1,4 @@
-package net.insomniakitten.glazed.block;
+package net.insomniakitten.glazed.api
 
 /*
  *  Copyright 2018 InsomniaKitten
@@ -16,19 +16,15 @@ package net.insomniakitten.glazed.block;
  *   limitations under the License.
  */
 
-import net.insomniakitten.glazed.Glazed;
-import net.minecraft.block.Block;
-import net.minecraft.block.SoundType;
-import net.minecraft.block.material.MapColor;
-import net.minecraft.block.material.Material;
+import net.minecraft.item.ItemStack
+import net.minecraftforge.registries.IForgeRegistryEntry
 
-public final class KilnBricksBlock extends Block {
-    public KilnBricksBlock() {
-        super(Material.ROCK, MapColor.ADOBE);
-        setUnlocalizedName(Glazed.ID + ".kiln_bricks");
-        setCreativeTab(Glazed.TAB);
-        setSoundType(SoundType.STONE);
-        setHardness(2.0F);
-        setResistance(30.0F);
-    }
+class KilnRecipe(
+        input: ItemStack,
+        output: ItemStack,
+        vararg catalysts: ItemStack
+) : IForgeRegistryEntry.Impl<KilnRecipe>() {
+    val input = input.copy()
+    val output = output.copy()
+    val catalysts = catalysts.map(ItemStack::copy).toSet()
 }
