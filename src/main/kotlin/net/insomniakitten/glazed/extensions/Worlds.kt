@@ -31,26 +31,28 @@ operator fun World.get(pos: BlockPos) = WorldPosition(this, pos)
 
 fun IBlockAccess.canReplace(pos: BlockPos) = this[pos].block.isReplaceable(this, pos)
 
-data class AccessPosition(private val access: IBlockAccess, private val pos: BlockPos) {
-    val state: IBlockState get() = access.getBlockState(pos)
-    val block: Block get() = state.block
-    val entity: TileEntity? get() = access.getTileEntity(pos)
+open class AccessPosition(protected val access: IBlockAccess, protected val pos: BlockPos) {
+    open val state: IBlockState get() = access.getBlockState(pos)
+    open val block: Block get() = state.block
+    open val entity: TileEntity? get() = access.getTileEntity(pos)
 }
 
-data class WorldPosition(private val world: World, private val pos: BlockPos) {
-    var state: IBlockState
-        get() = world.getBlockState(pos)
+class WorldPosition(world: World, pos: BlockPos): AccessPosition(world, pos) {
+    private val world = access as World
+
+    override var state: IBlockState
+        get() = access.getBlockState(pos)
         set(value) {
             world.setBlockState(pos, value)
         }
 
-    var block: Block
+    override var block: Block
         get() = state.block
         set(value) {
             world.setBlockState(pos, value.defaultState)
         }
 
-    var entity: TileEntity?
+    override var entity: TileEntity?
         get() = world.getTileEntity(pos)
         set(value) = if (value != null) {
             world.setTileEntity(pos, value)

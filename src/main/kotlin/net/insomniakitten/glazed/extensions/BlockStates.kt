@@ -18,6 +18,7 @@ package net.insomniakitten.glazed.extensions
  *   limitations under the License.
  */
 
+import net.minecraft.block.Block
 import net.minecraft.block.properties.IProperty
 import net.minecraft.block.state.IBlockState
 import net.minecraft.util.math.BlockPos
@@ -25,6 +26,14 @@ import net.minecraft.world.IBlockAccess
 
 operator fun IBlockState.invoke(access: IBlockAccess, pos: BlockPos): IBlockState {
     return getActualState(access, pos)
+}
+
+operator fun <V : Comparable<V>> Block.contains(property: IProperty<V>): Boolean {
+    return property in blockState.properties
+}
+
+operator fun <V : Comparable<V>> IBlockState.contains(property: IProperty<V>): Boolean {
+    return property in propertyKeys
 }
 
 operator fun <V : Comparable<V>> IBlockState.get(property: IProperty<V>): V {

@@ -20,7 +20,6 @@ import net.insomniakitten.glazed.Glazed
 import net.insomniakitten.glazed.GlazedProxy
 import net.insomniakitten.glazed.block.entity.GlassKilnEntity
 import net.insomniakitten.glazed.extensions.AccessPosition
-import net.insomniakitten.glazed.extensions.WorldPosition
 import net.insomniakitten.glazed.extensions.canReplace
 import net.insomniakitten.glazed.extensions.cycle
 import net.insomniakitten.glazed.extensions.get
@@ -61,7 +60,6 @@ class GlassKilnBlock : BlockHorizontal(Material.ROCK, MapColor.ADOBE) {
     }
 
     private val AccessPosition.kiln get() = entity as? GlassKilnEntity
-    private val WorldPosition.kiln get() = entity as? GlassKilnEntity
     private val AccessPosition.isActive get() = kiln?.isActive == true
 
     override fun getStateFromMeta(meta: Int): IBlockState {
