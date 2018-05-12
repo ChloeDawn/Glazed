@@ -1,11 +1,12 @@
 package net.insomniakitten.glazed.gui
 
 import net.insomniakitten.glazed.extensions.get
-import net.insomniakitten.glazed.extensions.isNotEmpty
+import net.insomniakitten.glazed.extensions.ifNotEmpty
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.inventory.Container
 import net.minecraft.inventory.Slot
 import net.minecraft.item.ItemStack
+import net.minecraft.item.ItemStack.EMPTY
 import net.minecraft.tileentity.TileEntity
 import net.minecraftforge.items.CapabilityItemHandler
 import net.minecraftforge.items.SlotItemHandler
@@ -33,7 +34,7 @@ class GlassKilnContainer(te: TileEntity, player: EntityPlayer) : Container() {
         }
     }
 
-    private operator fun Container.plusAssign(slot: Slot) {
+    private operator fun plusAssign(slot: Slot) {
         addSlotToContainer(slot)
     }
 
@@ -41,36 +42,40 @@ class GlassKilnContainer(te: TileEntity, player: EntityPlayer) : Container() {
 
     override fun transferStackInSlot(player: EntityPlayer, sourceIndex: Int): ItemStack {
         val slot = inventorySlots[sourceIndex]
-        val stack = slot.stack
 
-        if (stack.isNotEmpty) {
-            val kilnSlots = 3
-            val inventorySlots = 28
-            val hotbarSlots = 9
-            val maxSlot = kilnSlots + inventorySlots + hotbarSlots
-
-            if (sourceIndex <= kilnSlots) {
-                if (!mergeItemStack(stack, kilnSlots, maxSlot, true)) {
-                    return ItemStack.EMPTY
+        slot.stack.ifNotEmpty {
+            if (sourceIndex > KILN_SLOTS) {
+                if (!mergeItemStack(it, 0, 1, false) &&
+                    !mergeItemStack(it, 1, 2, false) &&
+                    !mergeItemStack(it, 2, 3, false)) {
+                    return EMPTY
                 }
-            } else if (!mergeItemStack(stack, 0, 1, false) &&
-                       !mergeItemStack(stack, 1, 2, false) &&
-                       !mergeItemStack(stack, 2, 3, false)) {
-                return ItemStack.EMPTY
+            } else if (!mergeItemStack(it, KILN_SLOTS, MAX_SLOT, true)) {
+                return EMPTY
             }
 
             slot.onSlotChanged()
 
-            if (stack.isNotEmpty) {
-                if (slot.stack.count == stack.count) {
-                    return ItemStack.EMPTY
-                }
-            } else slot.putStack(ItemStack.EMPTY)
+            when {
+                it.isEmpty -> slot.putStack(EMPTY)
+                slot.stack.count == it.count -> return EMPTY
+            }
 
-            slot.onTake(player, stack)
+            slot.onTake(player, it)
 
-            return stack
+            return it
         }
-        return ItemStack.EMPTY
+
+        return EMPTY
+    }
+
+    companion object {
+        private const val KILN_SLOTS = 3
+        private const val INVENTORY_SLOTS = 28
+        private const val HOTBAR_SLOTS = 9
+        private const val MAX_SLOT =
+                KILN_SLOTS +
+                INVENTORY_SLOTS +
+                HOTBAR_SLOTS
     }
 }

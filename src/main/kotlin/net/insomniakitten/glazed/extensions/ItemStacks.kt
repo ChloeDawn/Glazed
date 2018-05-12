@@ -10,6 +10,14 @@ import net.minecraftforge.items.ItemHandlerHelper
 
 inline val ItemStack.isNotEmpty: Boolean get() = !isEmpty
 
+inline fun ItemStack.ifEmpty(consumer: (ItemStack) -> Unit) {
+    if (isEmpty) consumer(this)
+}
+
+inline fun ItemStack.ifNotEmpty(consumer: (ItemStack) -> Unit) {
+    if (isNotEmpty) consumer(this)
+}
+
 fun ItemStack.spawnAsEntity(world: World, pos: BlockPos) {
     Block.spawnAsEntity(world, pos, this)
 }
