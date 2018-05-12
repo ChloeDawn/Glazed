@@ -16,7 +16,6 @@ package net.insomniakitten.glazed.block.entity
  *   limitations under the License.
  */
 
-import net.insomniakitten.glazed.extensions.comparatorOutput
 import net.insomniakitten.glazed.extensions.has
 import net.insomniakitten.glazed.extensions.on
 import net.insomniakitten.glazed.extensions.spawnAsEntity
@@ -41,7 +40,7 @@ import net.minecraftforge.items.ItemStackHandler
 import net.minecraftforge.oredict.OreDictionary.getOreID
 import net.minecraftforge.oredict.OreDictionary.getOreIDs
 
-class GlassKilnEntity(private val items: ItemStackHandler = object : ItemStackHandler(4) {
+class GlassKilnEntity(val items: ItemStackHandler = object : ItemStackHandler(4) {
     override fun getStackLimit(slot: Int, stack: ItemStack) = when (slot) {
         0 -> if (getOreID("sand") in getOreIDs(stack)) {
             stack.maxStackSize
@@ -55,8 +54,6 @@ class GlassKilnEntity(private val items: ItemStackHandler = object : ItemStackHa
 }) : TileEntity(), ITickable {
     var isActive = false
         private set
-
-    val comparatorOutput get() = items.comparatorOutput
 
     fun dropItems(world: World, pos: BlockPos) {
         if (!world.isRemote && world.gameRules.getBoolean("doTileDrops")) {

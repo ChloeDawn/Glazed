@@ -21,6 +21,7 @@ import net.insomniakitten.glazed.GlazedProxy
 import net.insomniakitten.glazed.block.entity.GlassKilnEntity
 import net.insomniakitten.glazed.extensions.AccessPosition
 import net.insomniakitten.glazed.extensions.BlockAccess
+import net.insomniakitten.glazed.extensions.comparatorOutput
 import net.insomniakitten.glazed.extensions.cycle
 import net.insomniakitten.glazed.extensions.get
 import net.insomniakitten.glazed.extensions.invoke
@@ -166,7 +167,7 @@ class GlassKilnBlock : BlockHorizontal(Material.ROCK, MapColor.ADOBE) {
             state: IBlockState,
             world: World,
             pos: BlockPos
-    ) = world[state[HALF].offsetToEntity(pos)].kiln?.comparatorOutput ?: 0
+    ) = world[state[HALF].offsetToEntity(pos)].kiln?.items?.comparatorOutput ?: 0
 
     override fun createBlockState() = BlockStateContainer(this, ACTIVE, FACING, HALF)
 
