@@ -22,7 +22,6 @@ import net.insomniakitten.glazed.block.entity.GlassKilnEntity
 import net.insomniakitten.glazed.extensions.canReplace
 import net.insomniakitten.glazed.extensions.get
 import net.insomniakitten.glazed.extensions.plus
-import net.insomniakitten.glazed.extensions.set
 import net.insomniakitten.glazed.extensions.setTo
 import net.insomniakitten.glazed.extensions.with
 import net.minecraft.block.BlockHorizontal
@@ -94,7 +93,7 @@ class GlassKilnBlock : BlockHorizontal(Material.ROCK, MapColor.ADOBE) {
     override fun breakBlock(world: World, pos: BlockPos, state: IBlockState) {
         if (hasTileEntity(state)) {
             world.getKilnEntity(pos)?.dropItems(world, pos)
-            world.removeTileEntity(pos)
+            world[pos].entity = null
             world.destroyBlock(pos.up(), false)
         } else world.destroyBlock(pos.down(), false)
     }
@@ -127,7 +126,7 @@ class GlassKilnBlock : BlockHorizontal(Material.ROCK, MapColor.ADOBE) {
             stack: ItemStack
     ) {
         val offset = state[HALF].offsetToOtherHalf(pos)
-        world[offset] = state.cycleProperty(HALF)
+        world[offset].state = state.cycleProperty(HALF)
     }
 
     override fun hasComparatorInputOverride(state: IBlockState?) = true

@@ -138,7 +138,7 @@ object GlazedClient : IResourceManagerReloadListener {
         if (!controller.isHittingBlock) return
 
         val curr = controller.currentBlock
-        val state = client.world.getBlockState(curr)
+        val state = client.world[curr].state
 
         if (state.block != GlazedRegistry.GLASS_KILN) return
 

@@ -20,6 +20,7 @@ import net.insomniakitten.glazed.Glazed
 import net.insomniakitten.glazed.GlazedVariant
 import net.insomniakitten.glazed.GlazedVariant.VARIANTS
 import net.insomniakitten.glazed.extensions.description
+import net.insomniakitten.glazed.extensions.get
 import net.insomniakitten.glazed.extensions.setTo
 import net.insomniakitten.glazed.extensions.variant
 import net.insomniakitten.glazed.extensions.with
@@ -100,7 +101,7 @@ class GlassBlock : BlockGlass(Material.GLASS, true) {
             world: IBlockAccess,
             pos: BlockPos,
             side: EnumFacing
-    ) = world.getBlockState(pos.offset(side)).let {
+    ) = world[pos.offset(side)].state.let {
         it.block == this && it.variant == state.variant
     }
 
@@ -109,7 +110,7 @@ class GlassBlock : BlockGlass(Material.GLASS, true) {
             pos: BlockPos,
             exploder: Entity?,
             explosion: Explosion
-    ) = world.getBlockState(pos).variant.resistance
+    ) = world[pos].state.variant.resistance
 
     override fun getPickBlock(
             state: IBlockState,
@@ -137,5 +138,5 @@ class GlassBlock : BlockGlass(Material.GLASS, true) {
             access: IBlockAccess,
             pos: BlockPos,
             side: EnumFacing
-    ) = pos.offset(side).let { !access.getBlockState(it).doesSideBlockRendering(access, it, side.opposite) }
+    ) = pos.offset(side).let { !access[it].state.doesSideBlockRendering(access, it, side.opposite) }
 }

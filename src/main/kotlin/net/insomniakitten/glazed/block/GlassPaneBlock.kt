@@ -121,7 +121,7 @@ class GlassPaneBlock : BlockPane(Material.GLASS, true) {
 
     override fun doesSideBlockRendering(state: IBlockState, access: IBlockAccess, pos: BlockPos, side: EnumFacing): Boolean {
         val offset = pos.offset(side)
-        val other = access[offset]
+        val other = access[offset].state
         return if (side.axis.isVertical) {
             state(access, pos) == other(access, offset)
         } else other.block == this
@@ -132,7 +132,7 @@ class GlassPaneBlock : BlockPane(Material.GLASS, true) {
             pos: BlockPos,
             exploder: Entity?,
             explosion: Explosion
-    ) = world[pos].variant.resistance
+    ) = world[pos].state.variant.resistance
 
     override fun canConnectRedstone(
             state: IBlockState,
@@ -147,6 +147,6 @@ class GlassPaneBlock : BlockPane(Material.GLASS, true) {
             access: IBlockAccess,
             pos: BlockPos,
             side: EnumFacing
-    ) = pos.offset(side).let { !access[it].doesSideBlockRendering(access, it, side.opposite) }
+    ) = pos.offset(side).let { !access[it].state.doesSideBlockRendering(access, it, side.opposite) }
 }
 
