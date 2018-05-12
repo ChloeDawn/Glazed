@@ -49,7 +49,7 @@ object Glazed {
     const val NAME = "Glazed"
     const val VERSION = "%VERSION%"
     const val DEPENDENCIES = "required-after:forgelin@[1.6.0,);" +
-                             "required-after:ctm@[MC1.12-0.3.0.14,);" +
+                             "required-after-client:ctm@[MC1.12-0.3.0.14,);" +
                              "required-after:forge@[1.12.2-14.23.3.2678,);"
     const val MC_VERSIONS = "[1.12,1.13)"
     const val LANG_ADAPTER = "net.shadowfacts.forgelin.KotlinAdapter"

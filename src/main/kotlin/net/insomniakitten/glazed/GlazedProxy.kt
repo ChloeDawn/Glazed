@@ -46,9 +46,13 @@ class GlazedProxy private constructor() {
         }
     }
 
+    @Suppress("unused")
+    @SideOnly(Side.SERVER)
+    class ServerImpl : Impl
+
     companion object {
         private const val CLIENT = "net.insomniakitten.glazed.GlazedProxy\$ClientImpl"
-        private const val SERVER = "net.insomniakitten.glazed.GlazedProxy\$Impl"
+        private const val SERVER = "net.insomniakitten.glazed.GlazedProxy\$ServerImpl"
 
         @SidedProxy(modId = Glazed.ID, clientSide = CLIENT, serverSide = SERVER)
         @JvmStatic lateinit var instance: Impl
