@@ -28,14 +28,9 @@ infix fun <T> TileEntity.has(capability: Capability<T>) = hasCapability(capabili
 
 infix fun <T> TileEntity.has(pair: Pair<Capability<T>, EnumFacing?>) = hasCapability(pair.first, pair.second)
 
-infix fun <T> Capability<T>.from(te: TileEntity): T? {
-    return if (te has this) {
-        te.getCapability(this, null)
-    } else null
-}
+infix fun <T> Capability<T>.from(te: TileEntity) = if (te has this) te.getCapability(this, null) else null
 
-infix fun <T> Capability<T>.from(pair: Pair<TileEntity, EnumFacing?>): T? {
-    return if (pair.first has (this on pair.second)) {
-        pair.first.getCapability(this, pair.second)
-    } else null
-}
+infix fun <T> Capability<T>.from(pair: Pair<TileEntity, EnumFacing?>) =
+        if (pair.first has (this on pair.second)) {
+            pair.first.getCapability(this, pair.second)
+        } else null
