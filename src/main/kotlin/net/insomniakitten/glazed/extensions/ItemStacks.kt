@@ -1,4 +1,4 @@
-@file:JvmName("Entities")
+@file:JvmName("ItemStacks")
 
 package net.insomniakitten.glazed.extensions
 
@@ -18,14 +18,6 @@ package net.insomniakitten.glazed.extensions
  *   limitations under the License.
  */
 
-import net.minecraft.entity.Entity
-import net.minecraft.util.EnumFacing
-import net.minecraft.util.math.Vec3d
+import net.minecraft.item.ItemStack
 
-val Entity.mirroredFacing: EnumFacing get() = horizontalFacing.opposite
-
-fun Entity.getPosition(partialTicks: Float) = Vec3d(
-        lastTickPosX + (posX - lastTickPosX) * partialTicks,
-        lastTickPosY + (posY - lastTickPosY) * partialTicks,
-        lastTickPosZ + (posZ - lastTickPosZ) * partialTicks
-)
+val ItemStack.isNotEmpty: Boolean get() = !isEmpty

@@ -18,19 +18,34 @@ package net.insomniakitten.glazed.extensions
  *   limitations under the License.
  */
 
-import net.minecraft.tileentity.TileEntity
 import net.minecraft.util.EnumFacing
 import net.minecraftforge.common.capabilities.Capability
+import net.minecraftforge.common.capabilities.ICapabilityProvider
 
-operator fun TileEntity.contains(capability: Capability<*>) = hasCapability(capability, null)
+operator fun <T> ICapabilityProvider.get(capability: Capability<T>, side: EnumFacing? = null): T? {
+    return getCapability(capability, side)
+}
 
-infix fun <T> TileEntity.has(capability: Capability<T>) = hasCapability(capability, null)
+operator fun <T> ICapabilityProvider.contains(capability: Capability<T>): Boolean {
+    return hasCapability(capability, null)
+}
 
-infix fun <T> TileEntity.has(pair: Pair<Capability<T>, EnumFacing?>) = hasCapability(pair.first, pair.second)
+operator fun <T> ICapabilityProvider.contains(pair: Pair<Capability<T>, EnumFacing?>): Boolean {
+    return hasCapability(pair.first, pair.second)
+}
 
-infix fun <T> Capability<T>.from(te: TileEntity) = if (te has this) te.getCapability(this, null) else null
+infix fun <T> ICapabilityProvider.has(capability: Capability<T>): Boolean {
+    return hasCapability(capability, null)
+}
 
-infix fun <T> Capability<T>.from(pair: Pair<TileEntity, EnumFacing?>) =
-        if (pair.first has (this on pair.second)) {
-            pair.first.getCapability(this, pair.second)
-        } else null
+infix fun <T> ICapabilityProvider.has(pair: Pair<Capability<T>, EnumFacing?>): Boolean {
+    return hasCapability(pair.first, pair.second)
+}
+
+infix fun <T> Capability<T>.from(provider: ICapabilityProvider): T? {
+    return provider.getCapability(this, null)
+}
+
+infix fun <T> Capability<T>.from(pair: Pair<ICapabilityProvider, EnumFacing?>): T? {
+    return pair.first.getCapability(this, pair.second)
+}

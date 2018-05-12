@@ -16,7 +16,8 @@ package net.insomniakitten.glazed.gui
  *   limitations under the License.
  */
 
-import net.insomniakitten.glazed.extensions.from
+import net.insomniakitten.glazed.extensions.get
+import net.insomniakitten.glazed.extensions.isNotEmpty
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.inventory.Container
 import net.minecraft.inventory.Slot
@@ -27,7 +28,7 @@ import net.minecraftforge.items.SlotItemHandler
 
 class GlassKilnContainer(te: TileEntity, player: EntityPlayer) : Container() {
     init {
-        (CapabilityItemHandler.ITEM_HANDLER_CAPABILITY from te)?.let {
+        (te[CapabilityItemHandler.ITEM_HANDLER_CAPABILITY])?.let {
             this += SlotItemHandler(it, 0, 34, 17)
             this += SlotItemHandler(it, 1, 56, 17)
             this += SlotItemHandler(it, 2, 45, 53)
@@ -58,33 +59,34 @@ class GlassKilnContainer(te: TileEntity, player: EntityPlayer) : Container() {
         val slot = inventorySlots[sourceIndex]
         val stack = slot.stack
 
-        if (stack.isEmpty) return ItemStack.EMPTY
+        if (stack.isNotEmpty) {
+            val kilnSlots = 3
+            val inventorySlots = 28
+            val hotbarSlots = 9
+            val maxSlot = kilnSlots + inventorySlots + hotbarSlots
 
-        val kilnSlots = 3
-        val inventorySlots = 28
-        val hotbarSlots = 9
-        val maxSlot = kilnSlots + inventorySlots + hotbarSlots
-
-        if (sourceIndex <= kilnSlots) {
-            if (!mergeItemStack(stack, kilnSlots, maxSlot, true)) {
+            if (sourceIndex <= kilnSlots) {
+                if (!mergeItemStack(stack, kilnSlots, maxSlot, true)) {
+                    return ItemStack.EMPTY
+                }
+            } else if (!mergeItemStack(stack, 0, 1, false) &&
+                       !mergeItemStack(stack, 1, 2, false) &&
+                       !mergeItemStack(stack, 2, 3, false)) {
                 return ItemStack.EMPTY
             }
-        } else if (!mergeItemStack(stack, 0, 1, false) &&
-                   !mergeItemStack(stack, 1, 2, false) &&
-                   !mergeItemStack(stack, 2, 3, false)) {
-            return ItemStack.EMPTY
+
+            slot.onSlotChanged()
+
+            if (stack.isNotEmpty) {
+                if (slot.stack.count == stack.count) {
+                    return ItemStack.EMPTY
+                }
+            } else slot.putStack(ItemStack.EMPTY)
+
+            slot.onTake(player, stack)
+
+            return stack
         }
-
-        slot.onSlotChanged()
-
-        if (stack.isEmpty) {
-            slot.putStack(ItemStack.EMPTY)
-        } else if (stack.count == slot.stack.count) {
-            return ItemStack.EMPTY
-        }
-
-        slot.onTake(player, stack)
-
-        return stack
+        return ItemStack.EMPTY
     }
 }

@@ -30,7 +30,6 @@ class GlassKilnGui(
         private val te: TileEntity,
         private val player: EntityPlayer
 ) : GuiContainer(GlassKilnContainer(te, player)) {
-
     override fun drawScreen(mouseX: Int, mouseY: Int, partialTicks: Float) {
         drawDefaultBackground()
         super.drawScreen(mouseX, mouseY, partialTicks)

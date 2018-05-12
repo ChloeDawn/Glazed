@@ -163,7 +163,7 @@ object GlazedClient : IResourceManagerReloadListener {
             val buffer = Tessellator.getInstance().buffer
             val posLerp = client.player.getPosition(event.partialTicks)
             val sprite = destroyStageSprites[destroyStage]
-            val pos = state[GlassKilnBlock.HALF].offsetToOtherHalf(curr)
+            val pos = state[GlassKilnBlock.HALF](curr)
 
             buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK)
             buffer.setTranslation(-posLerp.x, -posLerp.y, -posLerp.z)

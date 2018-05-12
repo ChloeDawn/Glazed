@@ -146,6 +146,6 @@ class GlassPaneBlock : BlockPane(Material.GLASS, true) {
             access: IBlockAccess,
             pos: BlockPos,
             side: EnumFacing
-    ) = pos.offset(side).let { !access[it].state.doesSideBlockRendering(access, it, side.opposite) }
+    ) = !access[pos.offset(side)].doesSideBlockRendering(side.opposite)
 }
 

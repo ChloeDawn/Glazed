@@ -20,12 +20,11 @@ import net.insomniakitten.glazed.Glazed
 import net.insomniakitten.glazed.GlazedProxy
 import net.insomniakitten.glazed.block.entity.GlassKilnEntity
 import net.insomniakitten.glazed.extensions.AccessPosition
-import net.insomniakitten.glazed.extensions.canReplace
 import net.insomniakitten.glazed.extensions.cycle
 import net.insomniakitten.glazed.extensions.get
 import net.insomniakitten.glazed.extensions.invoke
+import net.insomniakitten.glazed.extensions.mirroredFacing
 import net.insomniakitten.glazed.extensions.plus
-import net.insomniakitten.glazed.extensions.with
 import net.minecraft.block.BlockHorizontal
 import net.minecraft.block.SoundType
 import net.minecraft.block.material.MapColor
@@ -63,11 +62,15 @@ class GlassKilnBlock : BlockHorizontal(Material.ROCK, MapColor.ADOBE) {
     private val AccessPosition.kiln get() = entity as? GlassKilnEntity
     private val AccessPosition.isActive get() = kiln?.isActive == true
 
+    override fun isFullCube(state: IBlockState) = false
+
+    override fun isOpaqueCube(state: IBlockState) = false
+
     override fun getStateFromMeta(meta: Int): IBlockState {
         val active = meta and 1 != 0
         val half = Half[meta and 2 shr 1]
         val facing = EnumFacing.getHorizontal(meta shr 2)
-        return defaultState with ACTIVE(active) with HALF(half) with FACING(facing)
+        return defaultState + ACTIVE(active) + HALF(half) + FACING(facing)
     }
 
     override fun getMetaFromState(state: IBlockState): Int {
@@ -82,82 +85,6 @@ class GlassKilnBlock : BlockHorizontal(Material.ROCK, MapColor.ADOBE) {
             access: IBlockAccess,
             pos: BlockPos
     ) = state + ACTIVE(access[pos].isActive)
-
-    override fun isFullCube(state: IBlockState) = false
-
-    @SideOnly(Side.CLIENT)
-    override fun getSelectedBoundingBox(state: IBlockState, world: World, pos: BlockPos): AxisAlignedBB =
-            state[HALF].boundingBox.offset(pos)
-
-    override fun isOpaqueCube(state: IBlockState) = false
-
-    override fun breakBlock(world: World, pos: BlockPos, state: IBlockState) {
-        if (hasTileEntity(state)) {
-            world[pos].kiln?.dropItems(world, pos)
-            world[pos].entity = null
-            world.destroyBlock(pos.up(), false)
-        } else world.destroyBlock(pos.down(), false)
-    }
-
-    override fun canPlaceBlockAt(world: World, pos: BlockPos) =
-            world.canReplace(pos) && (world.canReplace(pos.down()) || world.canReplace(pos.up()))
-
-    override fun onBlockActivated(
-            world: World,
-            pos: BlockPos,
-            state: IBlockState,
-            player: EntityPlayer,
-            hand: EnumHand?,
-            side: EnumFacing,
-            hitX: Float,
-            hitY: Float,
-            hitZ: Float
-    ): Boolean {
-        state[HALF].offsetToEntity(pos).apply {
-            player.openGui(Glazed, 0, world, x, y, z)
-        }
-        return true
-    }
-
-    override fun onBlockPlacedBy(
-            world: World,
-            pos: BlockPos,
-            state: IBlockState,
-            entity: EntityLivingBase?,
-            stack: ItemStack
-    ) {
-        world[state[HALF].offsetToOtherHalf(pos)].state = state cycle HALF
-    }
-
-    override fun hasComparatorInputOverride(state: IBlockState?) = true
-
-    override fun getComparatorInputOverride(
-            state: IBlockState,
-            world: World,
-            pos: BlockPos
-    ) = world[state[HALF].offsetToEntity(pos)].kiln?.comparatorOutput ?: 0
-
-    override fun createBlockState() = BlockStateContainer(this, ACTIVE, FACING, HALF)
-
-    override fun getLightValue(
-            state: IBlockState,
-            access: IBlockAccess,
-            pos: BlockPos
-    ) = if (state[ACTIVE]) 8 else 0
-
-    override fun doesSideBlockRendering(
-            state: IBlockState,
-            access: IBlockAccess,
-            pos: BlockPos?,
-            side: EnumFacing
-    ) = side != EnumFacing.DOWN && state[HALF].isLower && side != state[FACING]
-
-    override fun hasTileEntity(state: IBlockState) = state[HALF].isLower
-
-    override fun createTileEntity(
-            world: World,
-            state: IBlockState
-    ) = GlassKilnEntity()
 
     override fun getPickBlock(
             state: IBlockState,
@@ -182,7 +109,80 @@ class GlassKilnBlock : BlockHorizontal(Material.ROCK, MapColor.ADOBE) {
             meta: Int,
             placer: EntityLivingBase,
             hand: EnumHand
-    ) = defaultState with HALF(Half[world, pos]) with FACING(placer.horizontalFacing.opposite)
+    ) = defaultState + HALF(Half[world, pos]) + FACING(placer.mirroredFacing)
+
+    @SideOnly(Side.CLIENT)
+    override fun getSelectedBoundingBox(
+            state: IBlockState,
+            world: World,
+            pos: BlockPos
+    ): AxisAlignedBB = state[HALF].boundingBox.offset(pos)
+
+    override fun breakBlock(
+            world: World,
+            pos: BlockPos,
+            state: IBlockState
+    ) {
+        if (hasTileEntity(state)) {
+            world[pos].kiln?.dropItems(world, pos)
+            world[pos].entity = null
+            world.destroyBlock(pos.up(), false)
+        } else world.destroyBlock(pos.down(), false)
+    }
+
+    override fun canPlaceBlockAt(world: World, pos: BlockPos) =
+            world[pos].isReplaceable && (world[pos.down()].isReplaceable || world[pos.up()].isReplaceable)
+
+    override fun onBlockActivated(
+            world: World,
+            pos: BlockPos,
+            state: IBlockState,
+            player: EntityPlayer,
+            hand: EnumHand,
+            side: EnumFacing,
+            hitX: Float,
+            hitY: Float,
+            hitZ: Float
+    ): Boolean {
+        state[HALF].offsetToEntity(pos).apply {
+            player.openGui(Glazed, 0, world, x, y, z)
+        }
+        return true
+    }
+
+    override fun onBlockPlacedBy(
+            world: World,
+            pos: BlockPos,
+            state: IBlockState,
+            entity: EntityLivingBase?,
+            stack: ItemStack
+    ) {
+        world[state[HALF](pos)].state = state cycle HALF
+    }
+
+    override fun hasComparatorInputOverride(state: IBlockState) = true
+
+    override fun getComparatorInputOverride(
+            state: IBlockState,
+            world: World,
+            pos: BlockPos
+    ) = world[state[HALF].offsetToEntity(pos)].kiln?.comparatorOutput ?: 0
+
+    override fun createBlockState() = BlockStateContainer(this, ACTIVE, FACING, HALF)
+
+    override fun getLightValue(state: IBlockState, access: IBlockAccess, pos: BlockPos) =
+            if (state[ACTIVE]) 8 else 0
+
+    override fun doesSideBlockRendering(
+            state: IBlockState,
+            access: IBlockAccess,
+            pos: BlockPos?,
+            side: EnumFacing
+    ) = side != EnumFacing.DOWN && state[HALF].isLower && side != state[FACING]
+
+    override fun hasTileEntity(state: IBlockState) = state[HALF].isLower
+
+    override fun createTileEntity(world: World, state: IBlockState) = GlassKilnEntity()
 
     enum class Half constructor(val boundingBox: AxisAlignedBB) : IStringSerializable {
         LOWER(AxisAlignedBB(0.0, 0.0, 0.0, 1.0, 2.0, 1.0)),
@@ -191,13 +191,13 @@ class GlassKilnBlock : BlockHorizontal(Material.ROCK, MapColor.ADOBE) {
         val isUpper get() = this == UPPER
         val isLower get() = this == LOWER
 
-        fun offsetToEntity(pos: BlockPos): BlockPos = when (this) {
-            Half.LOWER -> pos
+        operator fun invoke(pos: BlockPos): BlockPos = when (this) {
+            Half.LOWER -> pos.up()
             Half.UPPER -> pos.down()
         }
 
-        fun offsetToOtherHalf(pos: BlockPos): BlockPos = when (this) {
-            Half.LOWER -> pos.up()
+        fun offsetToEntity(pos: BlockPos): BlockPos = when (this) {
+            Half.LOWER -> pos
             Half.UPPER -> pos.down()
         }
 
@@ -209,8 +209,8 @@ class GlassKilnBlock : BlockHorizontal(Material.ROCK, MapColor.ADOBE) {
             operator fun get(ordinal: Int) = VALUES[ordinal]
 
             operator fun get(access: IBlockAccess, pos: BlockPos) = when {
-                access.canReplace(pos.up()) -> LOWER
-                access.canReplace(pos.down()) -> UPPER
+                access[pos.up()].isReplaceable -> LOWER
+                access[pos.down()].isReplaceable -> UPPER
                 else -> throw IllegalArgumentException("Cannot determine Half from position $pos")
             }
         }
