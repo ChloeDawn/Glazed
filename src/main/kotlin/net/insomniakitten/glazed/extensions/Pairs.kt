@@ -27,5 +27,3 @@ infix fun <K, V> K.and(other: V) = this to other
 infix fun <K, V> K.with(other: V) = this to other
 
 infix fun <K, V> K.on(other: V) = this to other
-
-infix fun <K, V> K.setTo(other: V) = this to other

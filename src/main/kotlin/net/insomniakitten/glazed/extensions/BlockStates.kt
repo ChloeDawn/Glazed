@@ -23,7 +23,9 @@ import net.minecraft.block.state.IBlockState
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.IBlockAccess
 
-operator fun IBlockState.invoke(access: IBlockAccess, pos: BlockPos): IBlockState = getActualState(access, pos)
+operator fun IBlockState.invoke(access: IBlockAccess, pos: BlockPos): IBlockState {
+    return getActualState(access, pos)
+}
 
 operator fun <V : Comparable<V>> IBlockState.get(property: IProperty<V>): V {
     return getValue(property)
@@ -39,4 +41,8 @@ infix fun <V : Comparable<V>> IProperty<V>.from(state: IBlockState): V {
 
 infix fun <V : Comparable<V>> IBlockState.with(entry: Pair<IProperty<V>, V>): IBlockState {
     return withProperty(entry.first, entry.second)
+}
+
+infix fun <V : Comparable<V>> IBlockState.cycle(property: IProperty<V>): IBlockState {
+    return cycleProperty(property)
 }

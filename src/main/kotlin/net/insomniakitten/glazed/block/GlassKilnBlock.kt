@@ -19,10 +19,12 @@ package net.insomniakitten.glazed.block
 import net.insomniakitten.glazed.Glazed
 import net.insomniakitten.glazed.GlazedProxy
 import net.insomniakitten.glazed.block.entity.GlassKilnEntity
+import net.insomniakitten.glazed.extensions.AccessPosition
+import net.insomniakitten.glazed.extensions.WorldPosition
 import net.insomniakitten.glazed.extensions.canReplace
+import net.insomniakitten.glazed.extensions.cycle
 import net.insomniakitten.glazed.extensions.get
 import net.insomniakitten.glazed.extensions.plus
-import net.insomniakitten.glazed.extensions.setTo
 import net.insomniakitten.glazed.extensions.with
 import net.minecraft.block.BlockHorizontal
 import net.minecraft.block.SoundType
@@ -50,7 +52,7 @@ import java.util.Locale
 
 class GlassKilnBlock : BlockHorizontal(Material.ROCK, MapColor.ADOBE) {
     init {
-        defaultState += ACTIVE setTo false
+        defaultState += (ACTIVE with false)
         unlocalizedName = "${Glazed.ID}.glass_kiln"
         setCreativeTab(Glazed.TAB)
         soundType = SoundType.STONE
@@ -58,15 +60,15 @@ class GlassKilnBlock : BlockHorizontal(Material.ROCK, MapColor.ADOBE) {
         setResistance(30.0F)
     }
 
-    private fun IBlockAccess.getKilnEntity(pos: BlockPos) = getTileEntity(pos)?.let {
-        it as? GlassKilnEntity ?: throw IllegalStateException("Invalid block entity $it at $pos")
-    }
+    private val AccessPosition.kiln get() = entity as? GlassKilnEntity
+    private val WorldPosition.kiln get() = entity as? GlassKilnEntity
+    private val AccessPosition.isActive get() = kiln?.isActive == true
 
     override fun getStateFromMeta(meta: Int): IBlockState {
         val active = meta and 1 != 0
         val half = Half[meta and 2 shr 1]
         val facing = EnumFacing.getHorizontal(meta shr 2)
-        return defaultState with (ACTIVE setTo active) with (HALF setTo half) with (FACING setTo facing)
+        return defaultState + (ACTIVE with active) + (HALF with half) + (FACING with facing)
     }
 
     override fun getMetaFromState(state: IBlockState): Int {
@@ -80,7 +82,7 @@ class GlassKilnBlock : BlockHorizontal(Material.ROCK, MapColor.ADOBE) {
             state: IBlockState,
             access: IBlockAccess,
             pos: BlockPos
-    ) = state with (ACTIVE setTo (access.getKilnEntity(pos)?.isActive == true))
+    ) = state + (ACTIVE with access[pos].isActive)
 
     override fun isFullCube(state: IBlockState) = false
 
@@ -92,7 +94,7 @@ class GlassKilnBlock : BlockHorizontal(Material.ROCK, MapColor.ADOBE) {
 
     override fun breakBlock(world: World, pos: BlockPos, state: IBlockState) {
         if (hasTileEntity(state)) {
-            world.getKilnEntity(pos)?.dropItems(world, pos)
+            world[pos].kiln?.dropItems(world, pos)
             world[pos].entity = null
             world.destroyBlock(pos.up(), false)
         } else world.destroyBlock(pos.down(), false)
@@ -125,8 +127,7 @@ class GlassKilnBlock : BlockHorizontal(Material.ROCK, MapColor.ADOBE) {
             entity: EntityLivingBase?,
             stack: ItemStack
     ) {
-        val offset = state[HALF].offsetToOtherHalf(pos)
-        world[offset].state = state.cycleProperty(HALF)
+        world[state[HALF].offsetToOtherHalf(pos)].state = state cycle HALF
     }
 
     override fun hasComparatorInputOverride(state: IBlockState?) = true
@@ -135,7 +136,7 @@ class GlassKilnBlock : BlockHorizontal(Material.ROCK, MapColor.ADOBE) {
             state: IBlockState,
             world: World,
             pos: BlockPos
-    ) = world.getKilnEntity(state[HALF].offsetToEntity(pos))?.comparatorOutput ?: 0
+    ) = world[state[HALF].offsetToEntity(pos)].kiln?.comparatorOutput ?: 0
 
     override fun createBlockState() = BlockStateContainer(this, ACTIVE, FACING, HALF)
 
@@ -150,7 +151,7 @@ class GlassKilnBlock : BlockHorizontal(Material.ROCK, MapColor.ADOBE) {
             access: IBlockAccess,
             pos: BlockPos?,
             side: EnumFacing
-    ) = side != EnumFacing.DOWN && state[HALF] == Half.LOWER && side != state[FACING]
+    ) = side != EnumFacing.DOWN && state[HALF].isLower && side != state[FACING]
 
     override fun hasTileEntity(state: IBlockState) = state[HALF].isLower
 
@@ -168,7 +169,7 @@ class GlassKilnBlock : BlockHorizontal(Material.ROCK, MapColor.ADOBE) {
     ): ItemStack = super.getPickBlock(state, target, world, pos, player).also {
         if (world.isRemote && player.capabilities.isCreativeMode &&
             state[HALF].isUpper && GlazedProxy.instance.isCtrlKeyDown) {
-            world.getKilnEntity(pos.down())?.serializeToStack(it)
+            world[pos.down()].kiln?.serializeToStack(it)
         }
     }
 
@@ -182,7 +183,7 @@ class GlassKilnBlock : BlockHorizontal(Material.ROCK, MapColor.ADOBE) {
             meta: Int,
             placer: EntityLivingBase,
             hand: EnumHand
-    ) = defaultState with (HALF setTo Half[world, pos]) with (FACING setTo placer.horizontalFacing.opposite)
+    ) = defaultState + (HALF with Half[world, pos]) + (FACING with placer.horizontalFacing.opposite)
 
     enum class Half constructor(val boundingBox: AxisAlignedBB) : IStringSerializable {
         LOWER(AxisAlignedBB(0.0, 0.0, 0.0, 1.0, 2.0, 1.0)),

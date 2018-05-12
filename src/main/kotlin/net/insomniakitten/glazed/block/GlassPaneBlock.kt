@@ -22,7 +22,7 @@ import net.insomniakitten.glazed.GlazedVariant.VARIANTS
 import net.insomniakitten.glazed.extensions.description
 import net.insomniakitten.glazed.extensions.get
 import net.insomniakitten.glazed.extensions.invoke
-import net.insomniakitten.glazed.extensions.setTo
+import net.insomniakitten.glazed.extensions.plus
 import net.insomniakitten.glazed.extensions.variant
 import net.insomniakitten.glazed.extensions.with
 import net.minecraft.block.BlockPane
@@ -53,7 +53,7 @@ class GlassPaneBlock : BlockPane(Material.GLASS, true) {
         setCreativeTab(Glazed.TAB)
     }
 
-    override fun getStateFromMeta(meta: Int) = defaultState with (GlazedVariant setTo GlazedVariant[meta])
+    override fun getStateFromMeta(meta: Int) = defaultState + (GlazedVariant with GlazedVariant[meta])
 
     override fun getMetaFromState(state: IBlockState) = state.variant.ordinal
 
