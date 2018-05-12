@@ -31,6 +31,8 @@ import java.util.Locale
 object GlazedVariant : PropertyEnum<GlazedVariant.Variant>("variant", Variant::class.java, Variant.values().toSet()) {
     val VARIANTS = Variant.values()
 
+    operator fun invoke(ordinal: Int) = this to this[ordinal]
+
     operator fun contains(ordinal: Int) = ordinal >= 0 && ordinal < VARIANTS.size
 
     operator fun contains(stack: ItemStack) = stack.metadata in this

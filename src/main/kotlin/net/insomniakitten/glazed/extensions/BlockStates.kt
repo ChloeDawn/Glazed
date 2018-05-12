@@ -28,6 +28,8 @@ operator fun IBlockState.invoke(access: IBlockAccess, pos: BlockPos): IBlockStat
     return getActualState(access, pos)
 }
 
+operator fun <V : Comparable<V>, K : IProperty<V>> K.invoke(value: V): Pair<K, V> = this to value
+
 operator fun <V : Comparable<V>> Block.contains(property: IProperty<V>): Boolean {
     return property in blockState.properties
 }

@@ -23,6 +23,7 @@ import net.insomniakitten.glazed.extensions.AccessPosition
 import net.insomniakitten.glazed.extensions.canReplace
 import net.insomniakitten.glazed.extensions.cycle
 import net.insomniakitten.glazed.extensions.get
+import net.insomniakitten.glazed.extensions.invoke
 import net.insomniakitten.glazed.extensions.plus
 import net.insomniakitten.glazed.extensions.with
 import net.minecraft.block.BlockHorizontal
@@ -51,7 +52,7 @@ import java.util.Locale
 
 class GlassKilnBlock : BlockHorizontal(Material.ROCK, MapColor.ADOBE) {
     init {
-        defaultState += (ACTIVE with false)
+        defaultState += ACTIVE(false)
         unlocalizedName = "${Glazed.ID}.glass_kiln"
         setCreativeTab(Glazed.TAB)
         soundType = SoundType.STONE
@@ -66,7 +67,7 @@ class GlassKilnBlock : BlockHorizontal(Material.ROCK, MapColor.ADOBE) {
         val active = meta and 1 != 0
         val half = Half[meta and 2 shr 1]
         val facing = EnumFacing.getHorizontal(meta shr 2)
-        return defaultState + (ACTIVE with active) + (HALF with half) + (FACING with facing)
+        return defaultState with ACTIVE(active) with HALF(half) with FACING(facing)
     }
 
     override fun getMetaFromState(state: IBlockState): Int {
@@ -80,7 +81,7 @@ class GlassKilnBlock : BlockHorizontal(Material.ROCK, MapColor.ADOBE) {
             state: IBlockState,
             access: IBlockAccess,
             pos: BlockPos
-    ) = state + (ACTIVE with access[pos].isActive)
+    ) = state + ACTIVE(access[pos].isActive)
 
     override fun isFullCube(state: IBlockState) = false
 
@@ -181,7 +182,7 @@ class GlassKilnBlock : BlockHorizontal(Material.ROCK, MapColor.ADOBE) {
             meta: Int,
             placer: EntityLivingBase,
             hand: EnumHand
-    ) = defaultState + (HALF with Half[world, pos]) + (FACING with placer.horizontalFacing.opposite)
+    ) = defaultState with HALF(Half[world, pos]) with FACING(placer.horizontalFacing.opposite)
 
     enum class Half constructor(val boundingBox: AxisAlignedBB) : IStringSerializable {
         LOWER(AxisAlignedBB(0.0, 0.0, 0.0, 1.0, 2.0, 1.0)),
@@ -220,3 +221,4 @@ class GlassKilnBlock : BlockHorizontal(Material.ROCK, MapColor.ADOBE) {
         val HALF: PropertyEnum<Half> = create("half", Half::class.java)
     }
 }
+

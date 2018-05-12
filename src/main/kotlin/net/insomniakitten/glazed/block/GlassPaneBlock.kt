@@ -24,7 +24,6 @@ import net.insomniakitten.glazed.extensions.get
 import net.insomniakitten.glazed.extensions.invoke
 import net.insomniakitten.glazed.extensions.plus
 import net.insomniakitten.glazed.extensions.variant
-import net.insomniakitten.glazed.extensions.with
 import net.minecraft.block.BlockPane
 import net.minecraft.block.SoundType
 import net.minecraft.block.material.Material
@@ -53,7 +52,7 @@ class GlassPaneBlock : BlockPane(Material.GLASS, true) {
         setCreativeTab(Glazed.TAB)
     }
 
-    override fun getStateFromMeta(meta: Int) = defaultState + (GlazedVariant with GlazedVariant[meta])
+    override fun getStateFromMeta(meta: Int) = defaultState + GlazedVariant(meta)
 
     override fun getMetaFromState(state: IBlockState) = state.variant.ordinal
 
