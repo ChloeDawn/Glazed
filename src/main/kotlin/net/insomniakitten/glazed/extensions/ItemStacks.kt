@@ -26,8 +26,6 @@ import net.minecraftforge.items.ItemHandlerHelper
 
 inline val ItemStack.isNotEmpty: Boolean get() = !isEmpty
 
-inline val ItemStack.creatorModId get() = item.getCreatorModId(this)
-
 fun ItemStack.spawnAsEntity(world: World, pos: BlockPos) {
     Block.spawnAsEntity(world, pos, this)
 }

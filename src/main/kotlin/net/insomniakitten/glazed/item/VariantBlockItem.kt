@@ -17,9 +17,9 @@ package net.insomniakitten.glazed.item
  */
 
 import net.insomniakitten.glazed.GlazedVariant
-import net.insomniakitten.glazed.extensions.BlockState
 import net.insomniakitten.glazed.extensions.key
 import net.minecraft.block.Block
+import net.minecraft.block.state.IBlockState
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.item.ItemBlock
 import net.minecraft.item.ItemStack
@@ -56,6 +56,6 @@ class VariantBlockItem(block: Block) : ItemBlock(block) {
             hitX: Float,
             hitY: Float,
             hitZ: Float,
-            newState: BlockState
+            newState: IBlockState
     ) = stack in GlazedVariant && super.placeBlockAt(stack, player, world, pos, side, hitX, hitY, hitZ, newState)
 }

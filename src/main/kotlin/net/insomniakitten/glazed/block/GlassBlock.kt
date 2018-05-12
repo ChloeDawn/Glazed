@@ -20,7 +20,6 @@ import net.insomniakitten.glazed.Glazed
 import net.insomniakitten.glazed.GlazedVariant
 import net.insomniakitten.glazed.GlazedVariant.VARIANTS
 import net.insomniakitten.glazed.extensions.BlockAccess
-import net.insomniakitten.glazed.extensions.BlockState
 import net.insomniakitten.glazed.extensions.description
 import net.insomniakitten.glazed.extensions.get
 import net.insomniakitten.glazed.extensions.plus
@@ -29,6 +28,7 @@ import net.minecraft.block.BlockGlass
 import net.minecraft.block.SoundType
 import net.minecraft.block.material.Material
 import net.minecraft.block.state.BlockStateContainer
+import net.minecraft.block.state.IBlockState
 import net.minecraft.client.util.ITooltipFlag
 import net.minecraft.creativetab.CreativeTabs
 import net.minecraft.entity.Entity
@@ -53,27 +53,27 @@ class GlassBlock : BlockGlass(Material.GLASS, true) {
 
     override fun getStateFromMeta(meta: Int) = defaultState + GlazedVariant(meta)
 
-    override fun getMetaFromState(state: BlockState) = state.variant.ordinal
+    override fun getMetaFromState(state: IBlockState) = state.variant.ordinal
 
     override fun createBlockState() = BlockStateContainer(this, GlazedVariant)
 
-    override fun canProvidePower(state: BlockState) = state.variant.redstoneLevel > 0
+    override fun canProvidePower(state: IBlockState) = state.variant.redstoneLevel > 0
 
     override fun getBlockHardness(
-            state: BlockState,
+            state: IBlockState,
             world: World,
             pos: BlockPos
     ) = state.variant.hardness
 
     override fun getWeakPower(
-            state: BlockState,
+            state: IBlockState,
             access: BlockAccess,
             pos: BlockPos,
             side: EnumFacing
     ) = state.variant.redstoneLevel
 
     override fun getLightValue(
-            state: BlockState,
+            state: IBlockState,
             access: BlockAccess,
             pos: BlockPos
     ) = state.variant.lightLevel
@@ -96,7 +96,7 @@ class GlassBlock : BlockGlass(Material.GLASS, true) {
     }
 
     override fun doesSideBlockRendering(
-            state: BlockState,
+            state: IBlockState,
             world: BlockAccess,
             pos: BlockPos,
             side: EnumFacing
@@ -112,7 +112,7 @@ class GlassBlock : BlockGlass(Material.GLASS, true) {
     ) = world[pos].state.variant.resistance
 
     override fun getPickBlock(
-            state: BlockState,
+            state: IBlockState,
             target: RayTraceResult,
             world: World,
             pos: BlockPos,
@@ -120,12 +120,12 @@ class GlassBlock : BlockGlass(Material.GLASS, true) {
     ) = ItemStack(this, 1, state.variant.ordinal)
 
     override fun canRenderInLayer(
-            state: BlockState,
+            state: IBlockState,
             layer: BlockRenderLayer
     ) = state.variant.renderLayer == layer
 
     override fun getSoundType(
-            state: BlockState,
+            state: IBlockState,
             world: World,
             pos: BlockPos,
             entity: Entity?
@@ -133,7 +133,7 @@ class GlassBlock : BlockGlass(Material.GLASS, true) {
 
     @SideOnly(Side.CLIENT)
     override fun shouldSideBeRendered(
-            state: BlockState,
+            state: IBlockState,
             access: BlockAccess,
             pos: BlockPos,
             side: EnumFacing
