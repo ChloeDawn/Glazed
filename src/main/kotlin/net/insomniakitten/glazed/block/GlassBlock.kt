@@ -19,7 +19,6 @@ package net.insomniakitten.glazed.block
 import net.insomniakitten.glazed.Glazed
 import net.insomniakitten.glazed.GlazedVariant
 import net.insomniakitten.glazed.GlazedVariant.VARIANTS
-import net.insomniakitten.glazed.extensions.BlockAccess
 import net.insomniakitten.glazed.extensions.description
 import net.insomniakitten.glazed.extensions.get
 import net.insomniakitten.glazed.extensions.plus
@@ -40,6 +39,7 @@ import net.minecraft.util.NonNullList
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.RayTraceResult
 import net.minecraft.world.Explosion
+import net.minecraft.world.IBlockAccess
 import net.minecraft.world.World
 import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
@@ -67,14 +67,14 @@ class GlassBlock : BlockGlass(Material.GLASS, true) {
 
     override fun getWeakPower(
             state: IBlockState,
-            access: BlockAccess,
+            access: IBlockAccess,
             pos: BlockPos,
             side: EnumFacing
     ) = state.variant.redstoneLevel
 
     override fun getLightValue(
             state: IBlockState,
-            access: BlockAccess,
+            access: IBlockAccess,
             pos: BlockPos
     ) = state.variant.lightLevel
 
@@ -97,7 +97,7 @@ class GlassBlock : BlockGlass(Material.GLASS, true) {
 
     override fun doesSideBlockRendering(
             state: IBlockState,
-            world: BlockAccess,
+            world: IBlockAccess,
             pos: BlockPos,
             side: EnumFacing
     ) = world[pos.offset(side)].state.let {
@@ -134,7 +134,7 @@ class GlassBlock : BlockGlass(Material.GLASS, true) {
     @SideOnly(Side.CLIENT)
     override fun shouldSideBeRendered(
             state: IBlockState,
-            access: BlockAccess,
+            access: IBlockAccess,
             pos: BlockPos,
             side: EnumFacing
     ) = !access[pos.offset(side)].doesSideBlockRendering(side.opposite)

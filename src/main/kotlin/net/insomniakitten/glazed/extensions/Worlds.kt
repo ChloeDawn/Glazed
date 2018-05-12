@@ -25,14 +25,12 @@ import net.minecraft.util.math.BlockPos
 import net.minecraft.world.IBlockAccess
 import net.minecraft.world.World
 
-typealias BlockAccess = IBlockAccess
-
-operator fun BlockAccess.get(pos: BlockPos) = AccessPosition(this, pos)
+operator fun IBlockAccess.get(pos: BlockPos) = AccessPosition(this, pos)
 
 operator fun World.get(pos: BlockPos) = WorldPosition(this, pos)
 
 open class AccessPosition internal constructor(
-        protected val access: BlockAccess,
+        protected val access: IBlockAccess,
         protected val pos: BlockPos
 ) {
     open val state: IBlockState

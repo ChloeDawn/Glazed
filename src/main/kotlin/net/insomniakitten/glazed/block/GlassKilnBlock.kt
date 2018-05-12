@@ -20,7 +20,6 @@ import net.insomniakitten.glazed.Glazed
 import net.insomniakitten.glazed.GlazedProxy
 import net.insomniakitten.glazed.block.entity.GlassKilnEntity
 import net.insomniakitten.glazed.extensions.AccessPosition
-import net.insomniakitten.glazed.extensions.BlockAccess
 import net.insomniakitten.glazed.extensions.comparatorOutput
 import net.insomniakitten.glazed.extensions.cycle
 import net.insomniakitten.glazed.extensions.get
@@ -45,6 +44,7 @@ import net.minecraft.util.IStringSerializable
 import net.minecraft.util.math.AxisAlignedBB
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.RayTraceResult
+import net.minecraft.world.IBlockAccess
 import net.minecraft.world.World
 import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
@@ -83,7 +83,7 @@ class GlassKilnBlock : BlockHorizontal(Material.ROCK, MapColor.ADOBE) {
 
     override fun getActualState(
             state: IBlockState,
-            access: BlockAccess,
+            access: IBlockAccess,
             pos: BlockPos
     ) = state + ACTIVE(access[pos].isActive)
 
@@ -171,12 +171,12 @@ class GlassKilnBlock : BlockHorizontal(Material.ROCK, MapColor.ADOBE) {
 
     override fun createBlockState() = BlockStateContainer(this, ACTIVE, FACING, HALF)
 
-    override fun getLightValue(state: IBlockState, access: BlockAccess, pos: BlockPos) =
+    override fun getLightValue(state: IBlockState, access: IBlockAccess, pos: BlockPos) =
             if (state[ACTIVE]) 8 else 0
 
     override fun doesSideBlockRendering(
             state: IBlockState,
-            access: BlockAccess,
+            access: IBlockAccess,
             pos: BlockPos?,
             side: EnumFacing
     ) = side != EnumFacing.DOWN && state[HALF].isLower && side != state[FACING]
@@ -209,7 +209,7 @@ class GlassKilnBlock : BlockHorizontal(Material.ROCK, MapColor.ADOBE) {
 
             operator fun get(ordinal: Int) = VALUES[ordinal]
 
-            operator fun get(access: BlockAccess, pos: BlockPos) = when {
+            operator fun get(access: IBlockAccess, pos: BlockPos) = when {
                 access[pos.up()].isReplaceable -> LOWER
                 access[pos.down()].isReplaceable -> UPPER
                 else -> throw IllegalArgumentException("Cannot determine Half from position $pos")
