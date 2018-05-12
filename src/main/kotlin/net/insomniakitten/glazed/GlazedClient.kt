@@ -18,6 +18,7 @@ package net.insomniakitten.glazed
 
 import net.insomniakitten.glazed.GlazedVariant.VARIANTS
 import net.insomniakitten.glazed.block.GlassKilnBlock
+import net.insomniakitten.glazed.extensions.BlockState
 import net.insomniakitten.glazed.extensions.get
 import net.insomniakitten.glazed.extensions.getPosition
 import net.insomniakitten.glazed.extensions.key
@@ -27,7 +28,6 @@ import net.minecraft.block.BlockPane.EAST
 import net.minecraft.block.BlockPane.NORTH
 import net.minecraft.block.BlockPane.SOUTH
 import net.minecraft.block.BlockPane.WEST
-import net.minecraft.block.state.IBlockState
 import net.minecraft.client.renderer.GlStateManager.DestFactor
 import net.minecraft.client.renderer.GlStateManager.SourceFactor
 import net.minecraft.client.renderer.GlStateManager.alphaFunc
@@ -66,13 +66,13 @@ import org.lwjgl.opengl.GL11
 @SideOnly(Side.CLIENT)
 object GlazedClient : IResourceManagerReloadListener {
     private val BLOCK_STATE_MAPPER = object : StateMapperBase() {
-        override fun getModelResourceLocation(state: IBlockState) = state.run {
+        override fun getModelResourceLocation(state: BlockState) = state.run {
             ModelResourceLocation("${Glazed.ID}:${key}_glass_block", "normal")
         }
     }
 
     private val PANE_STATE_MAPPER = object : StateMapperBase() {
-        override fun getModelResourceLocation(state: IBlockState) = state.let {
+        override fun getModelResourceLocation(state: BlockState) = state.let {
             ModelResourceLocation(
                     "${Glazed.ID}:${it.key}_glass_pane",
                     "east=${it[EAST]},north=${it[NORTH]}," +

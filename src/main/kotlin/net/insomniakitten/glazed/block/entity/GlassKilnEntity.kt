@@ -16,9 +16,10 @@ package net.insomniakitten.glazed.block.entity
  *   limitations under the License.
  */
 
+import net.insomniakitten.glazed.extensions.comparatorOutput
 import net.insomniakitten.glazed.extensions.has
 import net.insomniakitten.glazed.extensions.on
-import net.minecraft.block.Block.spawnAsEntity
+import net.insomniakitten.glazed.extensions.spawnAsEntity
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.nbt.NBTTagList
@@ -36,7 +37,6 @@ import net.minecraftforge.common.capabilities.Capability
 import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
 import net.minecraftforge.items.CapabilityItemHandler.ITEM_HANDLER_CAPABILITY
-import net.minecraftforge.items.ItemHandlerHelper.calcRedstoneFromInventory
 import net.minecraftforge.items.ItemStackHandler
 import net.minecraftforge.oredict.OreDictionary.getOreID
 import net.minecraftforge.oredict.OreDictionary.getOreIDs
@@ -56,13 +56,12 @@ class GlassKilnEntity(private val items: ItemStackHandler = object : ItemStackHa
     var isActive = false
         private set
 
-    val comparatorOutput get() = calcRedstoneFromInventory(items)
+    val comparatorOutput get() = items.comparatorOutput
 
     fun dropItems(world: World, pos: BlockPos) {
         if (!world.isRemote && world.gameRules.getBoolean("doTileDrops")) {
-            (0 until items.slots).map(items::getStackInSlot).forEach {
-                spawnAsEntity(world, pos, it)
-            }
+            (0 until items.slots).map(items::getStackInSlot)
+                    .forEach { it.spawnAsEntity(world, pos) }
         }
     }
 

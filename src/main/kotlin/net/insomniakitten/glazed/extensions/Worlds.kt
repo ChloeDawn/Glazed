@@ -19,19 +19,20 @@ package net.insomniakitten.glazed.extensions
  */
 
 import net.minecraft.block.state.IBlockState
-import net.minecraft.init.Blocks
 import net.minecraft.tileentity.TileEntity
 import net.minecraft.util.EnumFacing
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.IBlockAccess
 import net.minecraft.world.World
 
-operator fun IBlockAccess.get(pos: BlockPos) = AccessPosition(this, pos)
+typealias BlockAccess = IBlockAccess
+
+operator fun BlockAccess.get(pos: BlockPos) = AccessPosition(this, pos)
 
 operator fun World.get(pos: BlockPos) = WorldPosition(this, pos)
 
 open class AccessPosition internal constructor(
-        protected val access: IBlockAccess,
+        protected val access: BlockAccess,
         protected val pos: BlockPos
 ) {
     open val state: IBlockState
@@ -64,9 +65,4 @@ class WorldPosition internal constructor(
         set(value) = if (value != null) {
             world.setTileEntity(pos, value)
         } else world.removeTileEntity(pos)
-}
-
-fun foo(world: World, pos: BlockPos) {
-    world[pos].state = Blocks.AIR.defaultState
-    world[pos].entity = null
 }

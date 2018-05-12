@@ -18,34 +18,41 @@ package net.insomniakitten.glazed.extensions
  *   limitations under the License.
  */
 
+import net.minecraft.item.ItemStack
 import net.minecraft.util.EnumFacing
 import net.minecraftforge.common.capabilities.Capability
 import net.minecraftforge.common.capabilities.ICapabilityProvider
+import net.minecraftforge.items.IItemHandler
+import net.minecraftforge.items.ItemHandlerHelper
 
-operator fun <T> ICapabilityProvider.get(capability: Capability<T>, side: EnumFacing? = null): T? {
-    return getCapability(capability, side)
-}
+typealias CapabilityProvider = ICapabilityProvider
+typealias ItemHandler = IItemHandler
 
-operator fun <T> ICapabilityProvider.contains(capability: Capability<T>): Boolean {
-    return hasCapability(capability, null)
-}
+inline val ItemHandler.comparatorOutput get() = ItemHandlerHelper.calcRedstoneFromInventory(this)
 
-operator fun <T> ICapabilityProvider.contains(pair: Pair<Capability<T>, EnumFacing?>): Boolean {
-    return hasCapability(pair.first, pair.second)
-}
+operator fun <T> CapabilityProvider.get(capability: Capability<T>, side: EnumFacing? = null) =
+        getCapability(capability, side)
 
-infix fun <T> ICapabilityProvider.has(capability: Capability<T>): Boolean {
-    return hasCapability(capability, null)
-}
+operator fun <T> CapabilityProvider.contains(capability: Capability<T>) =
+        hasCapability(capability, null)
 
-infix fun <T> ICapabilityProvider.has(pair: Pair<Capability<T>, EnumFacing?>): Boolean {
-    return hasCapability(pair.first, pair.second)
-}
+operator fun <T> CapabilityProvider.contains(pair: Pair<Capability<T>, EnumFacing?>) =
+        hasCapability(pair.first, pair.second)
 
-infix fun <T> Capability<T>.from(provider: ICapabilityProvider): T? {
-    return provider.getCapability(this, null)
-}
+infix fun <T> CapabilityProvider.has(capability: Capability<T>) =
+        hasCapability(capability, null)
 
-infix fun <T> Capability<T>.from(pair: Pair<ICapabilityProvider, EnumFacing?>): T? {
-    return pair.first.getCapability(this, pair.second)
-}
+infix fun <T> CapabilityProvider.has(pair: Pair<Capability<T>, EnumFacing?>) =
+        hasCapability(pair.first, pair.second)
+
+infix fun <T> Capability<T>.from(provider: CapabilityProvider) =
+        provider.getCapability(this, null)
+
+infix fun <T> Capability<T>.from(pair: Pair<CapabilityProvider, EnumFacing?>) =
+        pair.first.getCapability(this, pair.second)
+
+fun ItemHandler.insertItem(stack: ItemStack, simulate: Boolean) =
+        ItemHandlerHelper.insertItem(this, stack, simulate)
+
+fun ItemHandler.insertItemStacked(stack: ItemStack, simulate: Boolean) =
+        ItemHandlerHelper.insertItemStacked(this, stack, simulate)

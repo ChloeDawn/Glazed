@@ -19,6 +19,8 @@ package net.insomniakitten.glazed.block
 import net.insomniakitten.glazed.Glazed
 import net.insomniakitten.glazed.GlazedVariant
 import net.insomniakitten.glazed.GlazedVariant.VARIANTS
+import net.insomniakitten.glazed.extensions.BlockAccess
+import net.insomniakitten.glazed.extensions.BlockState
 import net.insomniakitten.glazed.extensions.description
 import net.insomniakitten.glazed.extensions.get
 import net.insomniakitten.glazed.extensions.invoke
@@ -28,7 +30,6 @@ import net.minecraft.block.BlockPane
 import net.minecraft.block.SoundType
 import net.minecraft.block.material.Material
 import net.minecraft.block.state.BlockStateContainer
-import net.minecraft.block.state.IBlockState
 import net.minecraft.client.util.ITooltipFlag
 import net.minecraft.creativetab.CreativeTabs
 import net.minecraft.entity.Entity
@@ -40,7 +41,6 @@ import net.minecraft.util.NonNullList
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.RayTraceResult
 import net.minecraft.world.Explosion
-import net.minecraft.world.IBlockAccess
 import net.minecraft.world.World
 import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
@@ -54,23 +54,23 @@ class GlassPaneBlock : BlockPane(Material.GLASS, true) {
 
     override fun getStateFromMeta(meta: Int) = defaultState + GlazedVariant(meta)
 
-    override fun getMetaFromState(state: IBlockState) = state.variant.ordinal
+    override fun getMetaFromState(state: BlockState) = state.variant.ordinal
 
     override fun createBlockState() = BlockStateContainer(
             this, NORTH, EAST, WEST, SOUTH, GlazedVariant
     )
 
-    override fun canProvidePower(state: IBlockState) = state.variant.redstoneLevel > 0
+    override fun canProvidePower(state: BlockState) = state.variant.redstoneLevel > 0
 
     override fun getBlockHardness(
-            state: IBlockState,
+            state: BlockState,
             world: World,
             pos: BlockPos
     ) = state.variant.hardness
 
     override fun getWeakPower(
-            state: IBlockState,
-            access: IBlockAccess,
+            state: BlockState,
+            access: BlockAccess,
             pos: BlockPos,
             side: EnumFacing
     ) = state.variant.redstoneLevel
@@ -79,11 +79,11 @@ class GlassPaneBlock : BlockPane(Material.GLASS, true) {
             tab: CreativeTabs,
             items: NonNullList<ItemStack>
     ) = VARIANTS.forEach {
-        items.add(ItemStack(this, 1, it.ordinal))
+        items += ItemStack(this, 1, it.ordinal)
     }
 
     override fun getPickBlock(
-            state: IBlockState,
+            state: BlockState,
             target: RayTraceResult?,
             world: World,
             pos: BlockPos,
@@ -91,12 +91,12 @@ class GlassPaneBlock : BlockPane(Material.GLASS, true) {
     ) = ItemStack(this, 1, state.variant.ordinal)
 
     override fun canRenderInLayer(
-            state: IBlockState,
+            state: BlockState,
             layer: BlockRenderLayer
     ) = state.variant.renderLayer == layer
 
     override fun getSoundType(
-            state: IBlockState,
+            state: BlockState,
             world: World,
             pos: BlockPos,
             entity: Entity?
@@ -113,12 +113,12 @@ class GlassPaneBlock : BlockPane(Material.GLASS, true) {
     }
 
     override fun getLightValue(
-            state: IBlockState,
-            access: IBlockAccess?,
+            state: BlockState,
+            access: BlockAccess?,
             pos: BlockPos?
     ) = state.variant.lightLevel
 
-    override fun doesSideBlockRendering(state: IBlockState, access: IBlockAccess, pos: BlockPos, side: EnumFacing): Boolean {
+    override fun doesSideBlockRendering(state: BlockState, access: BlockAccess, pos: BlockPos, side: EnumFacing): Boolean {
         val offset = pos.offset(side)
         val other = access[offset].state
         return if (side.axis.isVertical) {
@@ -134,16 +134,16 @@ class GlassPaneBlock : BlockPane(Material.GLASS, true) {
     ) = world[pos].state.variant.resistance
 
     override fun canConnectRedstone(
-            state: IBlockState,
-            world: IBlockAccess,
+            state: BlockState,
+            world: BlockAccess,
             pos: BlockPos,
             side: EnumFacing?
     ) = false // Glass panes shouldn't touch the adjacent dust block
 
     @SideOnly(Side.CLIENT)
     override fun shouldSideBeRendered(
-            state: IBlockState,
-            access: IBlockAccess,
+            state: BlockState,
+            access: BlockAccess,
             pos: BlockPos,
             side: EnumFacing
     ) = !access[pos.offset(side)].doesSideBlockRendering(side.opposite)
