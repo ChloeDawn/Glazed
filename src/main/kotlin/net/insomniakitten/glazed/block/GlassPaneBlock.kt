@@ -4,7 +4,7 @@ import net.insomniakitten.glazed.Glazed
 import net.insomniakitten.glazed.GlazedVariant
 import net.insomniakitten.glazed.GlazedVariant.VARIANTS
 import net.insomniakitten.glazed.extensions.description
-import net.insomniakitten.glazed.extensions.get
+import net.insomniakitten.glazed.extensions.doesSideBlockRendering
 import net.insomniakitten.glazed.extensions.invoke
 import net.insomniakitten.glazed.extensions.plus
 import net.insomniakitten.glazed.extensions.variant
@@ -104,7 +104,7 @@ class GlassPaneBlock : BlockPane(Material.GLASS, true) {
 
     override fun doesSideBlockRendering(state: IBlockState, access: IBlockAccess, pos: BlockPos, side: EnumFacing): Boolean {
         val offset = pos.offset(side)
-        val other = access[offset].state
+        val other = access.getBlockState(pos)
         return if (side.axis.isVertical) {
             state(access, pos) == other(access, offset)
         } else other.block == this
@@ -115,7 +115,7 @@ class GlassPaneBlock : BlockPane(Material.GLASS, true) {
             pos: BlockPos,
             exploder: Entity?,
             explosion: Explosion
-    ) = world[pos].state.variant.resistance
+    ) = world.getBlockState(pos).variant.resistance
 
     override fun canConnectRedstone(
             state: IBlockState,
@@ -130,6 +130,6 @@ class GlassPaneBlock : BlockPane(Material.GLASS, true) {
             access: IBlockAccess,
             pos: BlockPos,
             side: EnumFacing
-    ) = !access[pos.offset(side)].doesSideBlockRendering(side.opposite)
+    ) = !access.doesSideBlockRendering(pos.offset(side), side.opposite)
 }
 

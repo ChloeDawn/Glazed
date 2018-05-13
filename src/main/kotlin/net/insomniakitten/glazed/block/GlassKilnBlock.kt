@@ -3,11 +3,12 @@ package net.insomniakitten.glazed.block
 import net.insomniakitten.glazed.Glazed
 import net.insomniakitten.glazed.GlazedProxy
 import net.insomniakitten.glazed.block.entity.GlassKilnEntity
-import net.insomniakitten.glazed.extensions.AccessPosition
 import net.insomniakitten.glazed.extensions.comparatorOutput
 import net.insomniakitten.glazed.extensions.cycle
 import net.insomniakitten.glazed.extensions.get
+import net.insomniakitten.glazed.extensions.getTileEntity
 import net.insomniakitten.glazed.extensions.invoke
+import net.insomniakitten.glazed.extensions.isReplaceable
 import net.insomniakitten.glazed.extensions.mirroredFacing
 import net.insomniakitten.glazed.extensions.plus
 import net.minecraft.block.BlockHorizontal
@@ -44,9 +45,6 @@ class GlassKilnBlock : BlockHorizontal(Material.ROCK, MapColor.ADOBE) {
         setResistance(30.0F)
     }
 
-    private val AccessPosition.kiln get() = entity as? GlassKilnEntity
-    private val AccessPosition.isActive get() = kiln?.isActive == true
-
     override fun isFullCube(state: IBlockState) = false
 
     override fun isOpaqueCube(state: IBlockState) = false
@@ -69,7 +67,7 @@ class GlassKilnBlock : BlockHorizontal(Material.ROCK, MapColor.ADOBE) {
             state: IBlockState,
             access: IBlockAccess,
             pos: BlockPos
-    ) = state + ACTIVE(access[pos].isActive)
+    ) = state + ACTIVE(access.getTileEntity(pos, GlassKilnEntity::class)?.isActive == true)
 
     override fun getPickBlock(
             state: IBlockState,
@@ -80,7 +78,7 @@ class GlassKilnBlock : BlockHorizontal(Material.ROCK, MapColor.ADOBE) {
     ): ItemStack = super.getPickBlock(state, target, world, pos, player).also {
         if (world.isRemote && player.capabilities.isCreativeMode &&
             state[HALF].isUpper && GlazedProxy.instance.isCtrlKeyDown) {
-            world[pos.down()].kiln?.serializeToStack(it)
+            world.getTileEntity(pos, GlassKilnEntity::class)?.serializeToStack(it)
         }
     }
 
@@ -109,14 +107,14 @@ class GlassKilnBlock : BlockHorizontal(Material.ROCK, MapColor.ADOBE) {
             state: IBlockState
     ) {
         if (hasTileEntity(state)) {
-            world[pos].kiln?.dropItems(world, pos)
-            world[pos].entity = null
+            world.getTileEntity(pos, GlassKilnEntity::class)?.dropItems(world, pos)
+            world.removeTileEntity(pos)
             world.destroyBlock(pos.up(), false)
         } else world.destroyBlock(pos.down(), false)
     }
 
     override fun canPlaceBlockAt(world: World, pos: BlockPos) =
-            world[pos].isReplaceable && (world[pos.down()].isReplaceable || world[pos.up()].isReplaceable)
+            world.isReplaceable(pos) && (world.isReplaceable(pos.down()) || world.isReplaceable(pos.up()))
 
     override fun onBlockActivated(
             world: World,
@@ -142,7 +140,7 @@ class GlassKilnBlock : BlockHorizontal(Material.ROCK, MapColor.ADOBE) {
             entity: EntityLivingBase?,
             stack: ItemStack
     ) {
-        world[state[HALF](pos)].state = state cycle HALF
+        world.setBlockState(state[HALF](pos), state cycle HALF)
     }
 
     override fun hasComparatorInputOverride(state: IBlockState) = true
@@ -151,7 +149,7 @@ class GlassKilnBlock : BlockHorizontal(Material.ROCK, MapColor.ADOBE) {
             state: IBlockState,
             world: World,
             pos: BlockPos
-    ) = world[state[HALF].offsetToEntity(pos)].kiln?.items?.comparatorOutput ?: 0
+    ) = world.getTileEntity(pos, GlassKilnEntity::class)?.items?.comparatorOutput ?: 0
 
     override fun createBlockState() = BlockStateContainer(this, ACTIVE, FACING, HALF)
 
@@ -194,8 +192,8 @@ class GlassKilnBlock : BlockHorizontal(Material.ROCK, MapColor.ADOBE) {
             operator fun get(ordinal: Int) = VALUES[ordinal]
 
             operator fun get(access: IBlockAccess, pos: BlockPos) = when {
-                access[pos.up()].isReplaceable -> LOWER
-                access[pos.down()].isReplaceable -> UPPER
+                access.isReplaceable(pos.up()) -> LOWER
+                access.isReplaceable(pos.down()) -> UPPER
                 else -> throw IllegalArgumentException("Cannot determine Half from position $pos")
             }
         }

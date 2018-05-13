@@ -1,5 +1,7 @@
 package net.insomniakitten.glazed
 
+import net.insomniakitten.glazed.block.entity.GlassKilnEntity
+import net.insomniakitten.glazed.extensions.getTileEntity
 import net.insomniakitten.glazed.gui.GlassKilnContainer
 import net.insomniakitten.glazed.gui.GlassKilnGui
 import net.minecraft.creativetab.CreativeTabs
@@ -68,7 +70,8 @@ object Glazed {
                 z: Int
         ): Any? {
             return if (id == 0) {
-                val te = world.getTileEntity(BlockPos(x, y, z))
+                val pos = BlockPos(x, y, z)
+                val te = world.getTileEntity(pos, GlassKilnEntity::class)
                 GlassKilnContainer(te ?: return null, player)
             } else null
         }
@@ -82,7 +85,8 @@ object Glazed {
                 z: Int
         ): Any? {
             return if (id == 0) {
-                val te = world.getTileEntity(BlockPos(x, y, z))
+                val pos = BlockPos(x, y, z)
+                val te = world.getTileEntity(pos, GlassKilnEntity::class)
                 GlassKilnGui(te ?: return null, player)
             } else null
         }

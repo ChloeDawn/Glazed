@@ -4,7 +4,7 @@ import net.insomniakitten.glazed.Glazed
 import net.insomniakitten.glazed.GlazedVariant
 import net.insomniakitten.glazed.GlazedVariant.VARIANTS
 import net.insomniakitten.glazed.extensions.description
-import net.insomniakitten.glazed.extensions.get
+import net.insomniakitten.glazed.extensions.doesSideBlockRendering
 import net.insomniakitten.glazed.extensions.plus
 import net.insomniakitten.glazed.extensions.variant
 import net.minecraft.block.BlockGlass
@@ -84,7 +84,7 @@ class GlassBlock : BlockGlass(Material.GLASS, true) {
             world: IBlockAccess,
             pos: BlockPos,
             side: EnumFacing
-    ) = world[pos.offset(side)].state.let {
+    ) = world.getBlockState(pos.offset(side)).let {
         it.block == this && it.variant == state.variant
     }
 
@@ -93,7 +93,7 @@ class GlassBlock : BlockGlass(Material.GLASS, true) {
             pos: BlockPos,
             exploder: Entity?,
             explosion: Explosion
-    ) = world[pos].state.variant.resistance
+    ) = world.getBlockState(pos).variant.resistance
 
     override fun getPickBlock(
             state: IBlockState,
@@ -121,5 +121,5 @@ class GlassBlock : BlockGlass(Material.GLASS, true) {
             access: IBlockAccess,
             pos: BlockPos,
             side: EnumFacing
-    ) = !access[pos.offset(side)].doesSideBlockRendering(side.opposite)
+    ) = !access.doesSideBlockRendering(pos.offset(side), side.opposite)
 }
