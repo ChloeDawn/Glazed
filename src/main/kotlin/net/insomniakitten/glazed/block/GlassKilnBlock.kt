@@ -204,4 +204,3 @@ class GlassKilnBlock : BlockHorizontal(Material.ROCK, MapColor.ADOBE) {
         val HALF: PropertyEnum<Half> = create("half", Half::class.java)
     }
 }
-

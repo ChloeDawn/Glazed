@@ -98,5 +98,3 @@ class GlassKilnEntity(val items: ItemStackHandler = object : ItemStackHandler(4)
         private const val NBT_KEY_ITEMS = "items"
     }
 }
-
-

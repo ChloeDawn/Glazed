@@ -132,4 +132,3 @@ class GlassPaneBlock : BlockPane(Material.GLASS, true) {
             side: EnumFacing
     ) = !access.doesSideBlockRendering(pos.offset(side), side.opposite)
 }
-
