@@ -14,32 +14,16 @@ import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
 
 class VariantBlockItem(block: Block) : ItemBlock(block) {
-    init {
-        setHasSubtypes(true)
-    }
+    override fun getHasSubtypes() = true
 
     override fun getUnlocalizedName(stack: ItemStack) = "${block.unlocalizedName}.${stack.key}"
 
     override fun getMetadata(damage: Int) = damage
 
     @SideOnly(Side.CLIENT)
-    override fun canPlaceBlockOnSide(
-            world: World,
-            pos: BlockPos,
-            side: EnumFacing,
-            player: EntityPlayer,
-            stack: ItemStack
-    ) = stack in GlazedVariant && super.canPlaceBlockOnSide(world, pos, side, player, stack)
+    override fun canPlaceBlockOnSide(world: World, pos: BlockPos, side: EnumFacing, player: EntityPlayer, stack: ItemStack) =
+            stack in GlazedVariant && super.canPlaceBlockOnSide(world, pos, side, player, stack)
 
-    override fun placeBlockAt(
-            stack: ItemStack,
-            player: EntityPlayer,
-            world: World,
-            pos: BlockPos,
-            side: EnumFacing,
-            hitX: Float,
-            hitY: Float,
-            hitZ: Float,
-            newState: IBlockState
-    ) = stack in GlazedVariant && super.placeBlockAt(stack, player, world, pos, side, hitX, hitY, hitZ, newState)
+    override fun placeBlockAt(stack: ItemStack, player: EntityPlayer, world: World, pos: BlockPos, side: EnumFacing, hitX: Float, hitY: Float, hitZ: Float, newState: IBlockState) =
+            stack in GlazedVariant && super.placeBlockAt(stack, player, world, pos, side, hitX, hitY, hitZ, newState)
 }

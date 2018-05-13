@@ -18,10 +18,6 @@ class GlazedWailaPlugin : IWailaPlugin, IWailaDataProvider {
         it.registerBodyProvider(this, GlassPaneBlock::class.java)
     }
 
-    override fun getWailaBody(
-            stack: ItemStack,
-            tooltip: MutableList<String>,
-            accessor: IWailaDataAccessor,
-            config: IWailaConfigHandler
-    ) = tooltip.apply { add(stack.description) }
+    override fun getWailaBody(stack: ItemStack, tooltip: MutableList<String>, accessor: IWailaDataAccessor, config: IWailaConfigHandler) =
+            tooltip.apply { add(stack.description) }
 }

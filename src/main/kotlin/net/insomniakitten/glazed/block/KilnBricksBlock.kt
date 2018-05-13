@@ -8,10 +8,12 @@ import net.minecraft.block.material.Material
 
 class KilnBricksBlock : Block(Material.ROCK, MapColor.ADOBE) {
     init {
-        unlocalizedName = "${Glazed.ID}.kiln_bricks"
-        setCreativeTab(Glazed.TAB)
         soundType = SoundType.STONE
         setHardness(2.0f)
         setResistance(30.0f)
     }
+
+    override fun getUnlocalizedName() = "tile.${Glazed.ID}.kiln_bricks"
+
+    override fun getCreativeTabToDisplayOn() = Glazed.TAB
 }

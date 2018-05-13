@@ -61,34 +61,16 @@ object Glazed {
     }
 
     val GUI_HANDLER = object : IGuiHandler {
-        override fun getServerGuiElement(
-                id: Int,
-                player: EntityPlayer,
-                world: World,
-                x: Int,
-                y: Int,
-                z: Int
-        ): Any? {
-            return if (id == 0) {
-                val pos = BlockPos(x, y, z)
-                val te = world.getTileEntity(pos, GlassKilnEntity::class)
-                GlassKilnContainer(te ?: return null, player)
-            } else null
+        override fun getServerGuiElement(id: Int, player: EntityPlayer, world: World, x: Int, y: Int, z: Int): Any? {
+            return if (id != 0) null else {
+                GlassKilnContainer(world.getTileEntity(BlockPos(x, y, z), GlassKilnEntity::class) ?: return null, player)
+            }
         }
 
-        override fun getClientGuiElement(
-                id: Int,
-                player: EntityPlayer,
-                world: World,
-                x: Int,
-                y: Int,
-                z: Int
-        ): Any? {
-            return if (id == 0) {
-                val pos = BlockPos(x, y, z)
-                val te = world.getTileEntity(pos, GlassKilnEntity::class)
-                GlassKilnGui(te ?: return null, player)
-            } else null
+        override fun getClientGuiElement(id: Int, player: EntityPlayer, world: World, x: Int, y: Int, z: Int): Any? {
+            return if (id != 0) null else {
+                GlassKilnGui(world.getTileEntity(BlockPos(x, y, z), GlassKilnEntity::class) ?: return null, player)
+            }
         }
     }
 
