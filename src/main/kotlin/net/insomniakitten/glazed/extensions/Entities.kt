@@ -23,7 +23,8 @@ fun Entity.getPosition(partialTicks: Float) = Vec3d(
 fun EntityPlayer.giveItem(stack: ItemStack, preferredSlot: Int) =
         ItemHandlerHelper.giveItemToPlayer(this, stack, preferredSlot)
 
-fun EntityPlayer.giveItem(stack: ItemStack) = giveItem(stack, -1)
+fun EntityPlayer.giveItem(stack: ItemStack) =
+        ItemHandlerHelper.giveItemToPlayer(this, stack)
 
 operator fun EntityLivingBase.get(hand: EnumHand): ItemStack = getHeldItem(hand)
 

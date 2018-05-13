@@ -6,14 +6,7 @@ import net.minecraft.tileentity.TileEntity
 import net.minecraft.util.EnumFacing
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.IBlockAccess
-import net.minecraftforge.common.property.IExtendedBlockState
 import kotlin.reflect.KClass
-
-fun IBlockAccess.getActualState(pos: BlockPos) = getBlockState(pos).getActualState(this, pos)
-
-fun IBlockAccess.getExtendedState(pos: BlockPos) = getBlockState(pos).let {
-    it.block.getExtendedState(it, this, pos) as? IExtendedBlockState
-}
 
 fun IBlockAccess.isReplaceable(pos: BlockPos) = getBlockState(pos).block.isReplaceable(this, pos)
 

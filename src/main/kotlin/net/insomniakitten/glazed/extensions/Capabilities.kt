@@ -11,7 +11,7 @@ import net.minecraftforge.items.ItemHandlerHelper
 
 inline val IItemHandler.comparatorOutput get() = ItemHandlerHelper.calcRedstoneFromInventory(this)
 
-operator fun <T> ICapabilityProvider.get(capability: Capability<T>, side: EnumFacing? = null) =
+operator fun <T> ICapabilityProvider.get(capability: Capability<T>, side: EnumFacing? = null): T? =
         getCapability(capability, side)
 
 operator fun <T> ICapabilityProvider.contains(capability: Capability<T>) =
@@ -26,14 +26,14 @@ infix fun <T> ICapabilityProvider.has(capability: Capability<T>) =
 infix fun <T> ICapabilityProvider.has(pair: Pair<Capability<T>, EnumFacing?>) =
         hasCapability(pair.first, pair.second)
 
-infix fun <T> Capability<T>.from(provider: ICapabilityProvider) =
+infix fun <T> Capability<T>.from(provider: ICapabilityProvider): T? =
         provider.getCapability(this, null)
 
-infix fun <T> Capability<T>.from(pair: Pair<ICapabilityProvider, EnumFacing?>) =
+infix fun <T> Capability<T>.from(pair: Pair<ICapabilityProvider, EnumFacing?>): T? =
         pair.first.getCapability(this, pair.second)
 
-fun IItemHandler.insertItem(stack: ItemStack, simulate: Boolean) =
+fun IItemHandler.insertItem(stack: ItemStack, simulate: Boolean): ItemStack =
         ItemHandlerHelper.insertItem(this, stack, simulate)
 
-fun IItemHandler.insertItemStacked(stack: ItemStack, simulate: Boolean) =
+fun IItemHandler.insertItemStacked(stack: ItemStack, simulate: Boolean): ItemStack =
         ItemHandlerHelper.insertItemStacked(this, stack, simulate)

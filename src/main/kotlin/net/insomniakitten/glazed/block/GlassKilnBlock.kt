@@ -43,7 +43,7 @@ class GlassKilnBlock : BlockHorizontal(Material.ROCK, MapColor.ADOBE) {
         setResistance(30.0F)
     }
 
-    override fun getUnlocalizedName() = "tile.${Glazed.ID}.glass_kiln"
+    override fun getUnlocalizedName() = "block.${Glazed.ID}.glass_kiln"
 
     override fun getCreativeTabToDisplayOn() = Glazed.TAB
 

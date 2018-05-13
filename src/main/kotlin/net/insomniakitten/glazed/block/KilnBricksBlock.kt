@@ -13,7 +13,7 @@ class KilnBricksBlock : Block(Material.ROCK, MapColor.ADOBE) {
         setResistance(30.0f)
     }
 
-    override fun getUnlocalizedName() = "tile.${Glazed.ID}.kiln_bricks"
+    override fun getUnlocalizedName() = "block.${Glazed.ID}.kiln_bricks"
 
     override fun getCreativeTabToDisplayOn() = Glazed.TAB
 }

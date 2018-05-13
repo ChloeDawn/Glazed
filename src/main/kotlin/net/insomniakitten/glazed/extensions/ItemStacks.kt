@@ -6,7 +6,6 @@ import net.minecraft.block.Block
 import net.minecraft.item.ItemStack
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
-import net.minecraftforge.items.ItemHandlerHelper
 
 inline val ItemStack.isNotEmpty: Boolean get() = !isEmpty
 
@@ -27,5 +26,3 @@ fun ItemStack.copy(newCount: Int): ItemStack =
             copy().apply { count = newCount }
         } else ItemStack.EMPTY
 
-infix fun ItemStack.canStackWith(other: ItemStack) =
-        ItemHandlerHelper.canItemStacksStack(this, other)

@@ -28,7 +28,7 @@ import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
 
 class GlassPaneBlock : BlockPane(Material.GLASS, true) {
-    override fun getUnlocalizedName() = "tile.${Glazed.ID}.glass_block"
+    override fun getUnlocalizedName() = "block.${Glazed.ID}.glass_block"
 
     override fun getCreativeTabToDisplayOn() = Glazed.TAB
 

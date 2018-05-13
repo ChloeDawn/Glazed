@@ -5,6 +5,8 @@ package net.insomniakitten.glazed.extensions
 import net.minecraft.block.Block
 import net.minecraft.block.properties.IProperty
 import net.minecraft.block.state.IBlockState
+import net.minecraft.util.Mirror
+import net.minecraft.util.Rotation
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.IBlockAccess
 
@@ -28,5 +30,8 @@ infix fun <V : Comparable<V>> IProperty<V>.from(state: IBlockState): V = state.g
 infix fun <V : Comparable<V>> IBlockState.with(entry: Pair<IProperty<V>, V>): IBlockState =
         withProperty(entry.first, entry.second)
 
-infix fun <V : Comparable<V>> IBlockState.cycle(property: IProperty<V>): IBlockState =
-        cycleProperty(property)
+infix fun <V : Comparable<V>> IBlockState.cycle(property: IProperty<V>): IBlockState = cycleProperty(property)
+
+infix fun IBlockState.rotate(rotation: Rotation): IBlockState = withRotation(rotation)
+
+infix fun IBlockState.mirror(mirror: Mirror): IBlockState = withMirror(mirror)

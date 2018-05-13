@@ -1,7 +1,5 @@
 package net.insomniakitten.glazed.block.entity
 
-import net.insomniakitten.glazed.extensions.has
-import net.insomniakitten.glazed.extensions.on
 import net.insomniakitten.glazed.extensions.spawnAsEntity
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NBTTagCompound
@@ -26,13 +24,9 @@ import net.minecraftforge.oredict.OreDictionary.getOreIDs
 
 class GlassKilnEntity(val items: ItemStackHandler = object : ItemStackHandler(4) {
     override fun getStackLimit(slot: Int, stack: ItemStack) = when (slot) {
-        0 -> if (getOreID("sand") in getOreIDs(stack)) {
-            stack.maxStackSize
-        } else 0
+        0 -> if (getOreID("sand") in getOreIDs(stack)) stack.maxStackSize else 0
+        2 -> if (getItemBurnTime(stack) > 0) stack.maxStackSize else 0
         1 -> stack.maxStackSize
-        2 -> if (getItemBurnTime(stack) > 0) {
-            stack.maxStackSize
-        } else 0
         else -> 0
     }
 }) : TileEntity(), ITickable {
@@ -72,15 +66,13 @@ class GlassKilnEntity(val items: ItemStackHandler = object : ItemStackHandler(4)
             capability == ITEM_HANDLER_CAPABILITY
 
     override fun <T> getCapability(capability: Capability<T>, side: EnumFacing?): T? =
-            if (this has (capability on side)) {
+            if (hasCapability(capability, side)) {
                 ITEM_HANDLER_CAPABILITY.cast(items)
             } else null
 
     override fun getUpdatePacket() = SPacketUpdateTileEntity(getPos(), -1, updateTag)
 
-    override fun getUpdateTag() = NBTTagCompound().apply {
-        setBoolean(NBT_KEY_ACTIVE, isActive)
-    }
+    override fun getUpdateTag() = NBTTagCompound().apply { setBoolean(NBT_KEY_ACTIVE, isActive) }
 
     override fun getDisplayName() = TextComponentTranslation("${getBlockType().unlocalizedName}.name")
 
@@ -89,9 +81,7 @@ class GlassKilnEntity(val items: ItemStackHandler = object : ItemStackHandler(4)
         isActive = pkt.nbtCompound.getBoolean(NBT_KEY_ACTIVE)
     }
 
-    override fun update() {
-
-    }
+    override fun update() {}
 
     companion object {
         private const val NBT_KEY_ACTIVE = "active"
