@@ -2,7 +2,7 @@ package net.insomniakitten.glazed.gui
 
 import net.insomniakitten.glazed.Glazed
 import net.minecraft.client.gui.inventory.GuiContainer
-import net.minecraft.client.renderer.GlStateManager
+import net.minecraft.client.renderer.GlStateManager.color
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.tileentity.TileEntity
 import net.minecraft.util.ResourceLocation
@@ -21,17 +21,20 @@ class GlassKilnGui(
     }
 
     override fun drawGuiContainerForegroundLayer(mouseX: Int, mouseY: Int) {
-        val kiln = te.displayName!!.unformattedText
-        val inv = player.inventory.displayName.unformattedText
-        fontRenderer.drawString(kiln, 88 - fontRenderer.getStringWidth(kiln) / 2, 6, 0x404040)
-        fontRenderer.drawString(inv, 8, ySize - 94, 0x404040)
+        val kilnInventory = te.displayName!!.unformattedText
+        val playerInventory = player.inventory.displayName.unformattedText
+        with(fontRenderer) {
+            val offset = getStringWidth(kilnInventory) / 2
+            drawString(kilnInventory, 88 - offset, 6, 0x404040)
+            drawString(playerInventory, 8, ySize - 94, 0x404040)
+        }
     }
 
     override fun drawGuiContainerBackgroundLayer(partialTicks: Float, mouseX: Int, mouseY: Int) {
-        GlStateManager.color(1.0f, 1.0f, 1.0f)
-        mc.textureManager.bindTexture(TEXTURE)
         val x = (width - xSize) / 2
         val y = (height - ySize) / 2
+        color(1.0F, 1.0F, 1.0F, 1.0F)
+        mc.textureManager.bindTexture(TEXTURE)
         drawTexturedModalRect(x, y, 0, 0, xSize, ySize)
     }
 
